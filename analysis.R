@@ -6,6 +6,7 @@ library(nlme)
 library(piecewiseSEM)
 source(here("R", "cross_validate_mixed_model.R"))
 source(here("R", "accuracy_indices.R"))
+source(here("R", "get_BA_plot.R"))
 
 # Prepare data ------------------------------------------------------------
 
@@ -106,95 +107,54 @@ LOOCV_hip_res_LMM <- do.call(rbind, (lapply(unique(hip$ID), cross_validate_mixed
 
 # For vertical peak ground reaction force
 # Ankle
+ankle_vert_BA_plot <- get_BA_plot(LOOCV_ankle_vert_LMM, "pVGRF_N", "pVGRF_N_predicted")
+# Back
+back_vert_BA_plot <- get_BA_plot(LOOCV_back_vert_LMM, "pVGRF_N", "pVGRF_N_predicted")
+# Hip
+hip_vert_BA_plot <- get_BA_plot(LOOCV_hip_vert_LMM, "pVGRF_N", "pVGRF_N_predicted")
+
+# For resultant peak ground reaction force
+# Ankle
+ankle_res_BA_plot <- get_BA_plot(LOOCV_ankle_res_LMM, "pRGRF_N", "pRGRF_N_predicted")
+# Back
+back_res_BA_plot <- get_BA_plot(LOOCV_back_res_LMM, "pRGRF_N", "pRGRF_N_predicted")
+# Hip
+hip_res_BA_plot <- get_BA_plot(LOOCV_hip_res_LMM, "pRGRF_N", "pRGRF_N_predicted")
+
+### Linear regressions to identify proportional bias
+# For vertical peak ground reaction force
+# Ankle
 LOOCV_ankle_vert_LMM$diff <- LOOCV_ankle_vert_LMM$pVGRF_N - LOOCV_ankle_vert_LMM$pVGRF_N_predicted
 LOOCV_ankle_vert_LMM$mean <- (LOOCV_ankle_vert_LMM$pVGRF_N + LOOCV_ankle_vert_LMM$pVGRF_N_predicted) / 2
-ankle_vert_BA_plot <- ggplot(data = LOOCV_ankle_vert_LMM) +
-  geom_point(mapping = aes(x = mean, y = diff)) +
-  geom_hline(yintercept = mean(LOOCV_ankle_vert_LMM$diff)) +
-  geom_hline(
-    yintercept = mean(LOOCV_ankle_vert_LMM$diff) + 1.96 * sd(LOOCV_ankle_vert_LMM$diff),
-    linetype = "dotted"
-  ) +
-  geom_hline(
-    yintercept = mean(LOOCV_ankle_vert_LMM$diff) - 1.96 * sd(LOOCV_ankle_vert_LMM$diff),
-    linetype = "dotted"
-  )
-
+ankle_vert_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_ankle_vert_LMM)
+summary(ankle_vert_BA_plot_LR)
 # Back
 LOOCV_back_vert_LMM$diff <- LOOCV_back_vert_LMM$pVGRF_N - LOOCV_back_vert_LMM$pVGRF_N_predicted
 LOOCV_back_vert_LMM$mean <- (LOOCV_back_vert_LMM$pVGRF_N + LOOCV_back_vert_LMM$pVGRF_N_predicted) / 2
-back_vert_BA_plot <- ggplot(data = LOOCV_back_vert_LMM) +
-  geom_point(mapping = aes(x = mean, y = diff)) +
-  geom_hline(yintercept = mean(LOOCV_back_vert_LMM$diff)) +
-  geom_hline(
-    yintercept = mean(LOOCV_back_vert_LMM$diff) + 1.96 * sd(LOOCV_back_vert_LMM$diff),
-    linetype = "dotted"
-  ) +
-  geom_hline(
-    yintercept = mean(LOOCV_back_vert_LMM$diff) - 1.96 * sd(LOOCV_back_vert_LMM$diff),
-    linetype = "dotted"
-  )
-
+back_vert_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_back_vert_LMM)
+summary(back_vert_BA_plot_LR)
 # Hip
 LOOCV_hip_vert_LMM$diff <- LOOCV_hip_vert_LMM$pVGRF_N - LOOCV_hip_vert_LMM$pVGRF_N_predicted
 LOOCV_hip_vert_LMM$mean <- (LOOCV_hip_vert_LMM$pVGRF_N + LOOCV_hip_vert_LMM$pVGRF_N_predicted) / 2
-hip_vert_BA_plot <- ggplot(data = LOOCV_hip_vert_LMM) +
-  geom_point(mapping = aes(x = mean, y = diff)) +
-  geom_hline(yintercept = mean(LOOCV_hip_vert_LMM$diff)) +
-  geom_hline(
-    yintercept = mean(LOOCV_hip_vert_LMM$diff) + 1.96 * sd(LOOCV_hip_vert_LMM$diff),
-    linetype = "dotted"
-  ) +
-  geom_hline(
-    yintercept = mean(LOOCV_hip_vert_LMM$diff) - 1.96 * sd(LOOCV_hip_vert_LMM$diff),
-    linetype = "dotted"
-  )
+hip_vert_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_hip_vert_LMM)
+summary(hip_vert_BA_plot_LR)
 
 # For resultant peak ground reaction force
 # Ankle
 LOOCV_ankle_res_LMM$diff <- LOOCV_ankle_res_LMM$pRGRF_N - LOOCV_ankle_res_LMM$pRGRF_N_predicted
 LOOCV_ankle_res_LMM$mean <- (LOOCV_ankle_res_LMM$pRGRF_N + LOOCV_ankle_res_LMM$pRGRF_N_predicted) / 2
-ankle_res_BA_plot <- ggplot(data = LOOCV_ankle_res_LMM) +
-  geom_point(mapping = aes(x = mean, y = diff)) +
-  geom_hline(yintercept = mean(LOOCV_ankle_res_LMM$diff)) +
-  geom_hline(
-    yintercept = mean(LOOCV_ankle_res_LMM$diff) + 1.96 * sd(LOOCV_ankle_res_LMM$diff),
-    linetype = "dotted"
-  ) +
-  geom_hline(
-    yintercept = mean(LOOCV_ankle_res_LMM$diff) - 1.96 * sd(LOOCV_ankle_res_LMM$diff),
-    linetype = "dotted"
-  )
-
+ankle_res_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_ankle_res_LMM)
+summary(ankle_res_BA_plot_LR)
 # Back
 LOOCV_back_res_LMM$diff <- LOOCV_back_res_LMM$pRGRF_N - LOOCV_back_res_LMM$pRGRF_N_predicted
 LOOCV_back_res_LMM$mean <- (LOOCV_back_res_LMM$pRGRF_N + LOOCV_back_res_LMM$pRGRF_N_predicted) / 2
-back_res_BA_plot <- ggplot(data = LOOCV_back_res_LMM) +
-  geom_point(mapping = aes(x = mean, y = diff)) +
-  geom_hline(yintercept = mean(LOOCV_back_res_LMM$diff)) +
-  geom_hline(
-    yintercept = mean(LOOCV_back_res_LMM$diff) + 1.96 * sd(LOOCV_back_res_LMM$diff),
-    linetype = "dotted"
-  ) +
-  geom_hline(
-    yintercept = mean(LOOCV_back_res_LMM$diff) - 1.96 * sd(LOOCV_back_res_LMM$diff),
-    linetype = "dotted"
-  )
-
+back_res_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_back_res_LMM)
+summary(back_res_BA_plot_LR)
 # Hip
 LOOCV_hip_res_LMM$diff <- LOOCV_hip_res_LMM$pRGRF_N - LOOCV_hip_res_LMM$pRGRF_N_predicted
 LOOCV_hip_res_LMM$mean <- (LOOCV_hip_res_LMM$pRGRF_N + LOOCV_hip_res_LMM$pRGRF_N_predicted) / 2
-hip_res_BA_plot <- ggplot(data = LOOCV_hip_res_LMM) +
-  geom_point(mapping = aes(x = mean, y = diff)) +
-  geom_hline(yintercept = mean(LOOCV_hip_res_LMM$diff)) +
-  geom_hline(
-    yintercept = mean(LOOCV_hip_res_LMM$diff) + 1.96 * sd(LOOCV_hip_res_LMM$diff),
-    linetype = "dotted"
-  ) +
-  geom_hline(
-    yintercept = mean(LOOCV_hip_res_LMM$diff) - 1.96 * sd(LOOCV_hip_res_LMM$diff),
-    linetype = "dotted"
-  )
+hip_res_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_hip_res_LMM)
+summary(hip_res_BA_plot_LR)
 
 # Indices of accuracy -----------------------------------------------------
 
