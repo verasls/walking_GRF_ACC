@@ -4,11 +4,12 @@ library(tidyverse)
 library(here)
 library(nlme)
 library(piecewiseSEM)
+library(ez)
 source(here("R", "cross_validate_mixed_model.R"))
 source(here("R", "accuracy_indices.R"))
 source(here("R", "get_BA_plot.R"))
 
-# Prepare data ------------------------------------------------------------
+# 1. Prepare data ---------------------------------------------------------
 
 ankle <- read_csv(here("data", "ankle_sec.csv")) %>% 
   select(-c(body_weight, pVGRF_BW, pRGRF_BW, pVACC_ms2, pVACC_ms2, pRACC_ms2)) %>% 
@@ -23,7 +24,7 @@ hip <- read_csv(here("data", "hip_sec.csv")) %>%
   select(-c(body_weight, pVGRF_BW, pRGRF_BW, pVACC_ms2, pVACC_ms2, pRACC_ms2)) %>% 
   filter(speed <= 6)
 
-# Linear mixed models -----------------------------------------------------
+# 2. Linear mixed models --------------------------------------------------
 
 # For vertical peak ground reaction force
 ankle_vert_LMM <- lme(
@@ -81,7 +82,7 @@ hip_res_LMM <- lme(
 )
 r2_hip_res_LMM <- rsquared(hip_res_LMM)
 
-# Leave-one-out cross-validation ------------------------------------------
+# 3. Leave-one-out cross-validation ---------------------------------------
 
 # For vertical peak ground reaction force
 fix_eff    <- pVGRF_N ~ pVACC_g + body_mass
@@ -103,7 +104,7 @@ LOOCV_back_res_LMM <- do.call(rbind, (lapply(unique(back$ID), cross_validate_mix
 # Hip
 LOOCV_hip_res_LMM <- do.call(rbind, (lapply(unique(hip$ID), cross_validate_mixed_model, df = hip)))
 
-# Bland-Altman plots ------------------------------------------------------
+# 4. Bland-Altman plots ---------------------------------------------------
 
 # For vertical peak ground reaction force
 # Ankle
@@ -156,7 +157,7 @@ LOOCV_hip_res_LMM$mean <- (LOOCV_hip_res_LMM$pRGRF_N + LOOCV_hip_res_LMM$pRGRF_N
 hip_res_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_hip_res_LMM)
 summary(hip_res_BA_plot_LR)
 
-# Indices of accuracy -----------------------------------------------------
+# 5. Indices of accuracy --------------------------------------------------
 
 # For vertical peak ground reaction force
 # Ankle
@@ -173,3 +174,218 @@ ankle_res_accuracy <- accuracy_indices(LOOCV_ankle_res_LMM, "pRGRF_N", "pRGRF_N_
 back_res_accuracy <- accuracy_indices(LOOCV_back_res_LMM, "pRGRF_N", "pRGRF_N_predicted")
 # Hip
 hip_res_accuracy <- accuracy_indices(LOOCV_hip_res_LMM, "pRGRF_N", "pRGRF_N_predicted")
+
+# 6. ANOVA ----------------------------------------------------------------
+# ** 6.1. Vertical GRF ----------------------------------------------------
+# **** 6.1.1. Building data frame -----------------------------------------
+
+## Predicted pVGRF
+ankle_vert_pred <- LOOCV_ankle_vert_LMM %>% 
+  select(ID, speed, pVGRF_N_predicted) %>% 
+  spread(key = speed, value = pVGRF_N_predicted) %>% 
+  na.omit() %>% 
+  gather(
+    `2`, `3`, `4`, `5`, `6`,
+    key = speed,
+    value = ankle
+  )
+
+back_vert_pred <- LOOCV_back_vert_LMM %>% 
+  select(ID, speed, pVGRF_N_predicted) %>% 
+  spread(key = speed, value = pVGRF_N_predicted) %>% 
+  na.omit() %>% 
+  gather(
+    `2`, `3`, `4`, `5`, `6`,
+    key = speed,
+    value = back
+  )
+
+hip_vert_pred <- LOOCV_hip_vert_LMM %>% 
+  select(ID, speed, pVGRF_N_predicted) %>% 
+  spread(key = speed, value = pVGRF_N_predicted) %>% 
+  na.omit() %>% 
+  gather(
+    `2`, `3`, `4`, `5`, `6`,
+    key = speed,
+    value = hip
+  )
+
+vert_pred_df <- ankle_vert_pred %>% 
+  full_join(back_vert_pred, by = c("ID", "speed")) %>% 
+  full_join(hip_vert_pred, by = c("ID", "speed")) %>% 
+  na.omit()
+
+## Actual pVGRF
+ankle_vert_actual <- LOOCV_ankle_vert_LMM %>% 
+  select(ID, speed, pVGRF_N) %>% 
+  spread(key = speed, value = pVGRF_N) %>% 
+  na.omit() %>% 
+  gather(
+    `2`, `3`, `4`, `5`, `6`,
+    key = speed,
+    value = actual_ankle
+  )
+
+back_vert_actual <- LOOCV_back_vert_LMM %>% 
+  select(ID, speed, pVGRF_N) %>% 
+  spread(key = speed, value = pVGRF_N) %>% 
+  na.omit() %>% 
+  gather(
+    `2`, `3`, `4`, `5`, `6`,
+    key = speed,
+    value = actual_back
+  )
+
+hip_vert_actual <- LOOCV_hip_vert_LMM %>% 
+  select(ID, speed, pVGRF_N) %>% 
+  spread(key = speed, value = pVGRF_N) %>% 
+  na.omit() %>% 
+  gather(
+    `2`, `3`, `4`, `5`, `6`,
+    key = speed,
+    value = actual_hip
+  )
+
+vert_actual_df <- ankle_vert_actual %>% 
+  full_join(back_vert_actual, by = c("ID", "speed")) %>% 
+  full_join(hip_vert_actual, by = c("ID", "speed")) %>% 
+  na.omit()
+
+vert_actual_df <- vert_actual_df %>% 
+  mutate(actual = (actual_ankle + actual_back + actual_hip) / 3) %>% 
+  select(ID, speed, actual) 
+
+## Merge predicted and actual data frames
+vert_ANOVA_df <- vert_pred_df %>% 
+  full_join(vert_actual_df, by = c("ID", "speed")) %>% 
+  gather(
+    ankle, back, hip, actual,
+    key = "group",
+    value = "pVGRF"
+  )
+vert_ANOVA_df$ID    <- as.factor(vert_ANOVA_df$ID)
+vert_ANOVA_df$speed <- as.factor(vert_ANOVA_df$speed)
+vert_ANOVA_df$group <- as.factor(vert_ANOVA_df$group)
+
+# **** 6.1.2. ANOVA -------------------------------------------------------
+
+vert_ANOVA <- ezANOVA(
+  data     = vert_ANOVA_df,
+  dv       = pVGRF,
+  wid      = ID,
+  within   = .(speed, group),
+  detailed = TRUE,
+  type     = 3
+)
+
+# Post hoc (Holm)
+vert_ANOVA_df$speed_group <- interaction(vert_ANOVA_df$speed, vert_ANOVA_df$group)
+
+vert_posthoc <- pairwise.t.test(vert_ANOVA_df$pVGRF, vert_ANOVA_df$speed_group, paired = TRUE, p.adjust.method = "holm")
+
+# ** 6.2. Resultant GRF ---------------------------------------------------
+# **** 6.2.1. Building data frame -----------------------------------------
+
+## Predicted pRGRF
+ankle_res_pred <- LOOCV_ankle_res_LMM %>% 
+  select(ID, speed, pRGRF_N_predicted) %>% 
+  spread(key = speed, value = pRGRF_N_predicted) %>% 
+  na.omit() %>% 
+  gather(
+    `2`, `3`, `4`, `5`, `6`,
+    key = speed,
+    value = ankle
+  )
+
+back_res_pred <- LOOCV_back_res_LMM %>% 
+  select(ID, speed, pRGRF_N_predicted) %>% 
+  spread(key = speed, value = pRGRF_N_predicted) %>% 
+  na.omit() %>% 
+  gather(
+    `2`, `3`, `4`, `5`, `6`,
+    key = speed,
+    value = back
+  )
+
+hip_res_pred <- LOOCV_hip_res_LMM %>% 
+  select(ID, speed, pRGRF_N_predicted) %>% 
+  spread(key = speed, value = pRGRF_N_predicted) %>% 
+  na.omit() %>% 
+  gather(
+    `2`, `3`, `4`, `5`, `6`,
+    key = speed,
+    value = hip
+  )
+
+res_pred_df <- ankle_res_pred %>% 
+  full_join(back_res_pred, by = c("ID", "speed")) %>% 
+  full_join(hip_res_pred, by = c("ID", "speed")) %>% 
+  na.omit()
+
+## Actual pRGRF
+ankle_res_actual <- LOOCV_ankle_res_LMM %>% 
+  select(ID, speed, pRGRF_N) %>% 
+  spread(key = speed, value = pRGRF_N) %>% 
+  na.omit() %>% 
+  gather(
+    `2`, `3`, `4`, `5`, `6`,
+    key = speed,
+    value = actual_ankle
+  )
+
+back_res_actual <- LOOCV_back_res_LMM %>% 
+  select(ID, speed, pRGRF_N) %>% 
+  spread(key = speed, value = pRGRF_N) %>% 
+  na.omit() %>% 
+  gather(
+    `2`, `3`, `4`, `5`, `6`,
+    key = speed,
+    value = actual_back
+  )
+
+hip_res_actual <- LOOCV_hip_res_LMM %>% 
+  select(ID, speed, pRGRF_N) %>% 
+  spread(key = speed, value = pRGRF_N) %>% 
+  na.omit() %>% 
+  gather(
+    `2`, `3`, `4`, `5`, `6`,
+    key = speed,
+    value = actual_hip
+  )
+
+res_actual_df <- ankle_res_actual %>% 
+  full_join(back_res_actual, by = c("ID", "speed")) %>% 
+  full_join(hip_res_actual, by = c("ID", "speed")) %>% 
+  na.omit()
+
+res_actual_df <- res_actual_df %>% 
+  mutate(actual = (actual_ankle + actual_back + actual_hip) / 3) %>% 
+  select(ID, speed, actual) 
+
+## Merge predicted and actual data frames
+res_ANOVA_df <- res_pred_df %>% 
+  full_join(res_actual_df, by = c("ID", "speed")) %>% 
+  gather(
+    ankle, back, hip, actual,
+    key = "group",
+    value = "pRGRF"
+  )
+res_ANOVA_df$ID    <- as.factor(res_ANOVA_df$ID)
+res_ANOVA_df$speed <- as.factor(res_ANOVA_df$speed)
+res_ANOVA_df$group <- as.factor(res_ANOVA_df$group)
+
+# **** 6.2.2. ANOVA -------------------------------------------------------
+
+res_ANOVA <- ezANOVA(
+  data     = res_ANOVA_df,
+  dv       = pRGRF,
+  wid      = ID,
+  within   = .(speed, group),
+  detailed = TRUE,
+  type     = 3
+)
+
+# Post hoc (Holm)
+res_ANOVA_df$speed_group <- interaction(res_ANOVA_df$speed, res_ANOVA_df$group)
+
+res_posthoc <- pairwise.t.test(res_ANOVA_df$pRGRF, res_ANOVA_df$speed_group, paired = TRUE, p.adjust.method = "holm")
