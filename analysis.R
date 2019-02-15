@@ -45,7 +45,7 @@ sex <- table(samp_desc$sex)
 
 # For vertical peak ground reaction force
 ankle_vert_LMM <- lme(
-  fixed = pVGRF_N ~ pVACC_g + body_mass,
+  fixed = pVGRF_N ~ pVACC_g + I(pVACC_g^2) + body_mass,
   random = ~ 1 | ID,
   method = "ML",
   correlation = corAR1(),
@@ -54,7 +54,7 @@ ankle_vert_LMM <- lme(
 r2_ankle_vert_LMM <- rsquared(ankle_vert_LMM)
 
 back_vert_LMM <- lme(
-  fixed = pVGRF_N ~ pVACC_g + body_mass,
+  fixed = pVGRF_N ~ pVACC_g + I(pVACC_g^2) + body_mass,
   random = ~ 1 | ID,
   method = "ML",
   correlation = corAR1(),
@@ -63,7 +63,7 @@ back_vert_LMM <- lme(
 r2_back_vert_LMM <- rsquared(back_vert_LMM)
 
 hip_vert_LMM <- lme(
-  fixed = pVGRF_N ~ pVACC_g + body_mass,
+  fixed = pVGRF_N ~ pVACC_g + I(pVACC_g^2) + body_mass,
   random = ~ 1 | ID,
   method = "ML",
   correlation = corAR1(),
@@ -73,7 +73,7 @@ r2_hip_vert_LMM <- rsquared(hip_vert_LMM)
 
 # For resultant peak ground reaction force
 ankle_res_LMM <- lme(
-  fixed = pRGRF_N ~ pRACC_g + body_mass,
+  fixed = pRGRF_N ~ pRACC_g + I(pRACC_g^2) + body_mass,
   random = ~ 1 | ID,
   method = "ML",
   correlation = corAR1(),
@@ -82,7 +82,7 @@ ankle_res_LMM <- lme(
 r2_ankle_res_LMM <- rsquared(ankle_res_LMM)
 
 back_res_LMM <- lme(
-  fixed = pRGRF_N ~ pRACC_g + body_mass,
+  fixed = pRGRF_N ~ pRACC_g + I(pRACC_g^2) + body_mass,
   random = ~ 1 | ID,
   method = "ML",
   correlation = corAR1(),
@@ -91,7 +91,7 @@ back_res_LMM <- lme(
 r2_back_res_LMM <- rsquared(back_res_LMM)
 
 hip_res_LMM <- lme(
-  fixed = pRGRF_N ~ pRACC_g + body_mass,
+  fixed = pRGRF_N ~ pRACC_g + I(pRACC_g^2) + body_mass,
   random = ~ 1 | ID,
   method = "ML",
   correlation = corAR1(),
@@ -102,7 +102,7 @@ r2_hip_res_LMM <- rsquared(hip_res_LMM)
 # 4. Leave-one-out cross-validation ---------------------------------------
 
 # For vertical peak ground reaction force
-fix_eff    <- pVGRF_N ~ pVACC_g + body_mass
+fix_eff    <- pVGRF_N ~ pVACC_g + I(pVACC_g^2) + body_mass
 rand_eff   <- ~ 1 | ID
 # Ankle
 LOOCV_ankle_vert_LMM <- do.call(rbind, (lapply(unique(ankle$ID), cross_validate_mixed_model, df = ankle)))
@@ -112,7 +112,7 @@ LOOCV_back_vert_LMM <- do.call(rbind, (lapply(unique(back$ID), cross_validate_mi
 LOOCV_hip_vert_LMM <- do.call(rbind, (lapply(unique(hip$ID), cross_validate_mixed_model, df = hip)))
 
 # For resultant peak ground reaction force
-fix_eff    <- pRGRF_N ~ pRACC_g + body_mass
+fix_eff    <- pRGRF_N ~ pRACC_g + I(pRACC_g^2) + body_mass
 rand_eff   <- ~ 1 | ID
 # Ankle
 LOOCV_ankle_res_LMM <- do.call(rbind, (lapply(unique(ankle$ID), cross_validate_mixed_model, df = ankle)))
