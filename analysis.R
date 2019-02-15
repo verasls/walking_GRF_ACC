@@ -17,14 +17,31 @@ ankle <- read_csv(here("data", "ankle_sec.csv")) %>%
 
 back <- read_csv(here("data", "back_sec.csv")) %>% 
   select(-c(body_weight, pVGRF_BW, pRGRF_BW, pVACC_ms2, pVACC_ms2, pRACC_ms2)) %>% 
-  filter(speed <= 6) %>% 
-  mutate(BMI = body_mass / (height_m ^ 2))
+  filter(speed <= 6)
 
 hip <- read_csv(here("data", "hip_sec.csv")) %>% 
   select(-c(body_weight, pVGRF_BW, pRGRF_BW, pVACC_ms2, pVACC_ms2, pRACC_ms2)) %>% 
   filter(speed <= 6)
 
-# 2. Linear mixed models --------------------------------------------------
+# 2. Sample descriptives --------------------------------------------------
+
+# Demographics
+samp_desc <- read_csv(here("data", "sample_demographics.csv")) %>% 
+  filter(ID != 35) # ID 35 only with primary acc data (not used in these analysis)
+sample_descriptives <- summarise(
+  .data = samp_desc,
+  age_mean       = round(mean(age), digits = 1),
+  age_sd         = round(sd(age), digits = 1),
+  body_mass_mean = round(mean(body_mass), digits = 1),
+  body_mass_sd   = round(sd(body_mass), digits = 1),
+  height_mean    = round(mean(height), digits = 1),
+  height_sd      = round(sd(height), digits = 1),
+  BMI_mean       = round(mean(BMI), digits = 1),
+  BMI_sd         = round(sd(BMI), digits = 1)
+)
+sex <- table(samp_desc$sex)
+
+# 3. Linear mixed models --------------------------------------------------
 
 # For vertical peak ground reaction force
 ankle_vert_LMM <- lme(
@@ -82,7 +99,7 @@ hip_res_LMM <- lme(
 )
 r2_hip_res_LMM <- rsquared(hip_res_LMM)
 
-# 3. Leave-one-out cross-validation ---------------------------------------
+# 4. Leave-one-out cross-validation ---------------------------------------
 
 # For vertical peak ground reaction force
 fix_eff    <- pVGRF_N ~ pVACC_g + body_mass
@@ -104,7 +121,7 @@ LOOCV_back_res_LMM <- do.call(rbind, (lapply(unique(back$ID), cross_validate_mix
 # Hip
 LOOCV_hip_res_LMM <- do.call(rbind, (lapply(unique(hip$ID), cross_validate_mixed_model, df = hip)))
 
-# 4. Bland-Altman plots ---------------------------------------------------
+# 5. Bland-Altman plots ---------------------------------------------------
 
 # For vertical peak ground reaction force
 # Ankle
@@ -157,7 +174,24 @@ LOOCV_hip_res_LMM$mean <- (LOOCV_hip_res_LMM$pRGRF_N + LOOCV_hip_res_LMM$pRGRF_N
 hip_res_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_hip_res_LMM)
 summary(hip_res_BA_plot_LR)
 
-# 5. Indices of accuracy --------------------------------------------------
+# Check whether bias is statisticaly different than 0
+# For vertical peak ground reaction force
+# Ankle
+t.test(LOOCV_ankle_vert_LMM$diff, mu = 0)
+# Back
+t.test(LOOCV_back_vert_LMM$diff, mu = 0)
+# Hip
+t.test(LOOCV_hip_vert_LMM$diff, mu = 0)
+
+# For resultant peak ground reaction force
+# Ankle
+t.test(LOOCV_ankle_res_LMM$diff, mu = 0)
+# Back
+t.test(LOOCV_back_res_LMM$diff, mu = 0)
+# Hip
+t.test(LOOCV_hip_res_LMM$diff, mu = 0)
+
+# 6. Indices of accuracy --------------------------------------------------
 
 # For vertical peak ground reaction force
 # Ankle
@@ -175,9 +209,9 @@ back_res_accuracy <- accuracy_indices(LOOCV_back_res_LMM, "pRGRF_N", "pRGRF_N_pr
 # Hip
 hip_res_accuracy <- accuracy_indices(LOOCV_hip_res_LMM, "pRGRF_N", "pRGRF_N_predicted")
 
-# 6. ANOVA ----------------------------------------------------------------
-# ** 6.1. Vertical GRF ----------------------------------------------------
-# **** 6.1.1. Building data frame -----------------------------------------
+# 7. ANOVA ----------------------------------------------------------------
+# ** 7.1. Vertical GRF ----------------------------------------------------
+# **** 7.1.1. Building data frame -----------------------------------------
 
 ## Predicted pVGRF
 ankle_vert_pred <- LOOCV_ankle_vert_LMM %>% 
@@ -267,7 +301,7 @@ vert_ANOVA_df$ID    <- as.factor(vert_ANOVA_df$ID)
 vert_ANOVA_df$speed <- as.factor(vert_ANOVA_df$speed)
 vert_ANOVA_df$group <- as.factor(vert_ANOVA_df$group)
 
-# **** 6.1.2. ANOVA -------------------------------------------------------
+# **** 7.1.2. ANOVA -------------------------------------------------------
 
 vert_ANOVA <- ezANOVA(
   data     = vert_ANOVA_df,
@@ -283,8 +317,8 @@ vert_ANOVA_df$speed_group <- interaction(vert_ANOVA_df$speed, vert_ANOVA_df$grou
 
 vert_posthoc <- pairwise.t.test(vert_ANOVA_df$pVGRF, vert_ANOVA_df$speed_group, paired = TRUE, p.adjust.method = "holm")
 
-# ** 6.2. Resultant GRF ---------------------------------------------------
-# **** 6.2.1. Building data frame -----------------------------------------
+# ** 7.2. Resultant GRF ---------------------------------------------------
+# **** 7.2.1. Building data frame -----------------------------------------
 
 ## Predicted pRGRF
 ankle_res_pred <- LOOCV_ankle_res_LMM %>% 
@@ -374,7 +408,7 @@ res_ANOVA_df$ID    <- as.factor(res_ANOVA_df$ID)
 res_ANOVA_df$speed <- as.factor(res_ANOVA_df$speed)
 res_ANOVA_df$group <- as.factor(res_ANOVA_df$group)
 
-# **** 6.2.2. ANOVA -------------------------------------------------------
+# **** 7.2.2. ANOVA -------------------------------------------------------
 
 res_ANOVA <- ezANOVA(
   data     = res_ANOVA_df,
