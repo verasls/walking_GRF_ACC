@@ -168,9 +168,9 @@ hip_res_BA_plot <- ggplot(data = LOOCV_hip_res) +
 # Plot grid ---------------------------------------------------------------
 
 BA_plot_grid <- plot_grid(
-  ankle_vert_BA_plot, ankle_res_BA_plot, 
-  back_vert_BA_plot, back_res_BA_plot, 
-  hip_vert_BA_plot, hip_res_BA_plot, 
+  ankle_res_BA_plot, ankle_vert_BA_plot, 
+  back_res_BA_plot, back_vert_BA_plot, 
+  hip_res_BA_plot, hip_vert_BA_plot, 
   labels = c("A", "B", "", "", "", ""),
   align = "h", vjust = 1, label_size = 16,
   ncol = 2, nrow = 3

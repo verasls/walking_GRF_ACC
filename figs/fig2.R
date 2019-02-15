@@ -64,8 +64,8 @@ pRGRF_plot <- ggplot(data = resultant, aes(x = speed, y = pRGRF, colour = group)
 # Plot grid ---------------------------------------------------------------
 
 GRF_plot_grid_1 <- plot_grid(
-  pVGRF_plot + theme(legend.position = "none"), 
   pRGRF_plot + theme(legend.position = "none"),
+  pVGRF_plot + theme(legend.position = "none"), 
   ncol = 2, nrow = 1
 )
 
@@ -74,7 +74,7 @@ legend <- get_legend(pVGRF_plot)
 GRF_plot_grid <- plot_grid(GRF_plot_grid_1, legend, ncol = 1, rel_heights = c(1, 0.2))
 
 # Uncomment lines below to save plot
-ggsave(
-  filename = "figs/fig2.pdf",
-  plot = GRF_plot_grid, width = 30, height = 15, dpi = 300, units = "cm"
-)
+# ggsave(
+#   filename = "figs/fig2.pdf",
+#   plot = GRF_plot_grid, width = 30, height = 15, dpi = 300, units = "cm"
+# )
