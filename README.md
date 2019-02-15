@@ -1,6 +1,7 @@
 # walking_GRF_ACC
 
-This repository contains data analysis resources from the manuscript "Data analysis resources from the manuscript "Prediction of walking ground reaction forces based on accelerometry".
+This repository contains data analysis resources from the manuscript "Prediction of walking ground reaction forces based on accelerometry".
+
  ---
 
 **Manuscript authors:**
