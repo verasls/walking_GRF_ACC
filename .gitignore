@@ -2,6 +2,7 @@
 .RData
 .Ruserdata
 *.pdf
+*.html
 data/
 doc/
 .Rproj.user
