@@ -23,7 +23,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 # Background
 
-Ground reaction force (GRF) is typically measured by force plates, being these instruments usually limited to laboratory settings. Accelerometers may be a viable device to predict peak GRF (pGRF) in field conditions. Nevertheless, few studies have tested its validity. Therefore, the purpose of this study was to develop regression equations to predict peak resultant GRF and its peak vertical component based on ankle, back and hip accelerometry data during walking.
+Ground reaction force (GRF) is typically measured by force plates (FP), being these instruments usually limited to laboratory settings. Accelerometers may be a viable device to predict peak GRF (pGRF) in field conditions. Nevertheless, few studies have tested its validity. Therefore, the purpose of this study was to develop regression equations to predict peak resultant GRF and its peak vertical component based on ankle, back and hip accelerometry data during walking.
 
 # Load data
 
@@ -40,7 +40,7 @@ source(here("R", "accuracy_indices.R"))
 source(here("R", "get_BA_plot.R"))
 ```
 
-Initially, 3 files needed to be loaded, each containing data from one of the accelerometer placements utilized in the study: ankle, back and hip. Then, only the variables needed for the analysis were selected and only speeds corresponding to walking were filtered (speeds less than or equal to 6).
+Initially, 3 files needed to be loaded, each containing data from one of the accelerometer placements utilized in the study: ankle, back and hip.
 
 ```{r load_data}
 ankle <- read_csv(here("data", "ankle_sec.csv")) %>% 
@@ -64,7 +64,7 @@ ankle
 
 # Linear mixed models
 
-Linear mixed models (LMM) were used to estimate peak resultant ground reaction force (pRGRF) and peak vertical ground reaction force (pVGRF). Distinct LMMs were developed with data from ankle, back and hip accelerometer placement (`ankle`, `back` and `hip` data frames) using the `lme` function of the `nlme` [package](https://cran.r-project.org/web/packages/nlme/nlme.pdf). Covariance structure used was an autoregressive process of order 1 (`correlation = corAR1`) and maximum likelihood method was used for estimating parameters (`method = "ML"`). Predictors tested on pRGRF models were body mass and peak resultant ACC (pRACC), while on pVGRF were body mass and vertical ACC (pVACC). All of them were tested as fixed effects and have shown to be significant predictors (*e.g.:* `fixed = pRGRF_N ~ pRACC_g + I(pRACC_g^2) + body_mass`). Both random intercept and slopes were tested, but only the random intercept inclusion has showed models improvement (`random = ~ 1 | ID`). Linear, quadratic and cubic polynomial simulations were also tested, whereas the last one did not contribute significantly to the models. Final models were chosen according to -2 log-likelihood statistics. Traditional coefficient of determination (R^2^) was represented by conditional R^2^ [[@naka13]](#refs) computed with `rsquared` function of the `piecewiseSEM` [package](http://jslefche.github.io/piecewiseSEM/articles/piecewiseSEM.html), that estimates the variance explained by the whole model [[@r216]](#refs).
+Linear mixed models (LMM) were used to estimate peak resultant ground reaction force (pRGRF) and peak vertical ground reaction force (pVGRF). Distinct LMMs were developed with data from ankle, back and hip accelerometer placement (`ankle`, `back` and `hip` data frames) using the `lme()` function of the **nlme** [package](https://cran.r-project.org/web/packages/nlme/nlme.pdf). Covariance structure used was an autoregressive process of order 1 (`correlation = corAR1`) and maximum likelihood method was used for estimating parameters (`method = "ML"`). Predictors tested on pRGRF models were body mass and peak resultant acceleration (pRACC), while on pVGRF were body mass and vertical acceleration (pVACC). All of them were tested as fixed effects and have shown to be significant predictors (*e.g.:* `fixed = pRGRF_N ~ pRACC_g + I(pRACC_g^2) + body_mass`). Both random intercept and slopes were tested, but only the random intercept inclusion has showed models improvement (`random = ~ 1 | ID`). Linear, quadratic and cubic polynomial simulations were also tested, whereas the last one did not contribute significantly to the models. Final models were chosen according to -2 log-likelihood statistics. Traditional coefficient of determination (R^2^) was represented by conditional R^2^ [[@naka13]](#refs) computed with `rsquared()` function of the **piecewiseSEM** [package](http://jslefche.github.io/piecewiseSEM/articles/piecewiseSEM.html), that estimates the variance explained by the whole model [[@r216]](#refs).
 
 Code to build the LMMs, as well as their summary and R^2^, can be found below.
 
@@ -150,13 +150,13 @@ minR2 <- myround(min(c(r2_ankle_res_LMM[[6]], r2_back_res_LMM[[6]], r2_hip_res_L
 maxR2 <- myround(max(c(r2_ankle_res_LMM[[6]], r2_back_res_LMM[[6]], r2_hip_res_LMM[[6]], r2_ankle_vert_LMM[[6]], r2_back_vert_LMM[[6]], r2_hip_vert_LMM[[6]])), digits = 2)
 ```
 
-Conditional R^2^ values ranged from `r minR2` to `r maxR2`.
+In all models, conditional R^2^ values ranged from `r minR2` to `r maxR2`.
 
 # Validation analysis
 
 Model validation was assessed by the leave-one-out cross-validation (LOOCV) method. This approach is recommended when a different sample is not available for cross-validation and it provides an insight on the model potential to predict outcomes in a new independent sample [[@staud12]](#refs). For LOOCV each participant’s data was separated into a testing dataset (one at a time) with the remaining data being in the training dataset. New LMM, with the same outcomes and predictors as determined for the entire sample, were developed using the training dataset and then used to predict pGRF for the only participant in the testing dataset. This process was repeated for all participants (64 times). Data from testing dataset were used in the remaining statistical analysis.
 
-LOOCV of the LMM was done with the `cross_validate_mixed_model` [function](https://github.com/verasls/walking_GRF_ACC/blob/master/R/cross_validate_mixed_model.R) and is shown below.
+LOOCV of the LMM was done with the `cross_validate_mixed_model()` [function](https://github.com/verasls/walking_GRF_ACC/blob/master/R/cross_validate_mixed_model.R) and is shown below.
 
 ```{r LOOCV}
 # For resultant peak ground reaction force
@@ -196,69 +196,69 @@ Code to generate these plots can be seen [here](https://github.com/verasls/walki
 
 <br>
 
-Linear regressions were applied to identify if there was any proportional bias, that is, if bias was related with the magnitude of the mean between measured and predicted pGRF [[@giav15]](#refs). Linear regressions were run using the `lm` function of the base R.
+One-sample t-tests were run to check whether bias from each accelerometer placement, in both pRGRF and pVGRF, was significantly different than 0. These tests were run using the `t.test()` function of the base R with the argument `mu = 0`. No significant differences were found.
 
-```{r BA_LR}
+```{r t_test}
 # For resultant peak ground reaction force
 # Ankle
 LOOCV_ankle_res_LMM$diff <- LOOCV_ankle_res_LMM$pRGRF_N - LOOCV_ankle_res_LMM$pRGRF_N_predicted
 LOOCV_ankle_res_LMM$mean <- (LOOCV_ankle_res_LMM$pRGRF_N + LOOCV_ankle_res_LMM$pRGRF_N_predicted) / 2
-ankle_res_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_ankle_res_LMM)
-summary(ankle_res_BA_plot_LR)
+t.test(LOOCV_ankle_res_LMM$diff, mu = 0)
 # Back
 LOOCV_back_res_LMM$diff <- LOOCV_back_res_LMM$pRGRF_N - LOOCV_back_res_LMM$pRGRF_N_predicted
 LOOCV_back_res_LMM$mean <- (LOOCV_back_res_LMM$pRGRF_N + LOOCV_back_res_LMM$pRGRF_N_predicted) / 2
-back_res_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_back_res_LMM)
-summary(back_res_BA_plot_LR)
+t.test(LOOCV_back_res_LMM$diff, mu = 0)
 # Hip
 LOOCV_hip_res_LMM$diff <- LOOCV_hip_res_LMM$pRGRF_N - LOOCV_hip_res_LMM$pRGRF_N_predicted
 LOOCV_hip_res_LMM$mean <- (LOOCV_hip_res_LMM$pRGRF_N + LOOCV_hip_res_LMM$pRGRF_N_predicted) / 2
-hip_res_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_hip_res_LMM)
-summary(hip_res_BA_plot_LR)
+t.test(LOOCV_hip_res_LMM$diff, mu = 0)
 
 # For vertical peak ground reaction force
 # Ankle
 LOOCV_ankle_vert_LMM$diff <- LOOCV_ankle_vert_LMM$pVGRF_N - LOOCV_ankle_vert_LMM$pVGRF_N_predicted
 LOOCV_ankle_vert_LMM$mean <- (LOOCV_ankle_vert_LMM$pVGRF_N + LOOCV_ankle_vert_LMM$pVGRF_N_predicted) / 2
-ankle_vert_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_ankle_vert_LMM)
-summary(ankle_vert_BA_plot_LR)
+t.test(LOOCV_ankle_vert_LMM$diff, mu = 0)
 # Back
 LOOCV_back_vert_LMM$diff <- LOOCV_back_vert_LMM$pVGRF_N - LOOCV_back_vert_LMM$pVGRF_N_predicted
 LOOCV_back_vert_LMM$mean <- (LOOCV_back_vert_LMM$pVGRF_N + LOOCV_back_vert_LMM$pVGRF_N_predicted) / 2
-back_vert_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_back_vert_LMM)
-summary(back_vert_BA_plot_LR)
+t.test(LOOCV_back_vert_LMM$diff, mu = 0)
 # Hip
 LOOCV_hip_vert_LMM$diff <- LOOCV_hip_vert_LMM$pVGRF_N - LOOCV_hip_vert_LMM$pVGRF_N_predicted
 LOOCV_hip_vert_LMM$mean <- (LOOCV_hip_vert_LMM$pVGRF_N + LOOCV_hip_vert_LMM$pVGRF_N_predicted) / 2
+t.test(LOOCV_hip_vert_LMM$diff, mu = 0)
+```
+
+Also, linear regressions were applied to identify if there was any proportional bias, that is, if bias was related with the magnitude of the mean between measured and predicted pGRF [[@giav15]](#refs). Linear regressions were run using the `lm()` function of the base R.
+
+In back and hip placements, linear regression showed a proportional bias (*p* < 0.05), however, though significant (*p* < 0.05), associations magnitude was low (R^2^ < 0.025). The same did not occur to ankle placement (*p* > 0.05).
+
+```{r BA_LR}
+# For resultant peak ground reaction force
+# Ankle
+ankle_res_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_ankle_res_LMM)
+summary(ankle_res_BA_plot_LR)
+# Back
+back_res_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_back_res_LMM)
+summary(back_res_BA_plot_LR)
+# Hip
+hip_res_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_hip_res_LMM)
+summary(hip_res_BA_plot_LR)
+
+# For vertical peak ground reaction force
+# Ankle
+ankle_vert_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_ankle_vert_LMM)
+summary(ankle_vert_BA_plot_LR)
+# Back
+back_vert_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_back_vert_LMM)
+summary(back_vert_BA_plot_LR)
+# Hip
 hip_vert_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_hip_vert_LMM)
 summary(hip_vert_BA_plot_LR)
 ```
 
-In back and hip placements, linear regression showed a proportional bias (*p* < 0.05), however, though significant (*p* < 0.05), associations magnitude was low (R^2^ < 0.025). The same did not occur to ankle placement (*p* > 0.05).
-
-Also, one-sample t-tests were run to check whether bias from each accelerometer placement, in both pRGRF and pVGRF, was significantly different than 0. These tests were run using the `t.test` function of the base R with the argument `mu = 0`.
-
-```{r t_test}
-# For resultant peak ground reaction force
-# Ankle
-t.test(LOOCV_ankle_res_LMM$diff, mu = 0)
-# Back
-t.test(LOOCV_back_res_LMM$diff, mu = 0)
-# Hip
-t.test(LOOCV_hip_res_LMM$diff, mu = 0)
-
-# For vertical peak ground reaction force
-# Ankle
-t.test(LOOCV_ankle_vert_LMM$diff, mu = 0)
-# Back
-t.test(LOOCV_back_vert_LMM$diff, mu = 0)
-# Hip
-t.test(LOOCV_hip_vert_LMM$diff, mu = 0)
-```
-
 ## Indices of accuracy
 
-To evaluate models prediction accuracy, mean absolute error (MAE), mean absolute percent error (MAPE) and root mean square error (RMSE) were computed These indices were computed with the `accuracy_indices` [function](https://github.com/verasls/walking_GRF_ACC/blob/master/R/accuracy_indices.R).
+To evaluate models prediction accuracy, mean absolute error (MAE), mean absolute percent error (MAPE) and root mean square error (RMSE) were computed These indices were computed with the `accuracy_indices()` [function](https://github.com/verasls/walking_GRF_ACC/blob/master/R/accuracy_indices.R).
 
 ```{r accuracy_indices}
 # For resultant peak ground reaction force
@@ -285,25 +285,25 @@ accuracy <- data.frame(
   acc_placement = c(rep("Ankle", 2), rep("Back", 2), rep("Hip", 2)),
   condition     = rep(c("pRGRF", "pVGRF"), 3),
   MAE           = c(
-    ankle_res_accuracy[[5]], ankle_vert_accuracy[[5]], 
-    back_res_accuracy[[5]], back_vert_accuracy[[5]], 
-    hip_res_accuracy[[5]], hip_vert_accuracy[[5]]
+    round(ankle_res_accuracy[[5]], 1), round(ankle_vert_accuracy[[5]], 1), 
+    round(back_res_accuracy[[5]], 1), round(back_vert_accuracy[[5]], 1), 
+    round(hip_res_accuracy[[5]], 1), round(hip_vert_accuracy[[5]], 1)
     ),
   MAPE          = c(
-    ankle_res_accuracy[[12]], ankle_vert_accuracy[[12]], 
-    back_res_accuracy[[12]], back_vert_accuracy[[12]], 
-    hip_res_accuracy[[12]], hip_vert_accuracy[[12]]
+    paste(round(ankle_res_accuracy[[12]], 1), ".0%", sep = ""), paste(round(ankle_vert_accuracy[[12]], 1), "%", sep = ""), 
+    paste(round(back_res_accuracy[[12]], 1), "%", sep = ""), paste(round(back_vert_accuracy[[12]], 1), "%", sep = ""), 
+    paste(round(hip_res_accuracy[[12]], 1), "%", sep = ""), paste(round(hip_vert_accuracy[[12]], 1), "%", sep = "")
     ),
   RMSE          = c(
-    ankle_res_accuracy[[7]], ankle_vert_accuracy[[7]], 
-    back_res_accuracy[[7]], back_vert_accuracy[[7]], 
-    hip_res_accuracy[[7]], hip_vert_accuracy[[7]]
+    round(ankle_res_accuracy[[7]], 1), round(ankle_vert_accuracy[[7]], 1), 
+    round(back_res_accuracy[[7]], 1), round(back_vert_accuracy[[7]], 1), 
+    round(hip_res_accuracy[[7]], 1), round(hip_vert_accuracy[[7]], 1)
     )
 )
-kable(accuracy, col.names = c("Accelerometer Placement", "", "MAE", "MAPE", "RMSE"))
+kable(accuracy, col.names = c("Accelerometer Placement", "GRF", "MAE", "MAPE", "RMSE"), align = c("l", "l", "r", "r", "r"))
 ```
 
-All conditions showed a MAE from near `r round(min(accuracy$MAE), digits = 0)` N to near `r round(max(accuracy$MAE), digits = 0)` N, MAPE from near `r round(min(accuracy$MAPE), digits = 0)`% to near  `r round(max(accuracy$MAPE), digits = 0)`% and RMSE from near `r round(min(accuracy$RMSE), digits = 0)` N to `r round(min(accuracy$RMSE), digits = 0)` N.
+All conditions showed a MAE from near 65 N to near 81 N, MAPE from near 6% to near 7% and RMSE from near 84 N to 84 N.
 
 ## ANOVA
 
@@ -491,7 +491,7 @@ vert_ANOVA_df$speed <- as.factor(vert_ANOVA_df$speed)
 vert_ANOVA_df$group <- as.factor(vert_ANOVA_df$group)
 ```
 
-Repeated measures ANOVAs were performed using the `ezANOVA` function of the `ez` [package](https://cran.r-project.org/web/packages/ez/ez.pdf). Summary statistics for pRGRF and pVGRF ANOVA can be seen below, respectively.
+Repeated measures ANOVAs were performed using the `ezANOVA()` function of the **ez** [package](https://cran.r-project.org/web/packages/ez/ez.pdf). Summary statistics for pRGRF and pVGRF ANOVA can be seen below, respectively.
 
 ```{r ANOVA}
 # For resultant peak ground reaction force
