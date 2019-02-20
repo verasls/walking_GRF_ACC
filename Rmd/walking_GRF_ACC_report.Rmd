@@ -11,6 +11,7 @@ output:
     toc_float: 
       collapsed: false
     code_folding: "show"
+    highlight: tango
 editor_options: 
   chunk_output_type: console
 bibliography: bibliography.bib
@@ -232,7 +233,7 @@ Also, linear regressions were applied to identify if there was any proportional 
 
 In back and hip placements, linear regression showed a proportional bias (*p* < 0.05), however, though significant (*p* < 0.05), associations magnitude was low (R^2^ < 0.025). The same did not occur to ankle placement (*p* > 0.05).
 
-```{r BA_LR}
+```{r BA_LR, fig.height=15, fig.width=13, dev='svg'}
 # For resultant peak ground reaction force
 # Ankle
 ankle_res_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_ankle_res_LMM)
@@ -309,7 +310,7 @@ All conditions showed a MAE from near 65 N to near 81 N, MAPE from near 6% to ne
 
 A series of repeated measures analysis of variance (ANOVA) were run to assess whether pGRF predicted from the regression equations were significantly different from those measured with FP. Walking speeds, accelerometer placements (ankle, back and hip), and the interaction effect (speed X accelerometer placements) were considered for analysis. These procedures were taken separately for resultant and its vertical component. If assumptions of sphericity were violated (*p* < 0.05), the conservative Greenhouse–Geisser correction factor would be applied to adjust the degrees of freedom. Post-hoc analyses would be conducted using pairwise comparisons with Holm's test if a significant difference were observed among actual and predicted pGRF.
 
-In order to run the repeated measures ANOVA, new data frames needed to be built, for both pRGRF and pVGRF, putting all the pGRF values in a single variable and grouping then by accelerometer placement or actual value in another variable.An example of code to tidy the data is shown below.
+In order to run the repeated measures ANOVA, new data frames needed to be built, for both pRGRF and pVGRF, putting all the pGRF values in a single variable and grouping then by accelerometer placement or actual value in another variable. An example of code to tidy the data is shown below.
 
 ```{r build_pRGRF_df}
 ## Predicted pRGRF
@@ -517,11 +518,121 @@ vert_ANOVA <- ezANOVA(
 vert_ANOVA
 ```
 
-For either resultant and its vertical component, repeated measures ANOVA demonstrated that actual and predicted pGRF increased significantly (*p* < 0.001) along with increments in walking speed. Results have also revealed no significant differences (*p* > 0.05) between actual and predicted pGRF in each speed.
+For either resultant and its vertical component, repeated measures ANOVA demonstrated that actual and predicted pGRF increased significantly (*p* < 0.001) along with increments in walking speed. 
+
+<br>
+
+To assess for any significant differences between actual and predicted pGRF in each speed, five separate repeated measures ANOVA were done, one for each walking speed.
+
+```{r}
+# For resultant peak ground reaction force
+# 2 km/h
+res_ANOVA_s2 <- ezANOVA(
+  data     = res_ANOVA_df %>% filter(speed == 2),
+  dv       = pRGRF,
+  wid      = ID,
+  within   = group,
+  detailed = TRUE,
+  type     = 3
+)
+
+# 3 km/h
+res_ANOVA_s3 <- ezANOVA(
+  data     = res_ANOVA_df %>% filter(speed == 3),
+  dv       = pRGRF,
+  wid      = ID,
+  within   = group,
+  detailed = TRUE,
+  type     = 3
+)
+
+# 4 km/h
+res_ANOVA_s4 <- ezANOVA(
+  data     = res_ANOVA_df %>% filter(speed == 4),
+  dv       = pRGRF,
+  wid      = ID,
+  within   = group,
+  detailed = TRUE,
+  type     = 3
+)
+
+# 5 km/h
+res_ANOVA_s5 <- ezANOVA(
+  data     = res_ANOVA_df %>% filter(speed == 5),
+  dv       = pRGRF,
+  wid      = ID,
+  within   = group,
+  detailed = TRUE,
+  type     = 3
+)
+
+# 6 km/h
+res_ANOVA_s6 <- ezANOVA(
+  data     = res_ANOVA_df %>% filter(speed == 6),
+  dv       = pRGRF,
+  wid      = ID,
+  within   = group,
+  detailed = TRUE,
+  type     = 3
+)
+
+# For vertical peak ground reaction force
+# 2 km/h
+vert_ANOVA_s2 <- ezANOVA(
+  data     = vert_ANOVA_df %>% filter(speed == 2),
+  dv       = pVGRF,
+  wid      = ID,
+  within   = group,
+  detailed = TRUE,
+  type     = 3
+)
+
+# 3 km/h
+vert_ANOVA_s3 <- ezANOVA(
+  data     = vert_ANOVA_df %>% filter(speed == 3),
+  dv       = pVGRF,
+  wid      = ID,
+  within   = group,
+  detailed = TRUE,
+  type     = 3
+)
+
+# 4 km/h
+vert_ANOVA_s4 <- ezANOVA(
+  data     = vert_ANOVA_df %>% filter(speed == 4),
+  dv       = pVGRF,
+  wid      = ID,
+  within   = group,
+  detailed = TRUE,
+  type     = 3
+)
+
+# 5 km/h
+vert_ANOVA_s5 <- ezANOVA(
+  data     = vert_ANOVA_df %>% filter(speed == 5),
+  dv       = pVGRF,
+  wid      = ID,
+  within   = group,
+  detailed = TRUE,
+  type     = 3
+)
+
+# 6 km/h
+vert_ANOVA_s6 <- ezANOVA(
+  data     = vert_ANOVA_df %>% filter(speed == 6),
+  dv       = pVGRF,
+  wid      = ID,
+  within   = group,
+  detailed = TRUE,
+  type     = 3
+)
+```
+
+No significant differences (*p* > 0.05) between actual and predicted pGRF in each speed were found.
 
 These results can be seen in figure below.
 
-```{r}
+```{r ANOVA_plot, fig.height=5, fig.width=10, dev='svg'}
 source(here("figs", "fig2.R"))
 GRF_plot_grid
 ```
