@@ -317,6 +317,57 @@ res_ANOVA_df$speed_group <- interaction(res_ANOVA_df$speed, res_ANOVA_df$group)
 
 res_posthoc <- pairwise.t.test(res_ANOVA_df$pRGRF, res_ANOVA_df$speed_group, paired = TRUE, p.adjust.method = "holm")
 
+# By speed
+# 2 km/h
+res_ANOVA_s2 <- ezANOVA(
+  data     = res_ANOVA_df %>% filter(speed == 2),
+  dv       = pRGRF,
+  wid      = ID,
+  within   = group,
+  detailed = TRUE,
+  type     = 3
+)
+
+# 3 km/h
+res_ANOVA_s3 <- ezANOVA(
+  data     = res_ANOVA_df %>% filter(speed == 3),
+  dv       = pRGRF,
+  wid      = ID,
+  within   = group,
+  detailed = TRUE,
+  type     = 3
+)
+
+# 4 km/h
+res_ANOVA_s4 <- ezANOVA(
+  data     = res_ANOVA_df %>% filter(speed == 4),
+  dv       = pRGRF,
+  wid      = ID,
+  within   = group,
+  detailed = TRUE,
+  type     = 3
+)
+
+# 5 km/h
+res_ANOVA_s5 <- ezANOVA(
+  data     = res_ANOVA_df %>% filter(speed == 5),
+  dv       = pRGRF,
+  wid      = ID,
+  within   = group,
+  detailed = TRUE,
+  type     = 3
+)
+
+# 6 km/h
+res_ANOVA_s6 <- ezANOVA(
+  data     = res_ANOVA_df %>% filter(speed == 6),
+  dv       = pRGRF,
+  wid      = ID,
+  within   = group,
+  detailed = TRUE,
+  type     = 3
+)
+
 # ** 7.2. Vertical GRF ----------------------------------------------------
 # **** 7.2.1. Building data frame -----------------------------------------
 
@@ -424,3 +475,53 @@ vert_ANOVA_df$speed_group <- interaction(vert_ANOVA_df$speed, vert_ANOVA_df$grou
 
 vert_posthoc <- pairwise.t.test(vert_ANOVA_df$pVGRF, vert_ANOVA_df$speed_group, paired = TRUE, p.adjust.method = "holm")
 
+# By speed
+# 2 km/h
+vert_ANOVA_s2 <- ezANOVA(
+  data     = vert_ANOVA_df %>% filter(speed == 2),
+  dv       = pVGRF,
+  wid      = ID,
+  within   = group,
+  detailed = TRUE,
+  type     = 3
+)
+
+# 3 km/h
+vert_ANOVA_s3 <- ezANOVA(
+  data     = vert_ANOVA_df %>% filter(speed == 3),
+  dv       = pVGRF,
+  wid      = ID,
+  within   = group,
+  detailed = TRUE,
+  type     = 3
+)
+
+# 4 km/h
+vert_ANOVA_s4 <- ezANOVA(
+  data     = vert_ANOVA_df %>% filter(speed == 4),
+  dv       = pVGRF,
+  wid      = ID,
+  within   = group,
+  detailed = TRUE,
+  type     = 3
+)
+
+# 5 km/h
+vert_ANOVA_s5 <- ezANOVA(
+  data     = vert_ANOVA_df %>% filter(speed == 5),
+  dv       = pVGRF,
+  wid      = ID,
+  within   = group,
+  detailed = TRUE,
+  type     = 3
+)
+
+# 6 km/h
+vert_ANOVA_s6 <- ezANOVA(
+  data     = vert_ANOVA_df %>% filter(speed == 6),
+  dv       = pVGRF,
+  wid      = ID,
+  within   = group,
+  detailed = TRUE,
+  type     = 3
+)
