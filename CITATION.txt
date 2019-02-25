@@ -1,0 +1,15 @@
+To reference this repository in publications, please cite as follows:
+
+Veras L. verasls/walking_GRF_ACC: Prediction of walking ground reaction forces based on accelerometry (Version v1.0.0). Zenodo; 2019.
+
+BibTeX entry:
+
+@misc{lucas_veras_2019_2576825,
+  author       = {Lucas Veras},
+  title        = {{verasls/walking_GRF_ACC: Prediction of walking 
+                   ground reaction forces based on accelerometry}},
+  month        = feb,
+  year         = 2019,
+  doi          = {10.5281/zenodo.2576825},
+  url          = {https://doi.org/10.5281/zenodo.2576825}
+}
