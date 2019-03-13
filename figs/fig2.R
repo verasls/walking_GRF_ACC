@@ -19,16 +19,14 @@ levels(resultant$group)[2] <- "Peak GRF predicted by ankle accelerometer"
 levels(resultant$group)[3] <- "Peak GRF predicted by back accelerometer  "
 levels(resultant$group)[4] <- "Peak GRF predicted by hip accelerometer"
 
-# Set legend colours
-cbbPalette <- c("#000000", "#D55E00", "#0072B2", "#009E73", "#F0E442")
-
 # pRGRF plot --------------------------------------------------------------
 
-pRGRF_plot <- ggplot(data = resultant, aes(x = speed, y = pRGRF, colour = group)) + 
-  stat_summary(fun.y = mean, geom = "point", position = position_dodge(0.5)) +
-  stat_summary(fun.y = mean, geom = "line", position = position_dodge(0.5)) +
+pRGRF_plot <- ggplot(data = resultant, aes(x = speed, y = pRGRF, group = group)) + 
+  stat_summary(fun.y = mean, geom = "point", size = 2, position = position_dodge(0.5), aes(shape = group)) +
+  stat_summary(fun.y = mean, geom = "line", position = position_dodge(0.5), aes(linetype = group)) +
   stat_summary(fun.data = mean_cl_normal, geom = "errorbar", width = 0.4, position = position_dodge(0.5)) +
-  scale_colour_manual(values = cbbPalette) +
+  scale_shape_manual(values = c(16, 17, 15, 1)) +
+  scale_linetype_manual(values = c("solid", "dashed", "dotted", "twodash")) +
   scale_y_continuous(breaks = seq(from = 800, to = 1400, by = 100)) +
   expand_limits(y = c(800, 1400)) +
   theme_classic() +
@@ -66,11 +64,12 @@ pRGRF_plot <- ggplot(data = resultant, aes(x = speed, y = pRGRF, colour = group)
 
 # pVGRF plot --------------------------------------------------------------
 
-pVGRF_plot <- ggplot(data = vertical, aes(x = speed, y = pVGRF, colour = group)) + 
-  stat_summary(fun.y = mean, geom = "point", position = position_dodge(0.5)) +
-  stat_summary(fun.y = mean, geom = "line", position = position_dodge(0.5)) +
+pVGRF_plot <- ggplot(data = vertical, aes(x = speed, y = pVGRF, group = group)) + 
+  stat_summary(fun.y = mean, geom = "point", size = 2, position = position_dodge(0.5), aes(shape = group)) +
+  stat_summary(fun.y = mean, geom = "line", position = position_dodge(0.5), aes(linetype = group)) +
   stat_summary(fun.data = mean_cl_normal, geom = "errorbar", width = 0.4, position = position_dodge(0.5)) +
-  scale_colour_manual(values = cbbPalette) +
+  scale_shape_manual(values = c(16, 17, 15, 1)) +
+  scale_linetype_manual(values = c("solid", "dashed", "dotted", "twodash")) +
   scale_y_continuous(breaks = seq(from = 800, to = 1400, by = 100)) +
   expand_limits(y = c(800, 1400)) +
   theme_classic() +
@@ -115,6 +114,6 @@ GRF_plot_grid <- plot_grid(GRF_plot_grid_1, legend, ncol = 1, rel_heights = c(1,
 
 # Uncomment lines below to save plot
 # ggsave(
-#   filename = "figs/fig2.pdf",
-#   plot = GRF_plot_grid, width = 30, height = 15, dpi = 300, units = "cm"
+#   filename = "figs/fig2.tiff",
+#   plot = GRF_plot_grid, width = 30, height = 15, dpi = 600, units = "cm"
 # )
