@@ -3,7 +3,7 @@ title: |
   | Prediction of walking ground reaction forces based on accelerometry: 
   | Data analysis report
 author: "Lucas Veras"
-date: "2019-02-25"
+date: "2019-03-13"
 output: 
   html_document:
     toc: true
