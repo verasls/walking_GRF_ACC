@@ -178,6 +178,6 @@ BA_plot_grid <- plot_grid(
 
 # Uncomment lines below to save plot
 # ggsave(
-#   filename = "figs/fig1.pdf",
-#   plot = BA_plot_grid, width = 50, height = 36, dpi = 300, units = "cm"
+#   filename = "figs/fig1.tiff",
+#   plot = BA_plot_grid, width = 50, height = 35, dpi = 600, units = "cm"
 # )
