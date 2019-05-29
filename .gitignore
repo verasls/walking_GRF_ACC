@@ -3,6 +3,9 @@
 .Ruserdata
 *.pdf
 *.html
+*.pptx
+*.tiff
 data/
 doc/
+tidy_data.R
 .Rproj.user
