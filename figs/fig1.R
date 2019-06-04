@@ -60,7 +60,7 @@ back_vert_BA_plot <- ggplot(data = LOOCV_back_vert) +
   theme_classic() +
   theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
   labs(
-    title = "Back",
+    title = "Lower Back",
     x = "Mean of Actual and Predicted pVGRF (N)",
     y = "Difference of Actual and Predicted pVGRF (N)"
   )
@@ -135,7 +135,7 @@ back_res_BA_plot <- ggplot(data = LOOCV_back_res) +
   theme_classic() +
   theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
   labs(
-    title = "Back",
+    title = "Lower Back",
     x = "Mean of Actual and Predicted pRGRF (N)",
     y = "Difference of Actual and Predicted pRGRF (N)"
   )
