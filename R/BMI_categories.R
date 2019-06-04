@@ -31,7 +31,13 @@ BMI_categories <- function(df) {
     }
   }
   
-  df$BMI_cat <- factor(df$BMI_cat, levels = c("normal weight", "overweight", "class I obesity", "class II obesity", "class III obesity"))
+  df$BMI_cat <- factor(
+    df$BMI_cat, 
+    levels = c(
+      "normal weight", "overweight", "class I obesity", 
+      "class II obesity", "class III obesity"
+      )
+    )
   
   return(df)
 }
