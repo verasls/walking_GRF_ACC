@@ -16,22 +16,10 @@ LOOCV_ankle_res <- read_csv("~/Dropbox/Projects/walking_GRF_ACC/LOOCV_ankle_res.
 LOOCV_back_res  <- read_csv("~/Dropbox/Projects/walking_GRF_ACC/LOOCV_back_res.csv")
 LOOCV_hip_res   <- read_csv("~/Dropbox/Projects/walking_GRF_ACC/LOOCV_hip_res.csv")
 
-# Classify BMI
-
-# Apply this step at the beggining of analysis.R to avoid repetition
-# Probably the report will need some adjustments
-
-LOOCV_ankle_vert <- BMI_categories(LOOCV_ankle_vert)
-LOOCV_back_vert  <- BMI_categories(LOOCV_back_vert)
-LOOCV_hip_vert   <- BMI_categories(LOOCV_hip_vert)
-LOOCV_ankle_res  <- BMI_categories(LOOCV_ankle_res)
-LOOCV_back_res   <- BMI_categories(LOOCV_back_res)
-LOOCV_hip_res    <- BMI_categories(LOOCV_hip_res)
-
 # Actual pVGRF vs pVACC ---------------------------------------------------
 
 # Ankle
-ankle_pVGRF_pVACC__plot <- ggplot(data = LOOCV_ankle_vert) +
+   <- ggplot(data = LOOCV_ankle_vert) +
   geom_point(mapping = aes(x = pVACC_g, y = pVGRF_N, shape = BMI_cat))
 
 # Back
