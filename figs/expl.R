@@ -8,18 +8,35 @@ source(here("R", "BMI_categories.R"))
 # Read and prepare data ---------------------------------------------------
 
 # For vertical ground reaction force
-LOOCV_ankle_vert <- read_csv("~/Dropbox/Projects/walking_GRF_ACC/LOOCV_ankle_vert.csv")
-LOOCV_back_vert  <- read_csv("~/Dropbox/Projects/walking_GRF_ACC/LOOCV_back_vert.csv")
-LOOCV_hip_vert   <- read_csv("~/Dropbox/Projects/walking_GRF_ACC/LOOCV_hip_vert.csv")
+LOOCV_ankle_vert <- read_csv("~/Dropbox/Projects/walking_GRF_ACC/LOOCV_ankle_vert.csv") %>% 
+  BMI_categories() %>% 
+  select(ID, speed, body_mass, height, BMI, BMI_cat, everything())
+
+LOOCV_back_vert  <- read_csv("~/Dropbox/Projects/walking_GRF_ACC/LOOCV_back_vert.csv") %>% 
+  BMI_categories() %>% 
+  select(ID, speed, body_mass, height, BMI, BMI_cat, everything())
+
+LOOCV_hip_vert   <- read_csv("~/Dropbox/Projects/walking_GRF_ACC/LOOCV_hip_vert.csv") %>% 
+  BMI_categories() %>% 
+  select(ID, speed, body_mass, height, BMI, BMI_cat, everything())
+
 # For resultant ground reaction force
-LOOCV_ankle_res <- read_csv("~/Dropbox/Projects/walking_GRF_ACC/LOOCV_ankle_res.csv")
-LOOCV_back_res  <- read_csv("~/Dropbox/Projects/walking_GRF_ACC/LOOCV_back_res.csv")
-LOOCV_hip_res   <- read_csv("~/Dropbox/Projects/walking_GRF_ACC/LOOCV_hip_res.csv")
+LOOCV_ankle_res <- read_csv("~/Dropbox/Projects/walking_GRF_ACC/LOOCV_ankle_res.csv") %>% 
+  BMI_categories() %>% 
+  select(ID, speed, body_mass, height, BMI, BMI_cat, everything())
+
+LOOCV_back_res  <- read_csv("~/Dropbox/Projects/walking_GRF_ACC/LOOCV_back_res.csv") %>% 
+  BMI_categories() %>% 
+  select(ID, speed, body_mass, height, BMI, BMI_cat, everything())
+
+LOOCV_hip_res   <- read_csv("~/Dropbox/Projects/walking_GRF_ACC/LOOCV_hip_res.csv") %>% 
+  BMI_categories() %>% 
+  select(ID, speed, body_mass, height, BMI, BMI_cat, everything())
 
 # Actual pVGRF vs pVACC ---------------------------------------------------
 
 # Ankle
-   <- ggplot(data = LOOCV_ankle_vert) +
+ankle_pVGRF_pVACC_plot <- ggplot(data = LOOCV_ankle_vert) +
   geom_point(mapping = aes(x = pVACC_g, y = pVGRF_N, shape = BMI_cat))
 
 # Back
