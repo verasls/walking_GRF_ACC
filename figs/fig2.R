@@ -5,9 +5,8 @@ library(cowplot)
 
 # Read files --------------------------------------------------------------
 
-vertical  <- read_csv("~/Dropbox/Projects/walking_GRF_ACC/vert_ANOVA_df.csv")
 resultant <- read_csv("~/Dropbox/Projects/walking_GRF_ACC/res_ANOVA_df.csv")
-
+vertical  <- read_csv("~/Dropbox/Projects/walking_GRF_ACC/vert_ANOVA_df.csv")
 
 # General config for the plots --------------------------------------------
 
