@@ -10,6 +10,9 @@ non_obese_data <- LOOCV_hip_vert_LMM %>%
   select(ID, speed, body_mass, BMI, pVACC_g, pVGRF_N, pVGRF_N_predicted) %>% 
   filter(BMI < 30) # filters for normal weight and overweight
 
+whole_sample_data <- LOOCV_hip_vert_LMM %>% 
+  select(ID, speed, body_mass, BMI, pVACC_g, pVGRF_N, pVGRF_N_predicted)
+
 # Apply Neugebauer 2014 equation ------------------------------------------
 
 obese_data$pVGRF_N_Neugebauer <- NA
@@ -24,6 +27,12 @@ for (i in 1:nrow(non_obese_data)) {
     exp(5.247 + (0.271 * non_obese_data$pVACC_g[i]) + (0.014 * non_obese_data$body_mass[i]))
 }
 
+whole_sample_data$pVGRF_N_Neugebauer <- NA
+for (i in 1:nrow(whole_sample)) {
+  whole_sample_data$pVGRF_N_Neugebauer[i] <-  
+    exp(5.247 + (0.271 * whole_sample_data$pVACC_g[i]) + (0.014 * whole_sample_data$body_mass[i]))
+}
+
 # Bland-Altman plots ------------------------------------------------------
 
 obese_our_BA_plot  <- get_BA_plot(obese_data, "pVGRF_N", "pVGRF_N_predicted")
@@ -34,6 +43,10 @@ non_obese_our_BA_plot  <- get_BA_plot(non_obese_data, "pVGRF_N", "pVGRF_N_predic
 
 non_obese_Neug_BA_plot <-  get_BA_plot(non_obese_data, "pVGRF_N", "pVGRF_N_Neugebauer")
 
+whole_sample_our_BA_plot  <- get_BA_plot(whole_sample_data, "pVGRF_N", "pVGRF_N_predicted")
+
+whole_sample_Neug_BA_plot <-  get_BA_plot(whole_sample_data, "pVGRF_N", "pVGRF_N_Neugebauer")
+
 # Indices of accuracy -----------------------------------------------------
 
 obese_our_accuracy  <- accuracy_indices(obese_data, "pVGRF_N", "pVGRF_N_predicted")
@@ -43,3 +56,7 @@ obese_Neug_accuracy <- accuracy_indices(obese_data, "pVGRF_N", "pVGRF_N_Neugebau
 non_obese_our_accuracy  <- accuracy_indices(non_obese_data, "pVGRF_N", "pVGRF_N_predicted")
 
 non_obese_Neug_accuracy <- accuracy_indices(non_obese_data, "pVGRF_N", "pVGRF_N_Neugebauer")
+
+whole_sample_our_accuracy  <- accuracy_indices(whole_sample_data, "pVGRF_N", "pVGRF_N_predicted")
+
+whole_sample_Neug_accuracy <- accuracy_indices(whole_sample_data, "pVGRF_N", "pVGRF_N_Neugebauer")
