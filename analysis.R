@@ -13,15 +13,21 @@ source(here("R", "get_BA_plot.R"))
 
 ankle <- read_csv(here("data", "ankle_sec.csv")) %>% 
   select(-c(body_weight, pVGRF_BW, pRGRF_BW, pVACC_ms2, pVACC_ms2, pRACC_ms2)) %>% 
-  filter(speed <= 6)
+  filter(speed <= 6) %>% 
+  BMI_categories() %>% 
+  select(ID, speed, body_mass, height, BMI, BMI_cat, everything())
 
 back <- read_csv(here("data", "back_sec.csv")) %>% 
   select(-c(body_weight, pVGRF_BW, pRGRF_BW, pVACC_ms2, pVACC_ms2, pRACC_ms2)) %>% 
-  filter(speed <= 6)
+  filter(speed <= 6) %>% 
+  BMI_categories() %>% 
+  select(ID, speed, body_mass, height, BMI, BMI_cat, everything())
 
 hip <- read_csv(here("data", "hip_sec.csv")) %>% 
   select(-c(body_weight, pVGRF_BW, pRGRF_BW, pVACC_ms2, pVACC_ms2, pRACC_ms2)) %>% 
-  filter(speed <= 6)
+  filter(speed <= 6) %>% 
+  BMI_categories() %>% 
+  select(ID, speed, body_mass, height, BMI, BMI_cat, everything())
 
 # 2. Sample descriptives --------------------------------------------------
 
