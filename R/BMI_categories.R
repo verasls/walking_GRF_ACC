@@ -1,4 +1,11 @@
 BMI_categories <- function(df) {
+  # Classify BMI categories
+  #
+  # Args:
+  #   df: data frame containing a column with BMI values
+  #
+  # Returns:
+  #   The data frame with a column containing the BMI classification
   
   df$BMI_cat <- NA
   
