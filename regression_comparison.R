@@ -28,7 +28,7 @@ for (i in 1:nrow(non_obese_data)) {
 }
 
 whole_sample_data$pVGRF_N_Neugebauer <- NA
-for (i in 1:nrow(whole_sample)) {
+for (i in 1:nrow(whole_sample_data)) {
   whole_sample_data$pVGRF_N_Neugebauer[i] <-  
     exp(5.247 + (0.271 * whole_sample_data$pVACC_g[i]) + (0.014 * whole_sample_data$body_mass[i]))
 }
