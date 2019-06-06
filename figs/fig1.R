@@ -20,7 +20,7 @@ LOOCV_hip_vert   <- read_csv("~/Dropbox/Projects/walking_GRF_ACC/LOOCV_hip_vert.
 LOOCV_ankle_res$diff <- LOOCV_ankle_res$pRGRF_N - LOOCV_ankle_res$pRGRF_N_predicted
 LOOCV_ankle_res$mean <- (LOOCV_ankle_res$pRGRF_N + LOOCV_ankle_res$pRGRF_N_predicted) / 2
 ankle_res_BA_plot <- ggplot(data = LOOCV_ankle_res) +
-  geom_point(mapping = aes(x = mean, y = diff)) +
+  geom_point(mapping = aes(x = mean, y = diff, colour = BMI_cat, shape = BMI_cat)) +
   geom_hline(yintercept = mean(LOOCV_ankle_res$diff)) +
   geom_hline(
     yintercept = mean(LOOCV_ankle_res$diff) + 1.96 * sd(LOOCV_ankle_res$diff),
@@ -33,7 +33,12 @@ ankle_res_BA_plot <- ggplot(data = LOOCV_ankle_res) +
   scale_y_continuous(limits = c(-500, 520), expand = c(0, 0)) +
   scale_x_continuous(limits = c(0, 2525), expand = c(0, 0)) +
   theme_classic() +
-  theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5),
+    legend.title = element_blank(),
+    legend.text = element_text(size = 14),
+    legend.position = "bottom"
+  ) +
   labs(
     title = "Ankle",
     x = "Mean of Actual and Predicted pRGRF (N)",
@@ -45,7 +50,7 @@ ankle_res_BA_plot <- ggplot(data = LOOCV_ankle_res) +
 LOOCV_back_res$diff <- LOOCV_back_res$pRGRF_N - LOOCV_back_res$pRGRF_N_predicted
 LOOCV_back_res$mean <- (LOOCV_back_res$pRGRF_N + LOOCV_back_res$pRGRF_N_predicted) / 2
 back_res_BA_plot <- ggplot(data = LOOCV_back_res) +
-  geom_point(mapping = aes(x = mean, y = diff)) +
+  geom_point(mapping = aes(x = mean, y = diff, colour = BMI_cat, shape = BMI_cat)) +
   geom_hline(yintercept = mean(LOOCV_back_res$diff)) +
   geom_hline(
     yintercept = mean(LOOCV_back_res$diff) + 1.96 * sd(LOOCV_back_res$diff),
@@ -70,7 +75,7 @@ back_res_BA_plot <- ggplot(data = LOOCV_back_res) +
 LOOCV_hip_res$diff <- LOOCV_hip_res$pRGRF_N - LOOCV_hip_res$pRGRF_N_predicted
 LOOCV_hip_res$mean <- (LOOCV_hip_res$pRGRF_N + LOOCV_hip_res$pRGRF_N_predicted) / 2
 hip_res_BA_plot <- ggplot(data = LOOCV_hip_res) +
-  geom_point(mapping = aes(x = mean, y = diff)) +
+  geom_point(mapping = aes(x = mean, y = diff, colour = BMI_cat, shape = BMI_cat)) +
   geom_hline(yintercept = mean(LOOCV_hip_res$diff)) +
   geom_hline(
     yintercept = mean(LOOCV_hip_res$diff) + 1.96 * sd(LOOCV_hip_res$diff),
@@ -95,7 +100,7 @@ hip_res_BA_plot <- ggplot(data = LOOCV_hip_res) +
 LOOCV_ankle_vert$diff <- LOOCV_ankle_vert$pVGRF_N - LOOCV_ankle_vert$pVGRF_N_predicted
 LOOCV_ankle_vert$mean <- (LOOCV_ankle_vert$pVGRF_N + LOOCV_ankle_vert$pVGRF_N_predicted) / 2
 ankle_vert_BA_plot <- ggplot(data = LOOCV_ankle_vert) +
-  geom_point(mapping = aes(x = mean, y = diff)) +
+  geom_point(mapping = aes(x = mean, y = diff, colour = BMI_cat, shape = BMI_cat)) +
   geom_hline(yintercept = mean(LOOCV_ankle_vert$diff)) +
   geom_hline(
     yintercept = mean(LOOCV_ankle_vert$diff) + 1.96 * sd(LOOCV_ankle_vert$diff),
@@ -120,7 +125,7 @@ ankle_vert_BA_plot <- ggplot(data = LOOCV_ankle_vert) +
 LOOCV_back_vert$diff <- LOOCV_back_vert$pVGRF_N - LOOCV_back_vert$pVGRF_N_predicted
 LOOCV_back_vert$mean <- (LOOCV_back_vert$pVGRF_N + LOOCV_back_vert$pVGRF_N_predicted) / 2
 back_vert_BA_plot <- ggplot(data = LOOCV_back_vert) +
-  geom_point(mapping = aes(x = mean, y = diff)) +
+  geom_point(mapping = aes(x = mean, y = diff, colour = BMI_cat, shape = BMI_cat)) +
   geom_hline(yintercept = mean(LOOCV_back_vert$diff)) +
   geom_hline(
     yintercept = mean(LOOCV_back_vert$diff) + 1.96 * sd(LOOCV_back_vert$diff),
@@ -145,7 +150,7 @@ back_vert_BA_plot <- ggplot(data = LOOCV_back_vert) +
 LOOCV_hip_vert$diff <- LOOCV_hip_vert$pVGRF_N - LOOCV_hip_vert$pVGRF_N_predicted
 LOOCV_hip_vert$mean <- (LOOCV_hip_vert$pVGRF_N + LOOCV_hip_vert$pVGRF_N_predicted) / 2
 hip_vert_BA_plot <- ggplot(data = LOOCV_hip_vert) +
-  geom_point(mapping = aes(x = mean, y = diff)) +
+  geom_point(mapping = aes(x = mean, y = diff, colour = BMI_cat, shape = BMI_cat)) +
   geom_hline(yintercept = mean(LOOCV_hip_vert$diff)) +
   geom_hline(
     yintercept = mean(LOOCV_hip_vert$diff) + 1.96 * sd(LOOCV_hip_vert$diff),
@@ -167,14 +172,22 @@ hip_vert_BA_plot <- ggplot(data = LOOCV_hip_vert) +
 
 # Plot grid ---------------------------------------------------------------
 
-BA_plot_grid <- plot_grid(
-  ankle_res_BA_plot, ankle_vert_BA_plot, 
-  back_res_BA_plot, back_vert_BA_plot, 
-  hip_res_BA_plot, hip_vert_BA_plot, 
+BA_plot_grid_1 <- plot_grid(
+  ankle_res_BA_plot  + theme(legend.position = "none"),
+  ankle_vert_BA_plot + theme(legend.position = "none"),
+  back_res_BA_plot   + theme(legend.position = "none"),
+  back_vert_BA_plot  + theme(legend.position = "none"),
+  hip_res_BA_plot    + theme(legend.position = "none"),
+  hip_vert_BA_plot   + theme(legend.position = "none"),
   labels = c("A", "B", "", "", "", ""),
-  align = "h", vjust = 1, label_size = 16,
-  ncol = 2, nrow = 3
+  align  = "h", vjust = 1, label_size = 16,
+  ncol   = 2, nrow = 3
 )
+
+legend <- get_legend(ankle_res_BA_plot)
+
+BA_plot_grid <- plot_grid(BA_plot_grid_1, legend, ncol = 1, rel_heights = c(1, 0.1))
+
 
 # Uncomment lines below to save plot
 # ggsave(
