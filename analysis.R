@@ -12,16 +12,22 @@ source(here("R", "get_BA_plot.R"))
 # 1. Prepare data ---------------------------------------------------------
 
 ankle <- read_csv(here("data", "ankle_sec.csv")) %>% 
+  filter(speed <= 6) %>% 
   select(-c(body_weight, pVGRF_BW, pRGRF_BW, pVACC_ms2, pVACC_ms2, pRACC_ms2)) %>% 
-  filter(speed <= 6)
+  BMI_categories() %>% 
+  select(ID, speed, body_mass, height, BMI, BMI_cat, sex, age, pVGRF_N, pVACC_g, pRGRF_N, pRACC_g)
 
 back <- read_csv(here("data", "back_sec.csv")) %>% 
+  filter(speed <= 6) %>% 
   select(-c(body_weight, pVGRF_BW, pRGRF_BW, pVACC_ms2, pVACC_ms2, pRACC_ms2)) %>% 
-  filter(speed <= 6)
+  BMI_categories() %>% 
+  select(ID, speed, body_mass, height, BMI, BMI_cat, sex, age, pVGRF_N, pVACC_g, pRGRF_N, pRACC_g)
 
 hip <- read_csv(here("data", "hip_sec.csv")) %>% 
+  filter(speed <= 6) %>% 
   select(-c(body_weight, pVGRF_BW, pRGRF_BW, pVACC_ms2, pVACC_ms2, pRACC_ms2)) %>% 
-  filter(speed <= 6)
+  BMI_categories() %>% 
+  select(ID, speed, body_mass, height, BMI, BMI_cat, sex, age, pVGRF_N, pVACC_g, pRGRF_N, pRACC_g)
 
 # 2. Sample descriptives --------------------------------------------------
 
@@ -120,6 +126,27 @@ LOOCV_ankle_vert_LMM <- do.call(rbind, (lapply(unique(ankle$ID), cross_validate_
 LOOCV_back_vert_LMM <- do.call(rbind, (lapply(unique(back$ID), cross_validate_mixed_model, df = back)))
 # Hip
 LOOCV_hip_vert_LMM <- do.call(rbind, (lapply(unique(hip$ID), cross_validate_mixed_model, df = hip)))
+
+# Writing LOOCV data
+LOOCV_ankle_res <- LOOCV_ankle_res_LMM %>% 
+  select(ID, speed, body_mass, BMI, BMI_cat, sex, age, pRGRF_N, pRACC_g, pRGRF_N_predicted)
+LOOCV_back_res <- LOOCV_back_res_LMM %>% 
+  select(ID, speed, body_mass, BMI, BMI_cat, sex, age, pRGRF_N, pRACC_g, pRGRF_N_predicted)
+LOOCV_hip_res <- LOOCV_hip_res_LMM %>% 
+  select(ID, speed, body_mass, BMI, BMI_cat, sex, age, pRGRF_N, pRACC_g, pRGRF_N_predicted)
+LOOCV_ankle_vert <- LOOCV_ankle_vert_LMM %>% 
+  select(ID, speed, body_mass, BMI, BMI_cat, sex, age, pVGRF_N, pVACC_g, pVGRF_N_predicted)
+LOOCV_back_vert <- LOOCV_back_vert_LMM %>% 
+  select(ID, speed, body_mass, BMI, BMI_cat, sex, age, pVGRF_N, pVACC_g, pVGRF_N_predicted)
+LOOCV_hip_vert <- LOOCV_hip_vert_LMM %>% 
+  select(ID, speed, body_mass, BMI, BMI_cat, sex, age, pVGRF_N, pVACC_g, pVGRF_N_predicted)
+
+write_csv(LOOCV_ankle_res, "~/Dropbox/Projects/walking_GRF_ACC/LOOCV_ankle_res.csv")
+write_csv(LOOCV_back_res, "~/Dropbox/Projects/walking_GRF_ACC/LOOCV_back_res.csv")
+write_csv(LOOCV_hip_res, "~/Dropbox/Projects/walking_GRF_ACC/LOOCV_hip_res.csv")
+write_csv(LOOCV_ankle_vert, "~/Dropbox/Projects/walking_GRF_ACC/LOOCV_ankle_vert.csv")
+write_csv(LOOCV_back_vert, "~/Dropbox/Projects/walking_GRF_ACC/LOOCV_back_vert.csv")
+write_csv(LOOCV_hip_vert, "~/Dropbox/Projects/walking_GRF_ACC/LOOCV_hip_vert.csv")
 
 # 5. Bland-Altman plots ---------------------------------------------------
 
@@ -301,6 +328,9 @@ res_ANOVA_df$ID    <- as.factor(res_ANOVA_df$ID)
 res_ANOVA_df$speed <- as.factor(res_ANOVA_df$speed)
 res_ANOVA_df$group <- as.factor(res_ANOVA_df$group)
 
+# Write data frame
+write_csv(res_ANOVA_df, "~/Dropbox/Projects/walking_GRF_ACC/res_ANOVA_df.csv")
+
 # **** 7.1.2. ANOVA -------------------------------------------------------
 
 res_ANOVA <- ezANOVA(
@@ -458,6 +488,9 @@ vert_ANOVA_df <- vert_pred_df %>%
 vert_ANOVA_df$ID    <- as.factor(vert_ANOVA_df$ID)
 vert_ANOVA_df$speed <- as.factor(vert_ANOVA_df$speed)
 vert_ANOVA_df$group <- as.factor(vert_ANOVA_df$group)
+
+# Write data frame
+write_csv(vert_ANOVA_df, "~/Dropbox/Projects/walking_GRF_ACC/vert_ANOVA_df.csv")
 
 # **** 7.2.2. ANOVA -------------------------------------------------------
 
