@@ -49,8 +49,8 @@ ankle_pRGRF_pRACC_plot <- ggplot(data = LOOCV_ankle_res) +
   ) +
   labs(
     title = "Ankle",
-    x = "pVACC (g)",
-    y = "pVGRF (N)"
+    x = "pRACC (g)",
+    y = "pRGRF (N)"
   )
 
 # Back
@@ -62,8 +62,8 @@ back_pRGRF_pRACC_plot <- ggplot(data = LOOCV_back_res) +
   theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
   labs(
     title = "Lower Back",
-    x = "pVACC (g)",
-    y = "pVGRF (N)"
+    x = "pRACC (g)",
+    y = "pRGRF (N)"
   )
 
 # Hip
@@ -75,8 +75,8 @@ hip_pRGRF_pRACC_plot <- ggplot(data = LOOCV_hip_res) +
   theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
   labs(
     title = "Hip",
-    x = "pVACC (g)",
-    y = "pVGRF (N)"
+    x = "pRACC (g)",
+    y = "pRGRF (N)"
   )
 
 # Actual pVGRF vs pVACC ---------------------------------------------------
