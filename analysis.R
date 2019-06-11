@@ -167,57 +167,57 @@ back_vert_BA_plot <- get_BA_plot(LOOCV_back_vert_LMM, "pVGRF_N", "pVGRF_N_predic
 # Hip
 hip_vert_BA_plot <- get_BA_plot(LOOCV_hip_vert_LMM, "pVGRF_N", "pVGRF_N_predicted")
 
-### Linear regressions to identify proportional bias
+# Check whether bias is statisticaly different than 0
 # For resultant peak ground reaction force
 # Ankle
 LOOCV_ankle_res_LMM$diff <- LOOCV_ankle_res_LMM$pRGRF_N - LOOCV_ankle_res_LMM$pRGRF_N_predicted
 LOOCV_ankle_res_LMM$mean <- (LOOCV_ankle_res_LMM$pRGRF_N + LOOCV_ankle_res_LMM$pRGRF_N_predicted) / 2
-ankle_res_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_ankle_res_LMM)
-summary(ankle_res_BA_plot_LR)
+t.test(LOOCV_ankle_res_LMM$diff, mu = 0)
 # Back
 LOOCV_back_res_LMM$diff <- LOOCV_back_res_LMM$pRGRF_N - LOOCV_back_res_LMM$pRGRF_N_predicted
 LOOCV_back_res_LMM$mean <- (LOOCV_back_res_LMM$pRGRF_N + LOOCV_back_res_LMM$pRGRF_N_predicted) / 2
-back_res_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_back_res_LMM)
-summary(back_res_BA_plot_LR)
+t.test(LOOCV_back_res_LMM$diff, mu = 0)
 # Hip
 LOOCV_hip_res_LMM$diff <- LOOCV_hip_res_LMM$pRGRF_N - LOOCV_hip_res_LMM$pRGRF_N_predicted
 LOOCV_hip_res_LMM$mean <- (LOOCV_hip_res_LMM$pRGRF_N + LOOCV_hip_res_LMM$pRGRF_N_predicted) / 2
-hip_res_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_hip_res_LMM)
-summary(hip_res_BA_plot_LR)
+t.test(LOOCV_hip_res_LMM$diff, mu = 0)
 
 # For vertical peak ground reaction force
 # Ankle
 LOOCV_ankle_vert_LMM$diff <- LOOCV_ankle_vert_LMM$pVGRF_N - LOOCV_ankle_vert_LMM$pVGRF_N_predicted
 LOOCV_ankle_vert_LMM$mean <- (LOOCV_ankle_vert_LMM$pVGRF_N + LOOCV_ankle_vert_LMM$pVGRF_N_predicted) / 2
-ankle_vert_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_ankle_vert_LMM)
-summary(ankle_vert_BA_plot_LR)
+t.test(LOOCV_ankle_vert_LMM$diff, mu = 0)
 # Back
 LOOCV_back_vert_LMM$diff <- LOOCV_back_vert_LMM$pVGRF_N - LOOCV_back_vert_LMM$pVGRF_N_predicted
 LOOCV_back_vert_LMM$mean <- (LOOCV_back_vert_LMM$pVGRF_N + LOOCV_back_vert_LMM$pVGRF_N_predicted) / 2
-back_vert_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_back_vert_LMM)
-summary(back_vert_BA_plot_LR)
+t.test(LOOCV_back_vert_LMM$diff, mu = 0)
 # Hip
 LOOCV_hip_vert_LMM$diff <- LOOCV_hip_vert_LMM$pVGRF_N - LOOCV_hip_vert_LMM$pVGRF_N_predicted
 LOOCV_hip_vert_LMM$mean <- (LOOCV_hip_vert_LMM$pVGRF_N + LOOCV_hip_vert_LMM$pVGRF_N_predicted) / 2
-hip_vert_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_hip_vert_LMM)
-summary(hip_vert_BA_plot_LR)
+t.test(LOOCV_hip_vert_LMM$diff, mu = 0)
 
-# Check whether bias is statisticaly different than 0
+### Linear regressions to identify proportional bias
 # For resultant peak ground reaction force
 # Ankle
-t.test(LOOCV_ankle_res_LMM$diff, mu = 0)
+ankle_res_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_ankle_res_LMM)
+summary(ankle_res_BA_plot_LR)
 # Back
-t.test(LOOCV_back_res_LMM$diff, mu = 0)
+back_res_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_back_res_LMM)
+summary(back_res_BA_plot_LR)
 # Hip
-t.test(LOOCV_hip_res_LMM$diff, mu = 0)
+hip_res_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_hip_res_LMM)
+summary(hip_res_BA_plot_LR)
 
 # For vertical peak ground reaction force
 # Ankle
-t.test(LOOCV_ankle_vert_LMM$diff, mu = 0)
+ankle_vert_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_ankle_vert_LMM)
+summary(ankle_vert_BA_plot_LR)
 # Back
-t.test(LOOCV_back_vert_LMM$diff, mu = 0)
+back_vert_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_back_vert_LMM)
+summary(back_vert_BA_plot_LR)
 # Hip
-t.test(LOOCV_hip_vert_LMM$diff, mu = 0)
+hip_vert_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_hip_vert_LMM)
+summary(hip_vert_BA_plot_LR)
 
 # 6. Indices of accuracy --------------------------------------------------
 
