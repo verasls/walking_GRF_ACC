@@ -1,4 +1,9 @@
-source("analysis.R")
+# Load packages -----------------------------------------------------------
+
+library(tidyverse)
+library(here)
+source(here("R", "get_BA_plot.R"))
+source(here("R", "accuracy_indices.R"))
 
 # Prepare data frame ------------------------------------------------------
 
@@ -35,28 +40,84 @@ for (i in 1:nrow(whole_sample_df)) {
 
 # Bland-Altman plots ------------------------------------------------------
 
-non_obese_our_BA_plot  <- get_BA_plot(non_obese_data, "pVGRF_N", "pVGRF_N_predicted")
+non_obese_our_BA_plot  <- get_BA_plot(non_obese_df, "pVGRF_N", "pVGRF_N_predicted")
 
-non_obese_Neug_BA_plot <-  get_BA_plot(non_obese_data, "pVGRF_N", "pVGRF_N_Neugebauer")
+non_obese_Neug_BA_plot <-  get_BA_plot(non_obese_df, "pVGRF_N", "pVGRF_N_Neugebauer")
 
-obese_our_BA_plot  <- get_BA_plot(obese_data, "pVGRF_N", "pVGRF_N_predicted")
+obese_our_BA_plot  <- get_BA_plot(obese_df, "pVGRF_N", "pVGRF_N_predicted")
 
-obese_Neug_BA_plot <-  get_BA_plot(obese_data, "pVGRF_N", "pVGRF_N_Neugebauer")
+obese_Neug_BA_plot <-  get_BA_plot(obese_df, "pVGRF_N", "pVGRF_N_Neugebauer")
 
-whole_sample_our_BA_plot  <- get_BA_plot(whole_sample_data, "pVGRF_N", "pVGRF_N_predicted")
+whole_sample_our_BA_plot  <- get_BA_plot(whole_sample_df, "pVGRF_N", "pVGRF_N_predicted")
 
-whole_sample_Neug_BA_plot <-  get_BA_plot(whole_sample_data, "pVGRF_N", "pVGRF_N_Neugebauer")
+whole_sample_Neug_BA_plot <-  get_BA_plot(whole_sample_df, "pVGRF_N", "pVGRF_N_Neugebauer")
+
+# Check whether bias is statisticaly different than 0
+# For non-obese sample
+# Our equation
+non_obese_df$our_diff <- non_obese_df$pVGRF_N - non_obese_df$pVGRF_N_predicted
+non_obese_df$our_mean <- (non_obese_df$pVGRF_N + non_obese_df$pVGRF_N_predicted) / 2
+t.test(non_obese_df$our_diff, mu = 0)
+# Neugebauer's equation
+non_obese_df$Neug_diff <- non_obese_df$pVGRF_N - non_obese_df$pVGRF_N_Neugebauer
+non_obese_df$Neug_mean <- (non_obese_df$pVGRF_N + non_obese_df$pVGRF_N_Neugebauer) / 2
+t.test(non_obese_df$Neug_diff, mu = 0)
+
+# For obese sample
+# Our equation
+obese_df$our_diff <- obese_df$pVGRF_N - obese_df$pVGRF_N_predicted
+obese_df$our_mean <- (obese_df$pVGRF_N + obese_df$pVGRF_N_predicted) / 2
+t.test(obese_df$our_diff, mu = 0)
+# Neugebauer's equation
+obese_df$Neug_diff <- obese_df$pVGRF_N - obese_df$pVGRF_N_Neugebauer
+obese_df$Neug_mean <- (obese_df$pVGRF_N + obese_df$pVGRF_N_Neugebauer) / 2
+t.test(obese_df$Neug_diff, mu = 0)
+
+# For whole sample
+# Our equation
+whole_sample_df$our_diff <- whole_sample_df$pVGRF_N - whole_sample_df$pVGRF_N_predicted
+whole_sample_df$our_mean <- (whole_sample_df$pVGRF_N + whole_sample_df$pVGRF_N_predicted) / 2
+t.test(whole_sample_df$our_diff, mu = 0)
+# Neugebauer's equation
+whole_sample_df$Neug_diff <- whole_sample_df$pVGRF_N - whole_sample_df$pVGRF_N_Neugebauer
+whole_sample_df$Neug_mean <- (whole_sample_df$pVGRF_N + whole_sample_df$pVGRF_N_Neugebauer) / 2
+t.test(whole_sample_df$Neug_diff, mu = 0)
+
+### Linear regressions to identify proportional bias
+# For non-obese sample
+# Our equation
+non_obese_our_BA_plot_LR <- lm(our_diff ~ our_mean, data = non_obese_df)
+summary(non_obese_our_BA_plot_LR)
+# Neugebauer's equation
+non_obese_Neug_BA_plot_LR <- lm(Neug_diff ~ Neug_mean, data = non_obese_df)
+summary(non_obese_Neug_BA_plot_LR)
+
+# For obese sample
+# Our equation
+obese_our_BA_plot_LR <- lm(our_diff ~ our_mean, data = obese_df)
+summary(obese_our_BA_plot_LR)
+# Neugebauer's equation
+obese_Neug_BA_plot_LR <- lm(Neug_diff ~ Neug_mean, data = obese_df)
+summary(obese_Neug_BA_plot_LR)
+
+# For whole sample
+# Our equation
+whole_sample_our_BA_plot_LR <- lm(our_diff ~ our_mean, data = whole_sample_df)
+summary(whole_sample_our_BA_plot_LR)
+# Neugebauer's equation
+whole_sample_Neug_BA_plot_LR <- lm(Neug_diff ~ Neug_mean, data = whole_sample_df)
+summary(whole_sample_Neug_BA_plot_LR)
 
 # Indices of accuracy -----------------------------------------------------
 
-non_obese_our_accuracy  <- accuracy_indices(non_obese_data, "pVGRF_N", "pVGRF_N_predicted")
+non_obese_our_accuracy  <- accuracy_indices(non_obese_df, "pVGRF_N", "pVGRF_N_predicted")
 
-non_obese_Neug_accuracy <- accuracy_indices(non_obese_data, "pVGRF_N", "pVGRF_N_Neugebauer")
+non_obese_Neug_accuracy <- accuracy_indices(non_obese_df, "pVGRF_N", "pVGRF_N_Neugebauer")
 
-obese_our_accuracy  <- accuracy_indices(obese_data, "pVGRF_N", "pVGRF_N_predicted")
+obese_our_accuracy  <- accuracy_indices(obese_df, "pVGRF_N", "pVGRF_N_predicted")
 
-obese_Neug_accuracy <- accuracy_indices(obese_data, "pVGRF_N", "pVGRF_N_Neugebauer")
+obese_Neug_accuracy <- accuracy_indices(obese_df, "pVGRF_N", "pVGRF_N_Neugebauer")
 
-whole_sample_our_accuracy  <- accuracy_indices(whole_sample_data, "pVGRF_N", "pVGRF_N_predicted")
+whole_sample_our_accuracy  <- accuracy_indices(whole_sample_df, "pVGRF_N", "pVGRF_N_predicted")
 
-whole_sample_Neug_accuracy <- accuracy_indices(whole_sample_data, "pVGRF_N", "pVGRF_N_Neugebauer")
+whole_sample_Neug_accuracy <- accuracy_indices(whole_sample_df, "pVGRF_N", "pVGRF_N_Neugebauer")
