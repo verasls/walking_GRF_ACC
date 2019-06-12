@@ -196,6 +196,6 @@ GRF_ACC_plot_grid <- plot_grid(GRF_ACC_plot_grid_1, legend, ncol = 1, rel_height
 
 # Uncomment lines below to save plot
 # ggsave(
-#   filename = "figs/fig3.tiff",
+#   filename = "figs/fig1.tiff",
 #   plot = GRF_ACC_plot_grid, width = 50, height = 35, dpi = 600, units = "cm"
 # )
