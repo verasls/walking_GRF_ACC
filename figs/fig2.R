@@ -227,6 +227,6 @@ BA_plot_grid <- plot_grid(BA_plot_grid_1, legend, ncol = 1, rel_heights = c(1, 0
 
 # Uncomment lines below to save plot
 # ggsave(
-#   filename = "figs/fig1.tiff",
+#   filename = "figs/fig2.tiff",
 #   plot = BA_plot_grid, width = 50, height = 35, dpi = 600, units = "cm"
 # )
