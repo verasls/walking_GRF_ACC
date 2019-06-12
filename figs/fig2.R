@@ -56,7 +56,7 @@ LOOCV_hip_vert   <- read_csv(
 LOOCV_ankle_res$diff <- LOOCV_ankle_res$pRGRF_N - LOOCV_ankle_res$pRGRF_N_predicted
 LOOCV_ankle_res$mean <- (LOOCV_ankle_res$pRGRF_N + LOOCV_ankle_res$pRGRF_N_predicted) / 2
 ankle_res_BA_plot <- ggplot(data = LOOCV_ankle_res) +
-  geom_point(mapping = aes(x = mean, y = diff, colour = BMI_cat, shape = BMI_cat)) +
+  geom_point(mapping = aes(x = mean, y = diff, colour = BMI_cat)) +
   geom_hline(yintercept = mean(LOOCV_ankle_res$diff)) +
   geom_hline(
     yintercept = mean(LOOCV_ankle_res$diff) + 1.96 * sd(LOOCV_ankle_res$diff),
@@ -66,6 +66,7 @@ ankle_res_BA_plot <- ggplot(data = LOOCV_ankle_res) +
     yintercept = mean(LOOCV_ankle_res$diff) - 1.96 * sd(LOOCV_ankle_res$diff),
     linetype = "dotted"
   ) +
+  scale_colour_manual(values = c("#E69F00", "#009E73", "#CC79A7", "#0072B2", "#D55E00")) +
   scale_y_continuous(limits = c(-500, 520), expand = c(0, 0)) +
   scale_x_continuous(limits = c(0, 2525), expand = c(0, 0)) +
   theme_classic() +
@@ -86,7 +87,7 @@ ankle_res_BA_plot <- ggplot(data = LOOCV_ankle_res) +
 LOOCV_back_res$diff <- LOOCV_back_res$pRGRF_N - LOOCV_back_res$pRGRF_N_predicted
 LOOCV_back_res$mean <- (LOOCV_back_res$pRGRF_N + LOOCV_back_res$pRGRF_N_predicted) / 2
 back_res_BA_plot <- ggplot(data = LOOCV_back_res) +
-  geom_point(mapping = aes(x = mean, y = diff, colour = BMI_cat, shape = BMI_cat)) +
+  geom_point(mapping = aes(x = mean, y = diff, colour = BMI_cat)) +
   geom_hline(yintercept = mean(LOOCV_back_res$diff)) +
   geom_hline(
     yintercept = mean(LOOCV_back_res$diff) + 1.96 * sd(LOOCV_back_res$diff),
@@ -96,6 +97,7 @@ back_res_BA_plot <- ggplot(data = LOOCV_back_res) +
     yintercept = mean(LOOCV_back_res$diff) - 1.96 * sd(LOOCV_back_res$diff),
     linetype = "dotted"
   ) +
+  scale_colour_manual(values = c("#E69F00", "#009E73", "#CC79A7", "#0072B2", "#D55E00")) +
   scale_y_continuous(limits = c(-500, 520), expand = c(0, 0)) +
   scale_x_continuous(limits = c(0, 2525), expand = c(0, 0)) +
   theme_classic() +
@@ -111,7 +113,7 @@ back_res_BA_plot <- ggplot(data = LOOCV_back_res) +
 LOOCV_hip_res$diff <- LOOCV_hip_res$pRGRF_N - LOOCV_hip_res$pRGRF_N_predicted
 LOOCV_hip_res$mean <- (LOOCV_hip_res$pRGRF_N + LOOCV_hip_res$pRGRF_N_predicted) / 2
 hip_res_BA_plot <- ggplot(data = LOOCV_hip_res) +
-  geom_point(mapping = aes(x = mean, y = diff, colour = BMI_cat, shape = BMI_cat)) +
+  geom_point(mapping = aes(x = mean, y = diff, colour = BMI_cat)) +
   geom_hline(yintercept = mean(LOOCV_hip_res$diff)) +
   geom_hline(
     yintercept = mean(LOOCV_hip_res$diff) + 1.96 * sd(LOOCV_hip_res$diff),
@@ -121,6 +123,7 @@ hip_res_BA_plot <- ggplot(data = LOOCV_hip_res) +
     yintercept = mean(LOOCV_hip_res$diff) - 1.96 * sd(LOOCV_hip_res$diff),
     linetype = "dotted"
   ) +
+  scale_colour_manual(values = c("#E69F00", "#009E73", "#CC79A7", "#0072B2", "#D55E00")) +
   scale_y_continuous(limits = c(-500, 520), expand = c(0, 0)) +
   scale_x_continuous(limits = c(0, 2525), expand = c(0, 0)) +
   theme_classic() +
@@ -136,7 +139,7 @@ hip_res_BA_plot <- ggplot(data = LOOCV_hip_res) +
 LOOCV_ankle_vert$diff <- LOOCV_ankle_vert$pVGRF_N - LOOCV_ankle_vert$pVGRF_N_predicted
 LOOCV_ankle_vert$mean <- (LOOCV_ankle_vert$pVGRF_N + LOOCV_ankle_vert$pVGRF_N_predicted) / 2
 ankle_vert_BA_plot <- ggplot(data = LOOCV_ankle_vert) +
-  geom_point(mapping = aes(x = mean, y = diff, colour = BMI_cat, shape = BMI_cat)) +
+  geom_point(mapping = aes(x = mean, y = diff, colour = BMI_cat)) +
   geom_hline(yintercept = mean(LOOCV_ankle_vert$diff)) +
   geom_hline(
     yintercept = mean(LOOCV_ankle_vert$diff) + 1.96 * sd(LOOCV_ankle_vert$diff),
@@ -146,6 +149,7 @@ ankle_vert_BA_plot <- ggplot(data = LOOCV_ankle_vert) +
     yintercept = mean(LOOCV_ankle_vert$diff) - 1.96 * sd(LOOCV_ankle_vert$diff),
     linetype = "dotted"
   ) +
+  scale_colour_manual(values = c("#E69F00", "#009E73", "#CC79A7", "#0072B2", "#D55E00")) +
   scale_y_continuous(limits = c(-500, 520), expand = c(0, 0)) +
   scale_x_continuous(limits = c(0, 2525), expand = c(0, 0)) +
   theme_classic() +
@@ -161,7 +165,7 @@ ankle_vert_BA_plot <- ggplot(data = LOOCV_ankle_vert) +
 LOOCV_back_vert$diff <- LOOCV_back_vert$pVGRF_N - LOOCV_back_vert$pVGRF_N_predicted
 LOOCV_back_vert$mean <- (LOOCV_back_vert$pVGRF_N + LOOCV_back_vert$pVGRF_N_predicted) / 2
 back_vert_BA_plot <- ggplot(data = LOOCV_back_vert) +
-  geom_point(mapping = aes(x = mean, y = diff, colour = BMI_cat, shape = BMI_cat)) +
+  geom_point(mapping = aes(x = mean, y = diff, colour = BMI_cat)) +
   geom_hline(yintercept = mean(LOOCV_back_vert$diff)) +
   geom_hline(
     yintercept = mean(LOOCV_back_vert$diff) + 1.96 * sd(LOOCV_back_vert$diff),
@@ -171,6 +175,7 @@ back_vert_BA_plot <- ggplot(data = LOOCV_back_vert) +
     yintercept = mean(LOOCV_back_vert$diff) - 1.96 * sd(LOOCV_back_vert$diff),
     linetype = "dotted"
   ) +
+  scale_colour_manual(values = c("#E69F00", "#009E73", "#CC79A7", "#0072B2", "#D55E00")) +
   scale_y_continuous(limits = c(-500, 520), expand = c(0, 0)) +
   scale_x_continuous(limits = c(0, 2525), expand = c(0, 0)) +
   theme_classic() +
@@ -186,7 +191,7 @@ back_vert_BA_plot <- ggplot(data = LOOCV_back_vert) +
 LOOCV_hip_vert$diff <- LOOCV_hip_vert$pVGRF_N - LOOCV_hip_vert$pVGRF_N_predicted
 LOOCV_hip_vert$mean <- (LOOCV_hip_vert$pVGRF_N + LOOCV_hip_vert$pVGRF_N_predicted) / 2
 hip_vert_BA_plot <- ggplot(data = LOOCV_hip_vert) +
-  geom_point(mapping = aes(x = mean, y = diff, colour = BMI_cat, shape = BMI_cat)) +
+  geom_point(mapping = aes(x = mean, y = diff, colour = BMI_cat)) +
   geom_hline(yintercept = mean(LOOCV_hip_vert$diff)) +
   geom_hline(
     yintercept = mean(LOOCV_hip_vert$diff) + 1.96 * sd(LOOCV_hip_vert$diff),
@@ -196,6 +201,7 @@ hip_vert_BA_plot <- ggplot(data = LOOCV_hip_vert) +
     yintercept = mean(LOOCV_hip_vert$diff) - 1.96 * sd(LOOCV_hip_vert$diff),
     linetype = "dotted"
   ) +
+  scale_colour_manual(values = c("#E69F00", "#009E73", "#CC79A7", "#0072B2", "#D55E00")) +
   scale_y_continuous(limits = c(-500, 520), expand = c(0, 0)) +
   scale_x_continuous(limits = c(0, 2525), expand = c(0, 0)) +
   theme_classic() +
