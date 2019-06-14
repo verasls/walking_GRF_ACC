@@ -57,7 +57,7 @@ LOOCV_hip_vert   <- read_csv(
 
 # Ankle
 ankle_pRGRF_pRACC_plot <- ggplot(data = LOOCV_ankle_res) +
-  geom_point(mapping = aes(x = pRACC_g, y = pRGRF_N, colour = BMI_cat)) +
+  geom_point(mapping = aes(x = pRACC_g, y = pRGRF_N, colour = BMI_cat, shape = BMI_cat)) +
   geom_smooth(
     mapping = aes(x = pRACC_g, y = pRGRF_N, colour = BMI_cat),
     method = "lm",
@@ -65,7 +65,7 @@ ankle_pRGRF_pRACC_plot <- ggplot(data = LOOCV_ankle_res) +
   ) +
   scale_colour_manual(values = c("#E69F00", "#009E73", "#CC79A7", "#0072B2", "#D55E00")) +
   scale_y_continuous(limits = c(0, 2500), expand = c(0, 0)) +
-  scale_x_continuous(limits = c(0, 7), expand = c(0, 0), breaks = seq(0, 7, 1)) +
+  scale_x_continuous(limits = c(1, 7), expand = c(0, 0)) +
   theme_classic() +
   theme(
     plot.title = element_text(face = "bold", hjust = 0.5),
@@ -81,7 +81,7 @@ ankle_pRGRF_pRACC_plot <- ggplot(data = LOOCV_ankle_res) +
 
 # Back
 back_pRGRF_pRACC_plot <- ggplot(data = LOOCV_back_res) +
-  geom_point(mapping = aes(x = pRACC_g, y = pRGRF_N, colour = BMI_cat)) +
+  geom_point(mapping = aes(x = pRACC_g, y = pRGRF_N, colour = BMI_cat, shape = BMI_cat)) +
   geom_smooth(
     mapping = aes(x = pRACC_g, y = pRGRF_N, colour = BMI_cat),
     method = "lm",
@@ -89,7 +89,7 @@ back_pRGRF_pRACC_plot <- ggplot(data = LOOCV_back_res) +
   ) +
   scale_colour_manual(values = c("#E69F00", "#009E73", "#CC79A7", "#0072B2", "#D55E00")) +
   scale_y_continuous(limits = c(0, 2500), expand = c(0, 0)) +
-  scale_x_continuous(limits = c(0, 3), expand = c(0, 0)) +
+  scale_x_continuous(limits = c(1, 2.5), expand = c(0, 0)) +
   theme_classic() +
   theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
   labs(
@@ -100,7 +100,7 @@ back_pRGRF_pRACC_plot <- ggplot(data = LOOCV_back_res) +
 
 # Hip
 hip_pRGRF_pRACC_plot <- ggplot(data = LOOCV_hip_res) +
-  geom_point(mapping = aes(x = pRACC_g, y = pRGRF_N, colour = BMI_cat)) +
+  geom_point(mapping = aes(x = pRACC_g, y = pRGRF_N, colour = BMI_cat, shape = BMI_cat)) +
   geom_smooth(
     mapping = aes(x = pRACC_g, y = pRGRF_N, colour = BMI_cat),
     method = "lm",
@@ -108,7 +108,7 @@ hip_pRGRF_pRACC_plot <- ggplot(data = LOOCV_hip_res) +
   ) +
   scale_colour_manual(values = c("#E69F00", "#009E73", "#CC79A7", "#0072B2", "#D55E00")) +
   scale_y_continuous(limits = c(0, 2500), expand = c(0, 0)) +
-  scale_x_continuous(limits = c(0, 3), expand = c(0, 0)) +
+  scale_x_continuous(limits = c(1, 3), expand = c(0, 0)) +
   theme_classic() +
   theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
   labs(
@@ -121,7 +121,7 @@ hip_pRGRF_pRACC_plot <- ggplot(data = LOOCV_hip_res) +
 
 # Ankle
 ankle_pVGRF_pVACC_plot <- ggplot(data = LOOCV_ankle_vert) +
-  geom_point(mapping = aes(x = pVACC_g, y = pVGRF_N, colour = BMI_cat)) +
+  geom_point(mapping = aes(x = pVACC_g, y = pVGRF_N, colour = BMI_cat, shape = BMI_cat)) +
   geom_smooth(
     mapping = aes(x = pVACC_g, y = pVGRF_N, colour = BMI_cat),
     method = "lm",
@@ -129,7 +129,7 @@ ankle_pVGRF_pVACC_plot <- ggplot(data = LOOCV_ankle_vert) +
   ) +
   scale_colour_manual(values = c("#E69F00", "#009E73", "#CC79A7", "#0072B2", "#D55E00")) +
   scale_y_continuous(limits = c(0, 2500), expand = c(0, 0)) +
-  scale_x_continuous(limits = c(0, 7), expand = c(0, 0), breaks = seq(0, 7, 1)) +
+  scale_x_continuous(limits = c(1, 4.5), expand = c(0, 0)) +
   theme_classic() +
   theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
   labs(
@@ -140,7 +140,7 @@ ankle_pVGRF_pVACC_plot <- ggplot(data = LOOCV_ankle_vert) +
 
 # Back
 back_pVGRF_pVACC_plot <- ggplot(data = LOOCV_back_vert) +
-  geom_point(mapping = aes(x = pVACC_g, y = pVGRF_N, colour = BMI_cat)) +
+  geom_point(mapping = aes(x = pVACC_g, y = pVGRF_N, colour = BMI_cat, shape = BMI_cat)) +
   geom_smooth(
     mapping = aes(x = pVACC_g, y = pVGRF_N, colour = BMI_cat),
     method = "lm",
@@ -148,7 +148,7 @@ back_pVGRF_pVACC_plot <- ggplot(data = LOOCV_back_vert) +
   ) +
   scale_colour_manual(values = c("#E69F00", "#009E73", "#CC79A7", "#0072B2", "#D55E00")) +
   scale_y_continuous(limits = c(0, 2500), expand = c(0, 0)) +
-  scale_x_continuous(limits = c(0, 3), expand = c(0, 0)) +
+  scale_x_continuous(limits = c(1, 2.5), expand = c(0, 0)) +
   theme_classic() +
   theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
   labs(
@@ -159,7 +159,7 @@ back_pVGRF_pVACC_plot <- ggplot(data = LOOCV_back_vert) +
 
 # Hip
 hip_pVGRF_pVACC_plot <- ggplot(data = LOOCV_hip_vert) +
-  geom_point(mapping = aes(x = pVACC_g, y = pVGRF_N, colour = BMI_cat)) +
+  geom_point(mapping = aes(x = pVACC_g, y = pVGRF_N, colour = BMI_cat, shape = BMI_cat)) +
   geom_smooth(
     mapping = aes(x = pVACC_g, y = pVGRF_N, colour = BMI_cat),
     method = "lm",
@@ -167,7 +167,7 @@ hip_pVGRF_pVACC_plot <- ggplot(data = LOOCV_hip_vert) +
   ) +
   scale_colour_manual(values = c("#E69F00", "#009E73", "#CC79A7", "#0072B2", "#D55E00")) +
   scale_y_continuous(limits = c(0, 2500), expand = c(0, 0)) +
-  scale_x_continuous(limits = c(0, 3), expand = c(0, 0)) +
+  scale_x_continuous(limits = c(1, 3), expand = c(0, 0)) +
   theme_classic() +
   theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
   labs(
