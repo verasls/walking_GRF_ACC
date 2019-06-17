@@ -3,55 +3,19 @@
 library(tidyverse)
 library(here)
 library(cowplot)
-source(here("R", "BMI_categories.R"))
+source(here("R", "read_with_factors.R"))
 
 # Read and prepare data ---------------------------------------------------
 
 # For resultant ground reaction force
-LOOCV_ankle_res <- read_csv(
-  "~/Dropbox/Projects/walking_GRF_ACC/LOOCV_ankle_res.csv",
-  col_types = cols(BMI_cat = col_factor(levels = c(
-    "normal weight", "overweight", "class I obesity", "class II obesity", "class III obesity"
-  )
-  ))
-)
-LOOCV_back_res  <- read_csv(
-  "~/Dropbox/Projects/walking_GRF_ACC/LOOCV_back_res.csv",
-  col_types = cols(BMI_cat = col_factor(levels = c(
-    "normal weight", "overweight", "class I obesity", "class II obesity", "class III obesity"
-  )
-  ))
-)
-LOOCV_hip_res   <- read_csv(
-  "~/Dropbox/Projects/walking_GRF_ACC/LOOCV_hip_res.csv",
-  col_types = cols(BMI_cat = col_factor(levels = c(
-    "normal weight", "overweight", "class I obesity", "class II obesity", "class III obesity"
-  )
-  ))
-)
+LOOCV_ankle_res <- read_with_factors("~/Dropbox/Projects/walking_GRF_ACC/LOOCV_ankle_res.csv")
+LOOCV_back_res  <- read_with_factors("~/Dropbox/Projects/walking_GRF_ACC/LOOCV_back_res.csv")
+LOOCV_hip_res   <- read_with_factors("~/Dropbox/Projects/walking_GRF_ACC/LOOCV_hip_res.csv")
 
 # For vertical ground reaction force
-LOOCV_ankle_vert <- read_csv(
-  "~/Dropbox/Projects/walking_GRF_ACC/LOOCV_ankle_vert.csv",
-  col_types = cols(BMI_cat = col_factor(levels = c(
-    "normal weight", "overweight", "class I obesity", "class II obesity", "class III obesity"
-  )
-  ))
-)
-LOOCV_back_vert  <- read_csv(
-  "~/Dropbox/Projects/walking_GRF_ACC/LOOCV_back_vert.csv",
-  col_types = cols(BMI_cat = col_factor(levels = c(
-    "normal weight", "overweight", "class I obesity", "class II obesity", "class III obesity"
-  )
-  ))
-)
-LOOCV_hip_vert   <- read_csv(
-  "~/Dropbox/Projects/walking_GRF_ACC/LOOCV_hip_vert.csv",
-  col_types = cols(BMI_cat = col_factor(levels = c(
-    "normal weight", "overweight", "class I obesity", "class II obesity", "class III obesity"
-  )
-  ))
-)
+LOOCV_ankle_vert <- read_with_factors("~/Dropbox/Projects/walking_GRF_ACC/LOOCV_ankle_vert.csv")
+LOOCV_back_vert  <- read_with_factors("~/Dropbox/Projects/walking_GRF_ACC/LOOCV_back_vert.csv")
+LOOCV_hip_vert   <- read_with_factors("~/Dropbox/Projects/walking_GRF_ACC/LOOCV_hip_vert.csv")
 
 # Actual pRGRF vs pRACC ---------------------------------------------------
 
