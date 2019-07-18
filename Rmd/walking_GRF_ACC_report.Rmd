@@ -1,9 +1,9 @@
 ---
 title: |
-  | Prediction of walking ground reaction forces based on accelerometry: 
+  | Accelerometer-based prediction of skeletal mechanical loading during walking in normal weight to severely obese subjects:
   | Data analysis report
 author: "Lucas Veras"
-date: "2019-03-13"
+date: "2019-07-18"
 output: 
   html_document:
     toc: true
@@ -24,7 +24,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 # Background
 
-Ground reaction force (GRF) is typically measured by force plates (FP), being these instruments usually limited to laboratory settings. Accelerometers may be a viable device to predict peak GRF (pGRF) in field conditions. Nevertheless, few studies have tested its validity. Therefore, the purpose of this study was to develop regression equations to predict peak resultant GRF and its peak vertical component based on ankle, back and hip accelerometry data during walking.
+Considering the prevalence of obesity [[@Guthold_2018]](#refs), its associated fracture risk [[@Li_2017, @Hind_2018, @Kaze_2018]] and that these patients are especially prone to develop loading associated musculoskeletal injuries [[@Viester_2013]], there is a need to develop ground reaction force (GRF) prediction equations that are accurate for overweight and obese subjects in order to precisely determine and monitor exercise-associated mechanical loading in these patients. Therefore, the purpose of this study was to develop prediction equations based on accelerometer data able to accurately predict GRF on a broad range of body masses, from normal weight to severely obese subjects, setting thereby, a base for objective prescription and monitoring of exercise mechanical loads.
 
 # Load data
 
@@ -63,6 +63,18 @@ A piece of a data frame used in all subsequent analysis can be seen below.
 ankle
 ```
 
+# Ground reaction force X acceleration relationship
+
+We first determined the relationship between pACC and pGRF obtained during the incremental walking speeds used in our experimental protocol. This was performed in order to verify the consistency of this relationship for increasing pACC values and the ability of the accelerometer to discriminate differences in pGRF between subjects in different BMI classes. A scatterplot with these relationships for all three accelerometer placements tested and for both the resultant and its vertical component is depicted in Figure 1. Generally, as expected, pACC recorded by accelerometers in all placements, showed a linear increase as a function of pGRF increases. Also, the recorded accelerations were shown to be able to provide a good discrimination between different BMI classes, as for the same registered pACC the pGRF tended to be consistently higher for subjects in higher BMI classes.
+
+```{r GRF_vs_ACC_plot, fig.height=15, fig.width=13, dev='svg'}
+source(here("figs", "fig1.R"))
+
+GRF_ACC_plot_grid
+```
+
+Code to generate these plots can be seen [here](https://github.com/verasls/walking_GRF_ACC/blob/master/figs/fig1.R).
+
 # Linear mixed models
 
 Linear mixed models (LMM) were used to estimate peak resultant ground reaction force (pRGRF) and peak vertical ground reaction force (pVGRF). Distinct LMMs were developed with data from ankle, back and hip accelerometer placement (`ankle`, `back` and `hip` data frames) using the `lme()` function of the **nlme** [package](https://cran.r-project.org/web/packages/nlme/nlme.pdf). Covariance structure used was an autoregressive process of order 1 (`correlation = corAR1`) and maximum likelihood method was used for estimating parameters (`method = "ML"`). Predictors tested on pRGRF models were body mass and peak resultant acceleration (pRACC), while on pVGRF were body mass and vertical acceleration (pVACC). All of them were tested as fixed effects and have shown to be significant predictors (*e.g.:* `fixed = pRGRF_N ~ pRACC_g + I(pRACC_g^2) + body_mass`). Both random intercept and slopes were tested, but only the random intercept inclusion has showed models improvement (`random = ~ 1 | ID`). Linear, quadratic and cubic polynomial simulations were also tested, whereas the last one did not contribute significantly to the models. Final models were chosen according to -2 log-likelihood statistics. Traditional coefficient of determination (R^2^) was represented by conditional R^2^ [[@naka13]](#refs) computed with `rsquared()` function of the **piecewiseSEM** [package](http://jslefche.github.io/piecewiseSEM/articles/piecewiseSEM.html), that estimates the variance explained by the whole model [[@r216]](#refs).
@@ -72,7 +84,7 @@ Code to build the LMMs, as well as their summary and R^2^, can be found below.
 ```{r LMM}
 # For resultant peak ground reaction force
 ankle_res_LMM <- lme(
-  fixed = pRGRF_N ~ pRACC_g + I(pRACC_g^2) + body_mass,
+  fixed = pRGRF_N ~ pRACC_g + I(pRACC_g^2) + body_mass + pRACC_g : body_mass,
   random = ~ 1 | ID,
   method = "ML",
   correlation = corAR1(),
@@ -84,7 +96,7 @@ summary(ankle_res_LMM)
 r2_ankle_res_LMM
 
 back_res_LMM <- lme(
-  fixed = pRGRF_N ~ pRACC_g + I(pRACC_g^2) + body_mass,
+  fixed = pRGRF_N ~ pRACC_g + I(pRACC_g^2) + body_mass + pRACC_g : body_mass,
   random = ~ 1 | ID,
   method = "ML",
   correlation = corAR1(),
@@ -96,7 +108,7 @@ summary(back_res_LMM)
 r2_back_res_LMM
 
 hip_res_LMM <- lme(
-  fixed = pRGRF_N ~ pRACC_g + I(pRACC_g^2) + body_mass,
+  fixed = pRGRF_N ~ pRACC_g + I(pRACC_g^2) + body_mass + pRACC_g : body_mass,
   random = ~ 1 | ID,
   method = "ML",
   correlation = corAR1(),
@@ -110,7 +122,7 @@ r2_hip_res_LMM
 
 # For vertical peak ground reaction force
 ankle_vert_LMM <- lme(
-  fixed = pVGRF_N ~ pVACC_g + I(pVACC_g^2) + body_mass,
+  fixed = pVGRF_N ~ pVACC_g + I(pVACC_g^2) + body_mass + pVACC_g : body_mass,
   random = ~ 1 | ID,
   method = "ML",
   correlation = corAR1(),
@@ -122,7 +134,7 @@ summary(ankle_vert_LMM)
 r2_ankle_vert_LMM
 
 back_vert_LMM <- lme(
-  fixed = pVGRF_N ~ pVACC_g + I(pVACC_g^2) + body_mass,
+  fixed = pVGRF_N ~ pVACC_g + I(pVACC_g^2) + body_mass + pVACC_g : body_mass,
   random = ~ 1 | ID,
   method = "ML",
   correlation = corAR1(),
@@ -134,7 +146,7 @@ summary(back_vert_LMM)
 r2_back_vert_LMM
 
 hip_vert_LMM <- lme(
-  fixed = pVGRF_N ~ pVACC_g + I(pVACC_g^2) + body_mass,
+  fixed = pVGRF_N ~ pVACC_g + I(pVACC_g^2) + body_mass + pVACC_g : body_mass,
   random = ~ 1 | ID,
   method = "ML",
   correlation = corAR1(),
@@ -188,12 +200,12 @@ Bland-Altman plots were used to examine the agreement between pGRF measured with
 Bland-Altman plots can be seen below for all accelerometer placements. Panel **A** shows plots of pRGRF and panel **B** shows plots of pVGRF.
 
 ```{r BA_plots, fig.height=15, fig.width=13, dev='svg'}
-source(here("figs", "fig1.R"))
+source(here("figs", "fig2.R"))
 
 BA_plot_grid
 ```
 
-Code to generate these plots can be seen [here](https://github.com/verasls/walking_GRF_ACC/blob/master/figs/fig1.R).
+Code to generate these plots can be seen [here](https://github.com/verasls/walking_GRF_ACC/blob/master/figs/fig2.R).
 
 <br>
 
@@ -231,7 +243,7 @@ t.test(LOOCV_hip_vert_LMM$diff, mu = 0)
 
 Also, linear regressions were applied to identify if there was any proportional bias, that is, if bias was related with the magnitude of the mean between measured and predicted pGRF [[@giav15]](#refs). Linear regressions were run using the `lm()` function of the base R.
 
-In back and hip placements, linear regression showed a proportional bias (*p* < 0.05), however, though significant (*p* < 0.05), associations magnitude was low (R^2^ < 0.025). The same did not occur to ankle placement (*p* > 0.05).
+For lower back and hip placements, results showed a significant proportional bias (*p* < 0.05), however, with a low magnitude (highest R^2^ = 0.032). These results suggest that despite there is a trend for underestimation at increasingly higher pGRF values, the magnitude of this effect is neglectable. No proportional bias (*p* > 0.05) was detected for ankle derived equations.
 
 ```{r BA_LR, fig.height=15, fig.width=13, dev='svg'}
 # For resultant peak ground reaction force
@@ -634,8 +646,76 @@ These results can be seen in figure below.
 
 ```{r ANOVA_plot, fig.height=5, fig.width=10, dev='svg'}
 source(here("figs", "fig2.R"))
-GRF_plot_grid
+
+BA_plot_grid
 ```
+
+# Regressions comparison
+
+Our equation was compared with a previously published reference equation [[@Neugebauer_2014]](#refs), in which Neugebauer et al. used a similar approach for the prediction of pGRF. Comparison was performed using the equation to predict pVGRF from hip-worn accelerometers, as it was the only suitable with our data. The analysis was performed in three ways using: i) a subsample of participants with normal weight or overweight (BMI ≥ 18.5 and < 30 kg.m-2); ii) a subsample of obese participants (BMI ≥ 30 kg.m-2); iii) the whole sample. 
+
+New data frames needed to be built for each of the subsamples and the whole sample. Then, pVGRF was predicted using the reference equation. Code to build the data frames is shown below.
+
+```{r build_comparison_df}
+# Prepare  data frames
+non_obese_df <- read_csv("~/Dropbox/Projects/walking_GRF_ACC/LOOCV_hip_vert.csv") %>% 
+  select(ID, speed, body_mass, BMI, BMI_cat, pVACC_g, pVGRF_N, pVGRF_N_predicted) %>% 
+  filter(BMI < 30)
+
+obese_df <- read_csv("~/Dropbox/Projects/walking_GRF_ACC/LOOCV_hip_vert.csv") %>% 
+  select(ID, speed, body_mass, BMI, BMI_cat, pVACC_g, pVGRF_N, pVGRF_N_predicted) %>% 
+  filter(BMI >= 30)
+
+whole_sample_df <- read_csv("~/Dropbox/Projects/walking_GRF_ACC/LOOCV_hip_vert.csv") %>% 
+  select(ID, speed, body_mass, BMI, BMI_cat, pVACC_g, pVGRF_N, pVGRF_N_predicted)
+
+# Apply Neugebauer 2014 equation
+non_obese_df$pVGRF_N_Neugebauer <- NA
+for (i in 1:nrow(non_obese_df)) {
+  non_obese_df$pVGRF_N_Neugebauer[i] <-  
+    exp(5.247 + (0.271 * non_obese_df$pVACC_g[i]) + (0.014 * non_obese_df$body_mass[i]))
+}
+
+obese_df$pVGRF_N_Neugebauer <- NA
+for (i in 1:nrow(obese_df)) {
+  obese_df$pVGRF_N_Neugebauer[i] <-  
+    exp(5.247 + (0.271 * obese_df$pVACC_g[i]) + (0.014 * obese_df$body_mass[i]))
+}
+
+whole_sample_df$pVGRF_N_Neugebauer <- NA
+for (i in 1:nrow(whole_sample_df)) {
+  whole_sample_df$pVGRF_N_Neugebauer[i] <-  
+    exp(5.247 + (0.271 * whole_sample_df$pVACC_g[i]) + (0.014 * whole_sample_df$body_mass[i]))
+}
+```
+
+Bland-Altman plots were used to confront the agreement between pVGRF measured with FP and those predicted using both regression equations. 
+
+```{r comparison_BA_plots, fig.height=15, fig.width=13, dev='svg'}
+source(here("figs", "fig4.R"))
+
+BA_plot_grid
+```
+
+Code to generate these plots can be seen [here](https://github.com/verasls/walking_GRF_ACC/blob/master/figs/fig4.R).
+
+A lower dispersion around the bias value, as well as a lower percentage of values falling off the LoA can be appreciated in our equation. Additionally, while the bias in our equation tended to be zero, in the reference equation bias was always > 0 (*p* < 0.05), showing a consistent underestimation of pVGRF.
+
+<br>
+
+Also, to assess the prediction accuracy, MAE, MAPE and RMSE were calculated using pVGRF values predicted from both equations.
+
+```{r comparison_accuracy_indices}
+non_obese_our_accuracy     <- accuracy_indices(non_obese_df, "pVGRF_N", "pVGRF_N_predicted")
+non_obese_Neug_accuracy    <- accuracy_indices(non_obese_df, "pVGRF_N", "pVGRF_N_Neugebauer")
+obese_our_accuracy         <- accuracy_indices(obese_df, "pVGRF_N", "pVGRF_N_predicted")
+obese_Neug_accuracy        <- accuracy_indices(obese_df, "pVGRF_N", "pVGRF_N_Neugebauer")
+whole_sample_our_accuracy  <- accuracy_indices(whole_sample_df, "pVGRF_N", "pVGRF_N_predicted")
+whole_sample_Neug_accuracy <- accuracy_indices(whole_sample_df, "pVGRF_N", "pVGRF_N_Neugebauer")
+```
+
+
+The accuracy indices from our equation were all substantially lower compared to the reference equation indices, with an overall MAPE approximately 3 times smaller for our equation. For both equations, the MAPE was lower in the obese subsample than in the non-obese subsample
 
 # R session info
 
