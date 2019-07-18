@@ -3,7 +3,7 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2592452.svg)](https://doi.org/10.5281/zenodo.2592452)
 
 
-This repository contains data analysis resources from the manuscript "Prediction of walking ground reaction forces based on accelerometry".
+This repository contains data analysis resources from the manuscript "Accelerometer-based prediction of skeletal mechanical loading during walking in normal weight to severely obese subjects".
 
  ---
 
