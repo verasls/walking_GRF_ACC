@@ -48,7 +48,34 @@ sample_descriptives <- summarise(
 )
 sex <- table(samp_desc$sex)
 
-# 3. Linear mixed models --------------------------------------------------
+
+# 3. F = ma ---------------------------------------------------------------
+
+# ** 3.1. Prediction ------------------------------------------------------
+
+# Back
+back_2nd_law <- back %>% 
+  mutate(
+    pVACC_ms2 = pVACC_g * 9.81,
+    pVGRF_N_predicted = body_mass * pVACC_ms2
+  )
+
+# Hip
+hip_2nd_law <- hip %>% 
+  mutate(
+    pVACC_ms2 = pVACC_g * 9.81,
+    pVGRF_N_predicted = body_mass * pVACC_ms2
+  )
+
+# 3.2. Indices of accuracy ------------------------------------------------
+
+# Back
+back_2nd_law_accuracy <- accuracy_indices(back_2nd_law, "pVGRF_N", "pVGRF_N_predicted")
+
+# Hip
+Hip_2nd_law_accuracy <- accuracy_indices(hip_2nd_law, "pVGRF_N", "pVGRF_N_predicted")
+
+# 4. Linear mixed models --------------------------------------------------
 
 # For resultant peak ground reaction force
 ankle_res_LMM <- lme(
@@ -106,7 +133,7 @@ hip_vert_LMM <- lme(
 )
 r2_hip_vert_LMM <- rsquared(hip_vert_LMM)
 
-# 4. Leave-one-out cross-validation ---------------------------------------
+# 5. Leave-one-out cross-validation ---------------------------------------
 
 # For resultant peak ground reaction force
 fix_eff    <- pRGRF_N ~ pRACC_g + I(pRACC_g^2) + body_mass + pRACC_g : body_mass
@@ -149,7 +176,7 @@ write_csv(LOOCV_ankle_vert, "~/Dropbox/Projects/walking_GRF_ACC/LOOCV_ankle_vert
 write_csv(LOOCV_back_vert, "~/Dropbox/Projects/walking_GRF_ACC/LOOCV_back_vert.csv")
 write_csv(LOOCV_hip_vert, "~/Dropbox/Projects/walking_GRF_ACC/LOOCV_hip_vert.csv")
 
-# 5. Bland-Altman plots ---------------------------------------------------
+# 6. Bland-Altman plots ---------------------------------------------------
 
 # For resultant peak ground reaction force
 # Ankle
@@ -219,7 +246,7 @@ summary(back_vert_BA_plot_LR)
 hip_vert_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_hip_vert_LMM)
 summary(hip_vert_BA_plot_LR)
 
-# 6. Indices of accuracy --------------------------------------------------
+# 7. Indices of accuracy --------------------------------------------------
 
 # For resultant peak ground reaction force
 # Ankle
@@ -237,9 +264,9 @@ back_vert_accuracy <- accuracy_indices(LOOCV_back_vert_LMM, "pVGRF_N", "pVGRF_N_
 # Hip
 hip_vert_accuracy <- accuracy_indices(LOOCV_hip_vert_LMM, "pVGRF_N", "pVGRF_N_predicted")
 
-# 7. ANOVA ----------------------------------------------------------------
-# ** 7.1. Resultant GRF ---------------------------------------------------
-# **** 7.1.1. Build data frame --------------------------------------------
+# 8. ANOVA ----------------------------------------------------------------
+# ** 8.1. Resultant GRF ---------------------------------------------------
+# **** 8.1.1. Build data frame --------------------------------------------
 
 ## Predicted pRGRF
 ankle_res_pred <- LOOCV_ankle_res_LMM %>% 
@@ -332,7 +359,7 @@ res_ANOVA_df$group <- as.factor(res_ANOVA_df$group)
 # Write data frame
 write_csv(res_ANOVA_df, "~/Dropbox/Projects/walking_GRF_ACC/res_ANOVA_df.csv")
 
-# **** 7.1.2. ANOVA -------------------------------------------------------
+# **** 8.1.2. ANOVA -------------------------------------------------------
 
 res_ANOVA <- ezANOVA(
   data     = res_ANOVA_df,
@@ -399,8 +426,8 @@ res_ANOVA_s6 <- ezANOVA(
   type     = 3
 )
 
-# ** 7.2. Vertical GRF ----------------------------------------------------
-# **** 7.2.1. Build data frame --------------------------------------------
+# ** 8.2. Vertical GRF ----------------------------------------------------
+# **** 8.2.1. Build data frame --------------------------------------------
 
 ## Predicted pVGRF
 ankle_vert_pred <- LOOCV_ankle_vert_LMM %>% 
@@ -493,7 +520,7 @@ vert_ANOVA_df$group <- as.factor(vert_ANOVA_df$group)
 # Write data frame
 write_csv(vert_ANOVA_df, "~/Dropbox/Projects/walking_GRF_ACC/vert_ANOVA_df.csv")
 
-# **** 7.2.2. ANOVA -------------------------------------------------------
+# **** 8.2.2. ANOVA -------------------------------------------------------
 
 vert_ANOVA <- ezANOVA(
   data     = vert_ANOVA_df,
@@ -561,9 +588,9 @@ vert_ANOVA_s6 <- ezANOVA(
 )
 
 
-# 8. Regressions comparison -----------------------------------------------
+# 9. Regressions comparison -----------------------------------------------
 
-# ** 8.1 Prepare data frame -----------------------------------------------
+# ** 9.1 Prepare data frame -----------------------------------------------
 
 non_obese_df <- read_csv("~/Dropbox/Projects/walking_GRF_ACC/LOOCV_hip_vert.csv") %>% 
   select(ID, speed, body_mass, BMI, BMI_cat, pVACC_g, pVGRF_N, pVGRF_N_predicted) %>% 
@@ -576,7 +603,7 @@ obese_df <- read_csv("~/Dropbox/Projects/walking_GRF_ACC/LOOCV_hip_vert.csv") %>
 whole_sample_df <- read_csv("~/Dropbox/Projects/walking_GRF_ACC/LOOCV_hip_vert.csv") %>% 
   select(ID, speed, body_mass, BMI, BMI_cat, pVACC_g, pVGRF_N, pVGRF_N_predicted)
 
-# ** 8.2 Apply Neugebauer 2014 equation -----------------------------------
+# ** 9.2 Apply Neugebauer 2014 equation -----------------------------------
 
 non_obese_df$pVGRF_N_Neugebauer <- NA
 for (i in 1:nrow(non_obese_df)) {
@@ -596,7 +623,7 @@ for (i in 1:nrow(whole_sample_df)) {
     exp(5.247 + (0.271 * whole_sample_df$pVACC_g[i]) + (0.014 * whole_sample_df$body_mass[i]))
 }
 
-# ** 8.3 Bland-Altman plots -----------------------------------------------
+# ** 9.3 Bland-Altman plots -----------------------------------------------
 
 non_obese_our_BA_plot     <- get_BA_plot(non_obese_df, "pVGRF_N", "pVGRF_N_predicted")
 non_obese_Neug_BA_plot    <-  get_BA_plot(non_obese_df, "pVGRF_N", "pVGRF_N_Neugebauer")
@@ -661,7 +688,7 @@ summary(whole_sample_our_BA_plot_LR)
 whole_sample_Neug_BA_plot_LR <- lm(Neug_diff ~ Neug_mean, data = whole_sample_df)
 summary(whole_sample_Neug_BA_plot_LR)
 
-# ** 8.4 Indices of accuracy ----------------------------------------------
+# ** 9.4 Indices of accuracy ----------------------------------------------
 
 non_obese_our_accuracy     <- accuracy_indices(non_obese_df, "pVGRF_N", "pVGRF_N_predicted")
 non_obese_Neug_accuracy    <- accuracy_indices(non_obese_df, "pVGRF_N", "pVGRF_N_Neugebauer")
