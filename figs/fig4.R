@@ -211,7 +211,7 @@ whole_sample_Neug_BA_plot <- ggplot(data = whole_sample_df) +
   theme_classic() +
   theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
   labs(
-    title = "Normal weight and overweight",
+    title = "Whole sample",
     x = "Mean of Actual and Predicted pRGRF (N)",
     y = "Difference of Actual and Predicted pRGRF (N)"
   )
