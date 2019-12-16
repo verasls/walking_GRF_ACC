@@ -10,13 +10,26 @@ vertical  <- read_csv("~/Dropbox/Projects/walking_GRF_ACC/vert_ANOVA_df.csv")
 
 # General config for the plots --------------------------------------------
 
-# Change group level names for the legend
-# (only for one of the plots, due to shared legend)
+# Recode group factor
+resultant <- resultant %>% 
+  filter(group != "ankle")
 resultant$group <- as.factor(resultant$group)
-levels(resultant$group)[1] <- "Actual peak GRF"
-levels(resultant$group)[2] <- "Peak GRF predicted by ankle accelerometer"
-levels(resultant$group)[3] <- "Peak GRF predicted by back accelerometer  "
-levels(resultant$group)[4] <- "Peak GRF predicted by hip accelerometer"
+resultant$group <- recode(
+  resultant$group,
+  "actual" = "Actual peak GRF",
+  "back" = "Peak GRF predicted by lower back accelerometer",
+  "hip" = "Peak GRF predicted by hip accelerometer"
+)
+
+vertical <- vertical %>% 
+  filter(group != "ankle")
+vertical$group <- as.factor(vertical$group)
+vertical$group <- recode(
+  vertical$group,
+  "actual" = "Actual peak GRF",
+  "back" = "Peak GRF predicted by lower back accelerometer",
+  "hip" = "Peak GRF predicted by hip accelerometer"
+)
 
 # pRGRF plot --------------------------------------------------------------
 
