@@ -4,6 +4,7 @@ library(tidyverse)
 library(here)
 library(nlme)
 library(piecewiseSEM)
+library(ez)
 source(here("R", "BMI_categories.R"))
 source(here("R", "cross_validate_mixed_model.R"))
 source(here("R", "accuracy_indices.R"))
@@ -149,3 +150,282 @@ hip_res_LR_accuracy <- accuracy_indices(LOOCV_hip_res_LR_LMM, "pRLR_Ns", "pRLR_N
 back_vert_LR_accuracy <- accuracy_indices(LOOCV_back_vert_LR_LMM, "pVLR_Ns", "pVLR_Ns_predicted")
 # Back
 hip_vert_LR_accuracy <- accuracy_indices(LOOCV_hip_vert_LR_LMM, "pVLR_Ns", "pVLR_Ns_predicted")
+
+# 6. ANOVA ----------------------------------------------------------------
+# ** 6.1. Resultant LR ----------------------------------------------------
+# **** 6.1.1. Build data frame --------------------------------------------
+
+## Predicted pRLR
+back_res_LR_pred <- LOOCV_back_res_LR %>% 
+  select(ID, speed, pRLR_Ns_predicted) %>% 
+  spread(key = speed, value = pRLR_Ns_predicted) %>% 
+  na.omit() %>% 
+  gather(
+    `2`, `3`, `4`, `5`, `6`,
+    key = speed,
+    value = back
+  )
+
+hip_res_LR_pred <- LOOCV_hip_res_LR %>%
+  select(ID, speed, pRLR_Ns_predicted) %>% 
+  spread(key = speed, value = pRLR_Ns_predicted) %>%
+  na.omit() %>%
+  gather(
+    `2`, `3`, `4`, `5`, `6`,
+    key = speed,
+    value = hip
+  )
+
+res_pred_LR_df <- back_res_LR_pred %>% 
+  full_join(hip_res_LR_pred, by = c("ID", "speed")) %>% 
+  na.omit()
+
+## Actual pRLR
+back_res_actual_LR <- LOOCV_back_res_LR %>% 
+  select(ID, speed, pRLR_Ns) %>% 
+  spread(key = speed, value = pRLR_Ns) %>% 
+  na.omit() %>% 
+  gather(
+    `2`, `3`, `4`, `5`, `6`,
+    key = speed,
+    value = actual_back
+  )
+
+hip_res_actual_LR <- LOOCV_hip_res_LR %>% 
+  select(ID, speed, pRLR_Ns) %>% 
+  spread(key = speed, value = pRLR_Ns) %>% 
+  na.omit() %>% 
+  gather(
+    `2`, `3`, `4`, `5`, `6`,
+    key = speed,
+    value = actual_hip
+  )
+
+res_actual_LR_df <- back_res_actual_LR %>% 
+  full_join(hip_res_actual_LR, by = c("ID", "speed")) %>% 
+  na.omit()
+
+res_actual_LR_df <- res_actual_LR_df %>% 
+  mutate(actual = (actual_back + actual_hip) / 2) %>% 
+  select(ID, speed, actual) 
+
+## Merge predicted and actual data frames
+res_ANOVA_LR_df <- res_pred_LR_df %>% 
+  full_join(res_actual_LR_df, by = c("ID", "speed")) %>% 
+  gather(
+    back, hip, actual,
+    key = "group",
+    value = "pRLR"
+  )
+res_ANOVA_LR_df$ID    <- as.factor(res_ANOVA_LR_df$ID)
+res_ANOVA_LR_df$speed <- as.factor(res_ANOVA_LR_df$speed)
+res_ANOVA_LR_df$group <- as.factor(res_ANOVA_LR_df$group)
+
+# Write data frame
+write_csv(res_ANOVA_LR_df, "~/Dropbox/Projects/walking_GRF_ACC/res_ANOVA_LR_df.csv")
+
+# **** 6.1.2. ANOVA -------------------------------------------------------
+
+res_ANOVA_LR <- ezANOVA(
+  data     = res_ANOVA_LR_df,
+  dv       = pRLR,
+  wid      = ID,
+  within   = .(speed, group),
+  detailed = TRUE,
+  type     = 3
+)
+
+# Post hoc (Holm)
+res_ANOVA_LR_df$speed_group <- interaction(res_ANOVA_LR_df$speed, res_ANOVA_LR_df$group)
+
+res_posthoc_LR <- pairwise.t.test(res_ANOVA_LR_df$pRLR, res_ANOVA_LR_df$speed_group, paired = TRUE, p.adjust.method = "holm")
+
+# By speed
+# 2 km/h
+res_ANOVA_LR_s2 <- ezANOVA(
+  data     = res_ANOVA_LR_df %>% filter(speed == 2),
+  dv       = pRLR,
+  wid      = ID,
+  within   = group,
+  detailed = TRUE,
+  type     = 3
+)
+
+# 3 km/h
+res_ANOVA_LR_s3 <- ezANOVA(
+  data     = res_ANOVA_LR_df %>% filter(speed == 3),
+  dv       = pRLR,
+  wid      = ID,
+  within   = group,
+  detailed = TRUE,
+  type     = 3
+)
+
+# 4 km/h
+res_ANOVA_LR_s4 <- ezANOVA(
+  data     = res_ANOVA_LR_df %>% filter(speed == 4),
+  dv       = pRLR,
+  wid      = ID,
+  within   = group,
+  detailed = TRUE,
+  type     = 3
+)
+
+# 5 km/h
+res_ANOVA_LR_s5 <- ezANOVA(
+  data     = res_ANOVA_LR_df %>% filter(speed == 5),
+  dv       = pRLR,
+  wid      = ID,
+  within   = group,
+  detailed = TRUE,
+  type     = 3
+)
+
+# 6 km/h
+res_ANOVA_LR_s6 <- ezANOVA(
+  data     = res_ANOVA_LR_df %>% filter(speed == 6),
+  dv       = pRLR,
+  wid      = ID,
+  within   = group,
+  detailed = TRUE,
+  type     = 3
+)
+
+# ** 6.2. Vertical LR -----------------------------------------------------
+# **** 6.2.1. Build data frame --------------------------------------------
+
+## Predicted pVLR
+back_vert_LR_pred <- LOOCV_back_vert_LR %>% 
+  select(ID, speed, pVLR_Ns_predicted) %>% 
+  spread(key = speed, value = pVLR_Ns_predicted) %>% 
+  na.omit() %>% 
+  gather(
+    `2`, `3`, `4`, `5`, `6`,
+    key = speed,
+    value = back
+  )
+
+hip_vert_LR_pred <- LOOCV_hip_vert_LR %>%
+  select(ID, speed, pVLR_Ns_predicted) %>% 
+  spread(key = speed, value = pVLR_Ns_predicted) %>%
+  na.omit() %>%
+  gather(
+    `2`, `3`, `4`, `5`, `6`,
+    key = speed,
+    value = hip
+  )
+
+vert_pred_LR_df <- back_vert_LR_pred %>% 
+  full_join(hip_vert_LR_pred, by = c("ID", "speed")) %>% 
+  na.omit()
+
+## Actual pVLR
+back_vert_actual_LR <- LOOCV_back_vert_LR %>% 
+  select(ID, speed, pVLR_Ns) %>% 
+  spread(key = speed, value = pVLR_Ns) %>% 
+  na.omit() %>% 
+  gather(
+    `2`, `3`, `4`, `5`, `6`,
+    key = speed,
+    value = actual_back
+  )
+
+hip_vert_actual_LR <- LOOCV_hip_vert_LR %>% 
+  select(ID, speed, pVLR_Ns) %>% 
+  spread(key = speed, value = pVLR_Ns) %>% 
+  na.omit() %>% 
+  gather(
+    `2`, `3`, `4`, `5`, `6`,
+    key = speed,
+    value = actual_hip
+  )
+
+vert_actual_LR_df <- back_vert_actual_LR %>% 
+  full_join(hip_vert_actual_LR, by = c("ID", "speed")) %>% 
+  na.omit()
+
+vert_actual_LR_df <- vert_actual_LR_df %>% 
+  mutate(actual = (actual_back + actual_hip) / 2) %>% 
+  select(ID, speed, actual) 
+
+## Merge predicted and actual data frames
+vert_ANOVA_LR_df <- vert_pred_LR_df %>% 
+  full_join(vert_actual_LR_df, by = c("ID", "speed")) %>% 
+  gather(
+    back, hip, actual,
+    key = "group",
+    value = "pVLR"
+  )
+vert_ANOVA_LR_df$ID    <- as.factor(vert_ANOVA_LR_df$ID)
+vert_ANOVA_LR_df$speed <- as.factor(vert_ANOVA_LR_df$speed)
+vert_ANOVA_LR_df$group <- as.factor(vert_ANOVA_LR_df$group)
+
+# Write data frame
+write_csv(vert_ANOVA_LR_df, "~/Dropbox/Projects/walking_GRF_ACC/vert_ANOVA_LR_df.csv")
+
+# **** 6.2.2. ANOVA -------------------------------------------------------
+
+vert_ANOVA_LR <- ezANOVA(
+  data     = vert_ANOVA_LR_df,
+  dv       = pRLR,
+  wid      = ID,
+  within   = .(speed, group),
+  detailed = TRUE,
+  type     = 3
+)
+
+# Post hoc (Holm)
+vert_ANOVA_LR_df$speed_group <- interaction(vert_ANOVA_LR_df$speed, vert_ANOVA_LR_df$group)
+
+vert_posthoc_LR <- pairwise.t.test(vert_ANOVA_LR_df$pRLR, vert_ANOVA_LR_df$speed_group, paired = TRUE, p.adjust.method = "holm")
+
+# By speed
+# 2 km/h
+vert_ANOVA_LR_s2 <- ezANOVA(
+  data     = vert_ANOVA_LR_df %>% filter(speed == 2),
+  dv       = pRLR,
+  wid      = ID,
+  within   = group,
+  detailed = TRUE,
+  type     = 3
+)
+
+# 3 km/h
+vert_ANOVA_LR_s3 <- ezANOVA(
+  data     = vert_ANOVA_LR_df %>% filter(speed == 3),
+  dv       = pRLR,
+  wid      = ID,
+  within   = group,
+  detailed = TRUE,
+  type     = 3
+)
+
+# 4 km/h
+vert_ANOVA_LR_s4 <- ezANOVA(
+  data     = vert_ANOVA_LR_df %>% filter(speed == 4),
+  dv       = pRLR,
+  wid      = ID,
+  within   = group,
+  detailed = TRUE,
+  type     = 3
+)
+
+# 5 km/h
+vert_ANOVA_LR_s5 <- ezANOVA(
+  data     = vert_ANOVA_LR_df %>% filter(speed == 5),
+  dv       = pRLR,
+  wid      = ID,
+  within   = group,
+  detailed = TRUE,
+  type     = 3
+)
+
+# 6 km/h
+vert_ANOVA_LR_s6 <- ezANOVA(
+  data     = vert_ANOVA_LR_df %>% filter(speed == 6),
+  dv       = pRLR,
+  wid      = ID,
+  within   = group,
+  detailed = TRUE,
+  type     = 3
+)
