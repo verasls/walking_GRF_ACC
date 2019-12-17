@@ -137,6 +137,44 @@ back_vert_LR_BA_plot <- get_BA_plot(LOOCV_back_vert_LR_LMM, "pVLR_Ns", "pVLR_Ns_
 # Back
 hip_vert_LR_BA_plot <- get_BA_plot(LOOCV_hip_vert_LR_LMM, "pVLR_Ns", "pVLR_Ns_predicted")
 
+# Check whether bias is statisticaly different than 0
+# For resultant peak loading rate
+# Back
+LOOCV_back_res_LR_LMM$diff <- LOOCV_back_res_LR_LMM$pRLR_Ns - LOOCV_back_res_LR_LMM$pRLR_Ns_predicted
+LOOCV_back_res_LR_LMM$mean <- (LOOCV_back_res_LR_LMM$pRLR_Ns + LOOCV_back_res_LR_LMM$pRLR_Ns_predicted) / 2
+t.test(LOOCV_back_res_LR_LMM$diff, mu = 0)
+# Hip
+LOOCV_hip_res_LR_LMM$diff <- LOOCV_hip_res_LR_LMM$pRLR_Ns - LOOCV_hip_res_LR_LMM$pRLR_Ns_predicted
+LOOCV_hip_res_LR_LMM$mean <- (LOOCV_hip_res_LR_LMM$pRLR_Ns + LOOCV_hip_res_LR_LMM$pRLR_Ns_predicted) / 2
+t.test(LOOCV_hip_res_LR_LMM$diff, mu = 0)
+
+# For vertical peak loading rate
+# Back
+LOOCV_back_vert_LR_LMM$diff <- LOOCV_back_vert_LR_LMM$pVLR_Ns - LOOCV_back_vert_LR_LMM$pVLR_Ns_predicted
+LOOCV_back_vert_LR_LMM$mean <- (LOOCV_back_vert_LR_LMM$pVLR_Ns + LOOCV_back_vert_LR_LMM$pVLR_Ns_predicted) / 2
+t.test(LOOCV_back_vert_LR_LMM$diff, mu = 0)
+# Hip
+LOOCV_hip_vert_LR_LMM$diff <- LOOCV_hip_vert_LR_LMM$pVLR_Ns - LOOCV_hip_vert_LR_LMM$pVLR_Ns_predicted
+LOOCV_hip_vert_LR_LMM$mean <- (LOOCV_hip_vert_LR_LMM$pVLR_Ns + LOOCV_hip_vert_LR_LMM$pVLR_Ns_predicted) / 2
+t.test(LOOCV_hip_vert_LR_LMM$diff, mu = 0)
+
+### Linear regressions to identify proportional bias
+# For resultant peak loading rate
+# Back
+back_res_LR_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_back_res_LR_LMM)
+summary(back_res_LR_BA_plot_LR)
+# Hip
+hip_res_LR_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_hip_res_LR_LMM)
+summary(hip_res_LR_BA_plot_LR)
+
+# For vertical peak loading rate
+# Back
+back_vert_LR_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_back_vert_LR_LMM)
+summary(back_vert_LR_BA_plot_LR)
+# Hip
+hip_vert_LR_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_hip_vert_LR_LMM)
+summary(hip_vert_LR_BA_plot_LR)
+
 # 5. Indices of accuracy --------------------------------------------------
 
 # For resultant peak loading rate
