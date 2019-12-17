@@ -12,12 +12,6 @@ source(here("R", "get_BA_plot.R"))
 
 # 1. Prepare data ---------------------------------------------------------
 
-ankle <- read_csv(here("data", "ankle_sec.csv")) %>% 
-  filter(speed <= 6) %>% 
-  select(-c(body_weight, pVGRF_BW, pRGRF_BW, pVACC_ms2, pVACC_ms2, pRACC_ms2)) %>% 
-  BMI_categories() %>% 
-  select(ID, speed, body_mass, height, BMI, BMI_cat, sex, age, pVGRF_N, pVACC_g, pRGRF_N, pRACC_g)
-
 back <- read_csv(here("data", "back_sec.csv")) %>% 
   filter(speed <= 6) %>% 
   select(-c(body_weight, pVGRF_BW, pRGRF_BW, pVACC_ms2, pVACC_ms2, pRACC_ms2)) %>% 
@@ -78,15 +72,6 @@ Hip_2nd_law_accuracy <- accuracy_indices(hip_2nd_law, "pVGRF_N", "pVGRF_N_predic
 # 4. Linear mixed models --------------------------------------------------
 
 # For resultant peak ground reaction force
-ankle_res_LMM <- lme(
-  fixed = pRGRF_N ~ pRACC_g + I(pRACC_g^2) + body_mass + pRACC_g : body_mass,
-  random = ~ 1 | ID,
-  method = "ML",
-  correlation = corAR1(),
-  data = ankle
-)
-r2_ankle_res_LMM <- rsquared(ankle_res_LMM)
-
 back_res_LMM <- lme(
   fixed = pRGRF_N ~ pRACC_g + I(pRACC_g^2) + body_mass + pRACC_g : body_mass,
   random = ~ 1 | ID,
@@ -106,15 +91,6 @@ hip_res_LMM <- lme(
 r2_hip_res_LMM <- rsquared(hip_res_LMM)
 
 # For vertical peak ground reaction force
-ankle_vert_LMM <- lme(
-  fixed = pVGRF_N ~ pVACC_g + I(pVACC_g^2) + body_mass + pVACC_g : body_mass,
-  random = ~ 1 | ID,
-  method = "ML",
-  correlation = corAR1(),
-  data = ankle
-)
-r2_ankle_vert_LMM <- rsquared(ankle_vert_LMM)
-
 back_vert_LMM <- lme(
   fixed = pVGRF_N ~ pVACC_g + I(pVACC_g^2) + body_mass + pVACC_g : body_mass,
   random = ~ 1 | ID,
@@ -138,8 +114,6 @@ r2_hip_vert_LMM <- rsquared(hip_vert_LMM)
 # For resultant peak ground reaction force
 fix_eff    <- pRGRF_N ~ pRACC_g + I(pRACC_g^2) + body_mass + pRACC_g : body_mass
 rand_eff   <- ~ 1 | ID
-# Ankle
-LOOCV_ankle_res_LMM <- do.call(rbind, (lapply(unique(ankle$ID), cross_validate_mixed_model, df = ankle)))
 # Back
 LOOCV_back_res_LMM <- do.call(rbind, (lapply(unique(back$ID), cross_validate_mixed_model, df = back)))
 # Hip
@@ -148,47 +122,35 @@ LOOCV_hip_res_LMM <- do.call(rbind, (lapply(unique(hip$ID), cross_validate_mixed
 # For vertical peak ground reaction force
 fix_eff    <- pVGRF_N ~ pVACC_g + I(pVACC_g^2) + body_mass + pVACC_g : body_mass
 rand_eff   <- ~ 1 | ID
-# Ankle
-LOOCV_ankle_vert_LMM <- do.call(rbind, (lapply(unique(ankle$ID), cross_validate_mixed_model, df = ankle)))
 # Back
 LOOCV_back_vert_LMM <- do.call(rbind, (lapply(unique(back$ID), cross_validate_mixed_model, df = back)))
 # Hip
 LOOCV_hip_vert_LMM <- do.call(rbind, (lapply(unique(hip$ID), cross_validate_mixed_model, df = hip)))
 
 # Writing LOOCV data
-LOOCV_ankle_res <- LOOCV_ankle_res_LMM %>% 
-  select(ID, speed, body_mass, BMI, BMI_cat, sex, age, pRGRF_N, pRACC_g, pRGRF_N_predicted)
 LOOCV_back_res <- LOOCV_back_res_LMM %>% 
   select(ID, speed, body_mass, BMI, BMI_cat, sex, age, pRGRF_N, pRACC_g, pRGRF_N_predicted)
 LOOCV_hip_res <- LOOCV_hip_res_LMM %>% 
   select(ID, speed, body_mass, BMI, BMI_cat, sex, age, pRGRF_N, pRACC_g, pRGRF_N_predicted)
-LOOCV_ankle_vert <- LOOCV_ankle_vert_LMM %>% 
-  select(ID, speed, body_mass, BMI, BMI_cat, sex, age, pVGRF_N, pVACC_g, pVGRF_N_predicted)
 LOOCV_back_vert <- LOOCV_back_vert_LMM %>% 
   select(ID, speed, body_mass, BMI, BMI_cat, sex, age, pVGRF_N, pVACC_g, pVGRF_N_predicted)
 LOOCV_hip_vert <- LOOCV_hip_vert_LMM %>% 
   select(ID, speed, body_mass, BMI, BMI_cat, sex, age, pVGRF_N, pVACC_g, pVGRF_N_predicted)
 
-write_csv(LOOCV_ankle_res, "~/Dropbox/Projects/walking_GRF_ACC/LOOCV_ankle_res.csv")
 write_csv(LOOCV_back_res, "~/Dropbox/Projects/walking_GRF_ACC/LOOCV_back_res.csv")
 write_csv(LOOCV_hip_res, "~/Dropbox/Projects/walking_GRF_ACC/LOOCV_hip_res.csv")
-write_csv(LOOCV_ankle_vert, "~/Dropbox/Projects/walking_GRF_ACC/LOOCV_ankle_vert.csv")
 write_csv(LOOCV_back_vert, "~/Dropbox/Projects/walking_GRF_ACC/LOOCV_back_vert.csv")
 write_csv(LOOCV_hip_vert, "~/Dropbox/Projects/walking_GRF_ACC/LOOCV_hip_vert.csv")
 
 # 6. Bland-Altman plots ---------------------------------------------------
 
 # For resultant peak ground reaction force
-# Ankle
-ankle_res_BA_plot <- get_BA_plot(LOOCV_ankle_res_LMM, "pRGRF_N", "pRGRF_N_predicted")
 # Back
 back_res_BA_plot <- get_BA_plot(LOOCV_back_res_LMM, "pRGRF_N", "pRGRF_N_predicted")
 # Hip
 hip_res_BA_plot <- get_BA_plot(LOOCV_hip_res_LMM, "pRGRF_N", "pRGRF_N_predicted")
 
 # For vertical peak ground reaction force
-# Ankle
-ankle_vert_BA_plot <- get_BA_plot(LOOCV_ankle_vert_LMM, "pVGRF_N", "pVGRF_N_predicted")
 # Back
 back_vert_BA_plot <- get_BA_plot(LOOCV_back_vert_LMM, "pVGRF_N", "pVGRF_N_predicted")
 # Hip
@@ -196,10 +158,6 @@ hip_vert_BA_plot <- get_BA_plot(LOOCV_hip_vert_LMM, "pVGRF_N", "pVGRF_N_predicte
 
 # Check whether bias is statisticaly different than 0
 # For resultant peak ground reaction force
-# Ankle
-LOOCV_ankle_res_LMM$diff <- LOOCV_ankle_res_LMM$pRGRF_N - LOOCV_ankle_res_LMM$pRGRF_N_predicted
-LOOCV_ankle_res_LMM$mean <- (LOOCV_ankle_res_LMM$pRGRF_N + LOOCV_ankle_res_LMM$pRGRF_N_predicted) / 2
-t.test(LOOCV_ankle_res_LMM$diff, mu = 0)
 # Back
 LOOCV_back_res_LMM$diff <- LOOCV_back_res_LMM$pRGRF_N - LOOCV_back_res_LMM$pRGRF_N_predicted
 LOOCV_back_res_LMM$mean <- (LOOCV_back_res_LMM$pRGRF_N + LOOCV_back_res_LMM$pRGRF_N_predicted) / 2
@@ -210,10 +168,6 @@ LOOCV_hip_res_LMM$mean <- (LOOCV_hip_res_LMM$pRGRF_N + LOOCV_hip_res_LMM$pRGRF_N
 t.test(LOOCV_hip_res_LMM$diff, mu = 0)
 
 # For vertical peak ground reaction force
-# Ankle
-LOOCV_ankle_vert_LMM$diff <- LOOCV_ankle_vert_LMM$pVGRF_N - LOOCV_ankle_vert_LMM$pVGRF_N_predicted
-LOOCV_ankle_vert_LMM$mean <- (LOOCV_ankle_vert_LMM$pVGRF_N + LOOCV_ankle_vert_LMM$pVGRF_N_predicted) / 2
-t.test(LOOCV_ankle_vert_LMM$diff, mu = 0)
 # Back
 LOOCV_back_vert_LMM$diff <- LOOCV_back_vert_LMM$pVGRF_N - LOOCV_back_vert_LMM$pVGRF_N_predicted
 LOOCV_back_vert_LMM$mean <- (LOOCV_back_vert_LMM$pVGRF_N + LOOCV_back_vert_LMM$pVGRF_N_predicted) / 2
@@ -225,9 +179,6 @@ t.test(LOOCV_hip_vert_LMM$diff, mu = 0)
 
 ### Linear regressions to identify proportional bias
 # For resultant peak ground reaction force
-# Ankle
-ankle_res_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_ankle_res_LMM)
-summary(ankle_res_BA_plot_LR)
 # Back
 back_res_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_back_res_LMM)
 summary(back_res_BA_plot_LR)
@@ -236,9 +187,6 @@ hip_res_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_hip_res_LMM)
 summary(hip_res_BA_plot_LR)
 
 # For vertical peak ground reaction force
-# Ankle
-ankle_vert_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_ankle_vert_LMM)
-summary(ankle_vert_BA_plot_LR)
 # Back
 back_vert_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_back_vert_LMM)
 summary(back_vert_BA_plot_LR)
@@ -249,16 +197,12 @@ summary(hip_vert_BA_plot_LR)
 # 7. Indices of accuracy --------------------------------------------------
 
 # For resultant peak ground reaction force
-# Ankle
-ankle_res_accuracy <- accuracy_indices(LOOCV_ankle_res_LMM, "pRGRF_N", "pRGRF_N_predicted")
 # Back
 back_res_accuracy <- accuracy_indices(LOOCV_back_res_LMM, "pRGRF_N", "pRGRF_N_predicted")
 # Hip
 hip_res_accuracy <- accuracy_indices(LOOCV_hip_res_LMM, "pRGRF_N", "pRGRF_N_predicted")
 
 # For vertical peak ground reaction force
-# Ankle
-ankle_vert_accuracy <- accuracy_indices(LOOCV_ankle_vert_LMM, "pVGRF_N", "pVGRF_N_predicted")
 # Back
 back_vert_accuracy <- accuracy_indices(LOOCV_back_vert_LMM, "pVGRF_N", "pVGRF_N_predicted")
 # Hip
@@ -269,16 +213,6 @@ hip_vert_accuracy <- accuracy_indices(LOOCV_hip_vert_LMM, "pVGRF_N", "pVGRF_N_pr
 # **** 8.1.1. Build data frame --------------------------------------------
 
 ## Predicted pRGRF
-ankle_res_pred <- LOOCV_ankle_res_LMM %>% 
-  select(ID, speed, pRGRF_N_predicted) %>% 
-  spread(key = speed, value = pRGRF_N_predicted) %>% 
-  na.omit() %>% 
-  gather(
-    `2`, `3`, `4`, `5`, `6`,
-    key = speed,
-    value = ankle
-  )
-
 back_res_pred <- LOOCV_back_res_LMM %>% 
   select(ID, speed, pRGRF_N_predicted) %>% 
   spread(key = speed, value = pRGRF_N_predicted) %>% 
@@ -299,22 +233,11 @@ hip_res_pred <- LOOCV_hip_res_LMM %>%
     value = hip
   )
 
-res_pred_df <- ankle_res_pred %>% 
-  full_join(back_res_pred, by = c("ID", "speed")) %>% 
+res_pred_df <- back_res_pred %>% 
   full_join(hip_res_pred, by = c("ID", "speed")) %>% 
   na.omit()
 
 ## Actual pRGRF
-ankle_res_actual <- LOOCV_ankle_res_LMM %>% 
-  select(ID, speed, pRGRF_N) %>% 
-  spread(key = speed, value = pRGRF_N) %>% 
-  na.omit() %>% 
-  gather(
-    `2`, `3`, `4`, `5`, `6`,
-    key = speed,
-    value = actual_ankle
-  )
-
 back_res_actual <- LOOCV_back_res_LMM %>% 
   select(ID, speed, pRGRF_N) %>% 
   spread(key = speed, value = pRGRF_N) %>% 
@@ -335,20 +258,19 @@ hip_res_actual <- LOOCV_hip_res_LMM %>%
     value = actual_hip
   )
 
-res_actual_df <- ankle_res_actual %>% 
-  full_join(back_res_actual, by = c("ID", "speed")) %>% 
+res_actual_df <- back_res_actual %>% 
   full_join(hip_res_actual, by = c("ID", "speed")) %>% 
   na.omit()
 
 res_actual_df <- res_actual_df %>% 
-  mutate(actual = (actual_ankle + actual_back + actual_hip) / 3) %>% 
+  mutate(actual = (actual_back + actual_hip) / 2) %>% 
   select(ID, speed, actual) 
 
 ## Merge predicted and actual data frames
 res_ANOVA_df <- res_pred_df %>% 
   full_join(res_actual_df, by = c("ID", "speed")) %>% 
   gather(
-    ankle, back, hip, actual,
+    back, hip, actual,
     key = "group",
     value = "pRGRF"
   )
@@ -430,16 +352,6 @@ res_ANOVA_s6 <- ezANOVA(
 # **** 8.2.1. Build data frame --------------------------------------------
 
 ## Predicted pVGRF
-ankle_vert_pred <- LOOCV_ankle_vert_LMM %>% 
-  select(ID, speed, pVGRF_N_predicted) %>% 
-  spread(key = speed, value = pVGRF_N_predicted) %>% 
-  na.omit() %>% 
-  gather(
-    `2`, `3`, `4`, `5`, `6`,
-    key = speed,
-    value = ankle
-  )
-
 back_vert_pred <- LOOCV_back_vert_LMM %>% 
   select(ID, speed, pVGRF_N_predicted) %>% 
   spread(key = speed, value = pVGRF_N_predicted) %>% 
@@ -460,22 +372,11 @@ hip_vert_pred <- LOOCV_hip_vert_LMM %>%
     value = hip
   )
 
-vert_pred_df <- ankle_vert_pred %>% 
-  full_join(back_vert_pred, by = c("ID", "speed")) %>% 
+vert_pred_df <- back_vert_pred %>% 
   full_join(hip_vert_pred, by = c("ID", "speed")) %>% 
   na.omit()
 
 ## Actual pVGRF
-ankle_vert_actual <- LOOCV_ankle_vert_LMM %>% 
-  select(ID, speed, pVGRF_N) %>% 
-  spread(key = speed, value = pVGRF_N) %>% 
-  na.omit() %>% 
-  gather(
-    `2`, `3`, `4`, `5`, `6`,
-    key = speed,
-    value = actual_ankle
-  )
-
 back_vert_actual <- LOOCV_back_vert_LMM %>% 
   select(ID, speed, pVGRF_N) %>% 
   spread(key = speed, value = pVGRF_N) %>% 
@@ -496,20 +397,19 @@ hip_vert_actual <- LOOCV_hip_vert_LMM %>%
     value = actual_hip
   )
 
-vert_actual_df <- ankle_vert_actual %>% 
-  full_join(back_vert_actual, by = c("ID", "speed")) %>% 
+vert_actual_df <- back_vert_actual %>% 
   full_join(hip_vert_actual, by = c("ID", "speed")) %>% 
   na.omit()
 
 vert_actual_df <- vert_actual_df %>% 
-  mutate(actual = (actual_ankle + actual_back + actual_hip) / 3) %>% 
+  mutate(actual = (actual_back + actual_hip) / 2) %>% 
   select(ID, speed, actual) 
 
 ## Merge predicted and actual data frames
 vert_ANOVA_df <- vert_pred_df %>% 
   full_join(vert_actual_df, by = c("ID", "speed")) %>% 
   gather(
-    ankle, back, hip, actual,
+    back, hip, actual,
     key = "group",
     value = "pVGRF"
   )
