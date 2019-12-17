@@ -68,6 +68,27 @@ hip_res_LR_LMM <- lme(
 )
 rsquared(hip_res_LR_LMM)
 
+# For vertical peak loading rate
+back_vert_LR_LMM <- lme(
+  fixed = pVLR_Ns ~ pVATR_gs + I(pVATR_gs^2) + body_mass + pVATR_gs:body_mass,
+  random = ~ 1 | ID,
+  method = "ML",
+  correlation = corAR1(),
+  data = back_LR,
+  na.action = na.omit
+)
+rsquared(back_vert_LR_LMM)
+
+hip_vert_LR_LMM <- lme(
+  fixed = pVLR_Ns ~ pVATR_gs + I(pVATR_gs^2) + body_mass + pVATR_gs:body_mass,
+  random = ~ 1 | ID,
+  method = "ML",
+  correlation = corAR1(),
+  data = hip_LR,
+  na.action = na.omit
+)
+rsquared(hip_vert_LR_LMM)
+
 # 3. Leave-one-out cross validation ---------------------------------------
 
 # For resultant peak loading rate
@@ -78,6 +99,14 @@ LOOCV_back_res_LR_LMM <- do.call(rbind, (lapply(unique(back_LR$ID), cross_valida
 # Hip
 LOOCV_hip_res_LR_LMM <- do.call(rbind, (lapply(unique(hip_LR$ID), cross_validate_mixed_model, df = hip_LR)))
 
+# For vertical peak loading rate
+fix_eff    <- pVLR_Ns ~ pVATR_gs + I(pVATR_gs^2) + body_mass + pVATR_gs:body_mass
+rand_eff   <- ~ 1 | ID
+# Back
+LOOCV_back_vert_LR_LMM <- do.call(rbind, (lapply(unique(back_LR$ID), cross_validate_mixed_model, df = back_LR)))
+# Hip
+LOOCV_hip_vert_LR_LMM <- do.call(rbind, (lapply(unique(hip_LR$ID), cross_validate_mixed_model, df = hip_LR)))
+
 # 4. Bland-Altman plots ---------------------------------------------------
 
 # For resultant peak loading rate
@@ -86,6 +115,12 @@ back_res_LR_BA_plot <- get_BA_plot(LOOCV_back_res_LR_LMM, "pRLR_Ns", "pRLR_Ns_pr
 # Back
 hip_res_LR_BA_plot <- get_BA_plot(LOOCV_hip_res_LR_LMM, "pRLR_Ns", "pRLR_Ns_predicted")
 
+# For vertical peak loading rate
+# Back
+back_vert_LR_BA_plot <- get_BA_plot(LOOCV_back_vert_LR_LMM, "pVLR_Ns", "pVLR_Ns_predicted")
+# Back
+hip_vert_LR_BA_plot <- get_BA_plot(LOOCV_hip_vert_LR_LMM, "pVLR_Ns", "pVLR_Ns_predicted")
+
 # 5. Indices of accuracy --------------------------------------------------
 
 # For resultant peak loading rate
@@ -93,3 +128,9 @@ hip_res_LR_BA_plot <- get_BA_plot(LOOCV_hip_res_LR_LMM, "pRLR_Ns", "pRLR_Ns_pred
 back_res_LR_accuracy <- accuracy_indices(LOOCV_back_res_LR_LMM, "pRLR_Ns", "pRLR_Ns_predicted")
 # Hip
 hip_res_LR_accuracy <- accuracy_indices(LOOCV_hip_res_LR_LMM, "pRLR_Ns", "pRLR_Ns_predicted")
+
+# For vertical peak loading rate
+# Back
+back_vert_LR_accuracy <- accuracy_indices(LOOCV_back_vert_LR_LMM, "pVLR_Ns", "pVLR_Ns_predicted")
+# Back
+hip_vert_LR_accuracy <- accuracy_indices(LOOCV_hip_vert_LR_LMM, "pVLR_Ns", "pVLR_Ns_predicted")
