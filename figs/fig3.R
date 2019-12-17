@@ -5,35 +5,45 @@ library(cowplot)
 
 # Read files --------------------------------------------------------------
 
-resultant <- read_csv("~/Dropbox/Projects/walking_GRF_ACC/res_ANOVA_df.csv")
-vertical  <- read_csv("~/Dropbox/Projects/walking_GRF_ACC/vert_ANOVA_df.csv")
+resultant_GRF <- read_csv("~/Dropbox/Projects/walking_GRF_ACC/res_ANOVA_df.csv")
+vertical_GRF  <- read_csv("~/Dropbox/Projects/walking_GRF_ACC/vert_ANOVA_df.csv")
+resultant_LR  <- read_csv("~/Dropbox/Projects/walking_GRF_ACC/res_ANOVA_LR_df.csv")
+vertical_LR   <- read_csv("~/Dropbox/Projects/walking_GRF_ACC/vert_ANOVA_LR_df.csv")
 
 # General config for the plots --------------------------------------------
 
 # Recode group factor
-resultant <- resultant %>% 
+resultant_GRF <- resultant_GRF %>% 
   filter(group != "ankle")
-resultant$group <- as.factor(resultant$group)
-resultant$group <- recode(
-  resultant$group,
+resultant_GRF$group <- as.factor(resultant_GRF$group)
+resultant_GRF$group <- recode(
+  resultant_GRF$group,
   "actual" = "Actual peak GRF",
   "back" = "Peak GRF predicted by lower back accelerometer",
   "hip" = "Peak GRF predicted by hip accelerometer"
 )
 
-vertical <- vertical %>% 
+vertical_GRF <- vertical_GRF %>% 
   filter(group != "ankle")
-vertical$group <- as.factor(vertical$group)
-vertical$group <- recode(
-  vertical$group,
+vertical_GRF$group <- as.factor(vertical_GRF$group)
+vertical_GRF$group <- recode(
+  vertical_GRF$group,
   "actual" = "Actual peak GRF",
   "back" = "Peak GRF predicted by lower back accelerometer",
   "hip" = "Peak GRF predicted by hip accelerometer"
+)
+
+resultant_LR$group <- as.factor(resultant_LR$group)
+resultant_LR$group <- recode(
+  resultant_LR$group,
+  "actual" = "Actual peak LR",
+  "back" = "Peak LR predicted by lower back accelerometer",
+  "hip" = "Peak LR predicted by hip accelerometer"
 )
 
 # pRGRF plot --------------------------------------------------------------
 
-pRGRF_plot <- ggplot(data = resultant, aes(x = speed, y = pRGRF, group = group)) + 
+pRGRF_plot <- ggplot(data = resultant_GRF, aes(x = speed, y = pRGRF, group = group)) + 
   stat_summary(fun.y = mean, geom = "point", size = 2, position = position_dodge(0.5), aes(shape = group)) +
   stat_summary(fun.y = mean, geom = "line", position = position_dodge(0.5), aes(linetype = group)) +
   stat_summary(fun.data = mean_cl_normal, geom = "errorbar", width = 0.4, position = position_dodge(0.5)) +
@@ -50,7 +60,7 @@ pRGRF_plot <- ggplot(data = resultant, aes(x = speed, y = pRGRF, group = group))
   guides(col = guide_legend(nrow = 2, byrow = TRUE)) +
   labs(
     title = "A)",
-    x = bquote("Speed" ~ (km^. ~ h^-1)),
+    x = quote("Speed"~(km%.%h^1)),
     y = "pRGRF (N)"
   ) +
   annotate("segment", x = 1.7, xend = 2.3, y = 1060, yend = 1060) +
@@ -76,7 +86,7 @@ pRGRF_plot <- ggplot(data = resultant, aes(x = speed, y = pRGRF, group = group))
 
 # pVGRF plot --------------------------------------------------------------
 
-pVGRF_plot <- ggplot(data = vertical, aes(x = speed, y = pVGRF, group = group)) + 
+pVGRF_plot <- ggplot(data = vertical_GRF, aes(x = speed, y = pVGRF, group = group)) + 
   stat_summary(fun.y = mean, geom = "point", size = 2, position = position_dodge(0.5), aes(shape = group)) +
   stat_summary(fun.y = mean, geom = "line", position = position_dodge(0.5), aes(linetype = group)) +
   stat_summary(fun.data = mean_cl_normal, geom = "errorbar", width = 0.4, position = position_dodge(0.5)) +
@@ -88,7 +98,7 @@ pVGRF_plot <- ggplot(data = vertical, aes(x = speed, y = pVGRF, group = group)) 
   theme(plot.title = element_text(face = "bold")) +
   labs(
     title = "B)",
-    x = bquote("Speed" ~ (km^. ~ h^-1)),
+    x = quote("Speed"~(km%.%h^1)),
     y = "pVGRF (N)"
   ) +
   annotate("segment", x = 1.7, xend = 2.3, y = 1050, yend = 1050) +
@@ -112,20 +122,78 @@ pVGRF_plot <- ggplot(data = vertical, aes(x = speed, y = pVGRF, group = group)) 
   annotate("segment", x = 6.3, xend = 6.3, y = 1300, yend = 1320) +
   annotate("text", x = 6, y = 1340, label = expression(paste(italic("p"), "= 0.90")))
 
+# pRLR plot ---------------------------------------------------------------
+
+pRLR_plot <- ggplot(data = resultant_LR, aes(x = speed, y = pRLR, group = group)) + 
+  stat_summary(fun.y = mean, geom = "point", size = 2, position = position_dodge(0.5), aes(shape = group)) +
+  stat_summary(fun.y = mean, geom = "line", position = position_dodge(0.5), aes(linetype = group)) +
+  stat_summary(fun.data = mean_cl_normal, geom = "errorbar", width = 0.4, position = position_dodge(0.5)) +
+  scale_shape_manual(values = c(16, 17, 15, 1)) +
+  scale_linetype_manual(values = c("solid", "dashed", "dotted", "twodash")) +
+  scale_y_continuous(breaks = seq(from = 4000, to = 16000, by = 2000)) +
+  theme_classic() +
+  theme(
+    plot.title = element_text(face = "bold"),
+    legend.title = element_blank(),
+    legend.position = "bottom"
+  ) +
+  guides(col = guide_legend(nrow = 2, byrow = TRUE)) +
+  labs(
+    title = "C)",
+    x = quote("Speed"~(km%.%h^1)),
+    y = quote("pRLR"~(N%.%s^1))
+  )
+
+# pVLR plot ---------------------------------------------------------------
+
+pVLR_plot <- ggplot(data = vertical_LR, aes(x = speed, y = pVLR, group = group)) + 
+  stat_summary(fun.y = mean, geom = "point", size = 2, position = position_dodge(0.5), aes(shape = group)) +
+  stat_summary(fun.y = mean, geom = "line", position = position_dodge(0.5), aes(linetype = group)) +
+  stat_summary(fun.data = mean_cl_normal, geom = "errorbar", width = 0.4, position = position_dodge(0.5)) +
+  scale_shape_manual(values = c(16, 17, 15, 1)) +
+  scale_linetype_manual(values = c("solid", "dashed", "dotted", "twodash")) +
+  scale_y_continuous(breaks = seq(from = 4000, to = 16000, by = 2000)) +
+  theme_classic() +
+  theme(plot.title = element_text(face = "bold")) +
+  guides(col = guide_legend(nrow = 2, byrow = TRUE)) +
+  labs(
+    title = "D)",
+    x = quote("Speed"~(km%.%h^1)),
+    y = quote("pVLR"~(N%.%s^1))
+  )
+
 # Plot grid ---------------------------------------------------------------
 
+# GRF plot grid
 GRF_plot_grid_1 <- plot_grid(
   pRGRF_plot + theme(legend.position = "none"),
   pVGRF_plot + theme(legend.position = "none"), 
   ncol = 2, nrow = 1
 )
 
-legend <- get_legend(pRGRF_plot)
+legend_GRF <- get_legend(pRGRF_plot)
 
-GRF_plot_grid <- plot_grid(GRF_plot_grid_1, legend, ncol = 1, rel_heights = c(1, 0.2))
+GRF_plot_grid <- plot_grid(GRF_plot_grid_1, legend_GRF, ncol = 1, rel_heights = c(1, 0.2))
+
+# LR plot grid
+LR_plot_grid_1 <- plot_grid(
+  pRLR_plot + theme(legend.position = "none"),
+  pVLR_plot + theme(legend.position = "none"), 
+  ncol = 2, nrow = 1
+)
+
+legend_LR <- get_legend(pRLR_plot)
+
+LR_plot_grid <- plot_grid(LR_plot_grid_1, legend_LR, ncol = 1, rel_heights = c(1, 0.2))
+
+# Combine plots
+plot_grid <- plot_grid(
+  GRF_plot_grid, LR_plot_grid,
+  ncol = 1, nrow = 2
+)
 
 # Uncomment lines below to save plot
 # ggsave(
 #   filename = "figs/fig3.tiff",
-#   plot = GRF_plot_grid, width = 30, height = 15, dpi = 600, units = "cm"
+#   plot = plot_grid, width = 30, height = 30, dpi = 600, units = "cm"
 # )
