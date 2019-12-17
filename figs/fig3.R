@@ -66,23 +66,23 @@ pRGRF_plot <- ggplot(data = resultant_GRF, aes(x = speed, y = pRGRF, group = gro
   annotate("segment", x = 1.7, xend = 2.3, y = 1060, yend = 1060) +
   annotate("segment", x = 1.7, xend = 1.7, y = 1050, yend = 1070) +
   annotate("segment", x = 2.3, xend = 2.3, y = 1050, yend = 1070) +
-  annotate("text", x = 2, y = 1090, label = expression(paste(italic("p"), "= 0.42"))) +
+  annotate("text", x = 2, y = 1090, label = expression(paste(italic("p"), "= 0.79"))) +
   annotate("segment", x = 2.7, xend = 3.3, y = 1130, yend = 1130) +
   annotate("segment", x = 2.7, xend = 2.7, y = 1120, yend = 1140) +
   annotate("segment", x = 3.3, xend = 3.3, y = 1120, yend = 1140) +
-  annotate("text", x = 3, y = 1160, label = expression(paste(italic("p"), "= 0.19"))) +
+  annotate("text", x = 3, y = 1160, label = expression(paste(italic("p"), "= 0.58"))) +
   annotate("segment", x = 3.7, xend = 4.3, y = 1200, yend = 1200) +
   annotate("segment", x = 3.7, xend = 3.7, y = 1190, yend = 1210) +
   annotate("segment", x = 4.3, xend = 4.3, y = 1190, yend = 1210) +
-  annotate("text", x = 4, y = 1230, label = expression(paste(italic("p"), "= 0.91"))) +
+  annotate("text", x = 4, y = 1230, label = expression(paste(italic("p"), "= 0.74"))) +
   annotate("segment", x = 4.7, xend = 5.3, y = 1280, yend = 1280) +
   annotate("segment", x = 4.7, xend = 4.7, y = 1270, yend = 1290) +
   annotate("segment", x = 5.3, xend = 5.3, y = 1270, yend = 1290) +
-  annotate("text", x = 5, y = 1310, label = expression(paste(italic("p"), "= 0.53"))) +
+  annotate("text", x = 5, y = 1310, label = expression(paste(italic("p"), "= 0.86"))) +
   annotate("segment", x = 5.7, xend = 6.3, y = 1360, yend = 1360) +
   annotate("segment", x = 5.7, xend = 5.7, y = 1350, yend = 1370) +
   annotate("segment", x = 6.3, xend = 6.3, y = 1350, yend = 1370) +
-  annotate("text", x = 6, y = 1390, label = expression(paste(italic("p"), "= 0.58")))
+  annotate("text", x = 6, y = 1390, label = expression(paste(italic("p"), "= 0.76")))
 
 # pVGRF plot --------------------------------------------------------------
 
@@ -104,23 +104,23 @@ pVGRF_plot <- ggplot(data = vertical_GRF, aes(x = speed, y = pVGRF, group = grou
   annotate("segment", x = 1.7, xend = 2.3, y = 1050, yend = 1050) +
   annotate("segment", x = 1.7, xend = 1.7, y = 1040, yend = 1060) +
   annotate("segment", x = 2.3, xend = 2.3, y = 1040, yend = 1060) +
-  annotate("text", x = 2, y = 1080, label = expression(paste(italic("p"), "= 0.96"))) +
+  annotate("text", x = 2, y = 1080, label = expression(paste(italic("p"), "= 0.56"))) +
   annotate("segment", x = 2.7, xend = 3.3, y = 1110, yend = 1110) +
   annotate("segment", x = 2.7, xend = 2.7, y = 1100, yend = 1120) +
   annotate("segment", x = 3.3, xend = 3.3, y = 1100, yend = 1120) +
-  annotate("text", x = 3, y = 1140, label = expression(paste(italic("p"), "= 0.88"))) +
+  annotate("text", x = 3, y = 1140, label = expression(paste(italic("p"), "= 0.22"))) +
   annotate("segment", x = 3.7, xend = 4.3, y = 1190, yend = 1190) +
   annotate("segment", x = 3.7, xend = 3.7, y = 1180, yend = 1200) +
   annotate("segment", x = 4.3, xend = 4.3, y = 1180, yend = 1200) +
-  annotate("text", x = 4, y = 1220, label = expression(paste(italic("p"), "= 0.30"))) +
+  annotate("text", x = 4, y = 1220, label = expression(paste(italic("p"), "= 0.20"))) +
   annotate("segment", x = 4.7, xend = 5.3, y = 1255, yend = 1255) +
   annotate("segment", x = 4.7, xend = 4.7, y = 1245, yend = 1265) +
   annotate("segment", x = 5.3, xend = 5.3, y = 1245, yend = 1265) +
-  annotate("text", x = 5, y = 1285, label = expression(paste(italic("p"), "= 0.26"))) +
+  annotate("text", x = 5, y = 1285, label = expression(paste(italic("p"), "= 0.94"))) +
   annotate("segment", x = 5.7, xend = 6.3, y = 1310, yend = 1310) +
   annotate("segment", x = 5.7, xend = 5.7, y = 1300, yend = 1320) +
   annotate("segment", x = 6.3, xend = 6.3, y = 1300, yend = 1320) +
-  annotate("text", x = 6, y = 1340, label = expression(paste(italic("p"), "= 0.90")))
+  annotate("text", x = 6, y = 1340, label = expression(paste(italic("p"), "= 0.79")))
 
 # pRLR plot ---------------------------------------------------------------
 
