@@ -107,6 +107,21 @@ LOOCV_back_vert_LR_LMM <- do.call(rbind, (lapply(unique(back_LR$ID), cross_valid
 # Hip
 LOOCV_hip_vert_LR_LMM <- do.call(rbind, (lapply(unique(hip_LR$ID), cross_validate_mixed_model, df = hip_LR)))
 
+# Writing LOOCV data
+LOOCV_back_res_LR <- LOOCV_back_res_LR_LMM %>% 
+  select(ID, speed, body_mass, BMI, BMI_cat, sex, age, pRLR_Ns, pRATR_gs, pRLR_Ns_predicted)
+LOOCV_hip_res_LR <- LOOCV_hip_res_LR_LMM %>% 
+  select(ID, speed, body_mass, BMI, BMI_cat, sex, age, pRLR_Ns, pRATR_gs, pRLR_Ns_predicted)
+LOOCV_back_vert_LR <- LOOCV_back_vert_LR_LMM %>% 
+  select(ID, speed, body_mass, BMI, BMI_cat, sex, age, pVLR_Ns, pVATR_gs, pVLR_Ns_predicted)
+LOOCV_hip_vert_LR <- LOOCV_hip_vert_LR_LMM %>% 
+  select(ID, speed, body_mass, BMI, BMI_cat, sex, age, pVLR_Ns, pVATR_gs, pVLR_Ns_predicted)
+
+write_csv(LOOCV_back_res_LR, "~/Dropbox/Projects/walking_GRF_ACC/LOOCV_back_res_LR.csv")
+write_csv(LOOCV_hip_res_LR, "~/Dropbox/Projects/walking_GRF_ACC/LOOCV_hip_res_LR.csv")
+write_csv(LOOCV_back_vert_LR, "~/Dropbox/Projects/walking_GRF_ACC/LOOCV_back_vert_LR.csv")
+write_csv(LOOCV_hip_vert_LR, "~/Dropbox/Projects/walking_GRF_ACC/LOOCV_hip_vert_LR.csv")
+
 # 4. Bland-Altman plots ---------------------------------------------------
 
 # For resultant peak loading rate
