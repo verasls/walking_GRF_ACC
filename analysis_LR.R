@@ -405,7 +405,7 @@ write_csv(vert_ANOVA_LR_df, "~/Dropbox/Projects/walking_GRF_ACC/vert_ANOVA_LR_df
 
 vert_ANOVA_LR <- ezANOVA(
   data     = vert_ANOVA_LR_df,
-  dv       = pRLR,
+  dv       = pVLR,
   wid      = ID,
   within   = .(speed, group),
   detailed = TRUE,
@@ -415,7 +415,7 @@ vert_ANOVA_LR <- ezANOVA(
 # Post hoc (Holm)
 vert_ANOVA_LR_df$speed_group <- interaction(vert_ANOVA_LR_df$speed, vert_ANOVA_LR_df$group)
 
-vert_posthoc_LR <- pairwise.t.test(vert_ANOVA_LR_df$pRLR, vert_ANOVA_LR_df$speed_group, paired = TRUE, p.adjust.method = "holm")
+vert_posthoc_LR <- pairwise.t.test(vert_ANOVA_LR_df$pVLR, vert_ANOVA_LR_df$speed_group, paired = TRUE, p.adjust.method = "holm")
 
 # By speed
 # 2 km/h
