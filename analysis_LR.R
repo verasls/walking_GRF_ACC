@@ -421,7 +421,7 @@ vert_posthoc_LR <- pairwise.t.test(vert_ANOVA_LR_df$pRLR, vert_ANOVA_LR_df$speed
 # 2 km/h
 vert_ANOVA_LR_s2 <- ezANOVA(
   data     = vert_ANOVA_LR_df %>% filter(speed == 2),
-  dv       = pRLR,
+  dv       = pVLR,
   wid      = ID,
   within   = group,
   detailed = TRUE,
@@ -431,7 +431,7 @@ vert_ANOVA_LR_s2 <- ezANOVA(
 # 3 km/h
 vert_ANOVA_LR_s3 <- ezANOVA(
   data     = vert_ANOVA_LR_df %>% filter(speed == 3),
-  dv       = pRLR,
+  dv       = pVLR,
   wid      = ID,
   within   = group,
   detailed = TRUE,
@@ -441,7 +441,7 @@ vert_ANOVA_LR_s3 <- ezANOVA(
 # 4 km/h
 vert_ANOVA_LR_s4 <- ezANOVA(
   data     = vert_ANOVA_LR_df %>% filter(speed == 4),
-  dv       = pRLR,
+  dv       = pVLR,
   wid      = ID,
   within   = group,
   detailed = TRUE,
@@ -451,7 +451,7 @@ vert_ANOVA_LR_s4 <- ezANOVA(
 # 5 km/h
 vert_ANOVA_LR_s5 <- ezANOVA(
   data     = vert_ANOVA_LR_df %>% filter(speed == 5),
-  dv       = pRLR,
+  dv       = pVLR,
   wid      = ID,
   within   = group,
   detailed = TRUE,
@@ -461,7 +461,7 @@ vert_ANOVA_LR_s5 <- ezANOVA(
 # 6 km/h
 vert_ANOVA_LR_s6 <- ezANOVA(
   data     = vert_ANOVA_LR_df %>% filter(speed == 6),
-  dv       = pRLR,
+  dv       = pVLR,
   wid      = ID,
   within   = group,
   detailed = TRUE,
