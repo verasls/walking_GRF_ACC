@@ -288,6 +288,8 @@ res_ANOVA_LR_s2 <- ezANOVA(
   detailed = TRUE,
   type     = 3
 )
+s2_res <- res_ANOVA_LR_df %>% filter(speed == 2)
+pairwise.t.test(s2_res$pRLR, s2_res$group, paired = TRUE, p.adjust.method = "holm")
 
 # 3 km/h
 res_ANOVA_LR_s3 <- ezANOVA(
@@ -427,6 +429,8 @@ vert_ANOVA_LR_s2 <- ezANOVA(
   detailed = TRUE,
   type     = 3
 )
+s2_vert <- vert_ANOVA_LR_df %>% filter(speed == 2)
+pairwise.t.test(s2_vert$pVLR, s2_vert$group, paired = TRUE, p.adjust.method = "holm")
 
 # 3 km/h
 vert_ANOVA_LR_s3 <- ezANOVA(
