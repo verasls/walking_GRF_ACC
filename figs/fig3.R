@@ -41,6 +41,14 @@ resultant_LR$group <- recode(
   "hip" = "Peak LR predicted by hip accelerometer"
 )
 
+vertical_LR$group <- as.factor(vertical_LR$group)
+vertical_LR$group <- recode(
+  vertical_LR$group,
+  "actual" = "Actual peak LR",
+  "back" = "Peak LR predicted by lower back accelerometer",
+  "hip" = "Peak LR predicted by hip accelerometer"
+)
+
 # pRGRF plot --------------------------------------------------------------
 
 pRGRF_plot <- ggplot(data = resultant_GRF, aes(x = speed, y = pRGRF, group = group)) + 
@@ -130,7 +138,7 @@ pRLR_plot <- ggplot(data = resultant_LR, aes(x = speed, y = pRLR, group = group)
   stat_summary(fun.data = mean_cl_normal, geom = "errorbar", width = 0.4, position = position_dodge(0.5)) +
   scale_shape_manual(values = c(16, 17, 15, 1)) +
   scale_linetype_manual(values = c("solid", "dashed", "dotted", "twodash")) +
-  scale_y_continuous(breaks = seq(from = 4000, to = 16000, by = 2000)) +
+  scale_y_continuous(breaks = seq(from = 4000, to = 18000, by = 2000)) +
   theme_classic() +
   theme(
     plot.title = element_text(face = "bold"),
@@ -142,17 +150,37 @@ pRLR_plot <- ggplot(data = resultant_LR, aes(x = speed, y = pRLR, group = group)
     title = "C)",
     x = quote("Speed"~(km%.%h^1)),
     y = quote("pRLR"~(N%.%s^1))
-  )
+  ) +
+  annotate("segment", x = 1.7, xend = 2.3, y = 6300, yend = 6300) +
+  annotate("segment", x = 1.7, xend = 1.7, y = 6050, yend = 6550) +
+  annotate("segment", x = 2.3, xend = 2.3, y = 6050, yend = 6550) +
+  annotate("text", x = 2, y = 7100, label = expression(paste(italic("p"), "< 0.01"))) +
+  annotate("segment", x = 2.7, xend = 3.3, y = 8300, yend = 8300) +
+  annotate("segment", x = 2.7, xend = 2.7, y = 8050, yend = 8550) +
+  annotate("segment", x = 3.3, xend = 3.3, y = 8050, yend = 8550) +
+  annotate("text", x = 3, y = 9100, label = expression(paste(italic("p"), "= 0.38"))) +
+  annotate("segment", x = 3.7, xend = 4.3, y = 10800, yend = 10800) +
+  annotate("segment", x = 3.7, xend = 3.7, y = 10550, yend = 11050) +
+  annotate("segment", x = 4.3, xend = 4.3, y = 10550, yend = 11050) +
+  annotate("text", x = 4, y = 11600, label = expression(paste(italic("p"), "= 0.13"))) +
+  annotate("segment", x = 4.7, xend = 5.3, y = 13000, yend = 13000) +
+  annotate("segment", x = 4.7, xend = 4.7, y = 12750, yend = 13250) +
+  annotate("segment", x = 5.3, xend = 5.3, y = 12750, yend = 13250) +
+  annotate("text", x = 5, y = 13800, label = expression(paste(italic("p"), "= 0.79"))) +
+  annotate("segment", x = 5.7, xend = 6.3, y = 17000, yend = 17000) +
+  annotate("segment", x = 5.7, xend = 5.7, y = 16750, yend = 17250) +
+  annotate("segment", x = 6.3, xend = 6.3, y = 16750, yend = 17250) +
+  annotate("text", x = 6, y = 17800, label = expression(paste(italic("p"), "= 0.26")))
 
 # pVLR plot ---------------------------------------------------------------
 
-pVLR_plot <- ggplot(data = vertical_LR, aes(x = speed, y = pVLR, group = group)) + 
+pVLR_plot <- ggplot(data = vertical_LR, aes(x = speed, y = pVLR, group = group)) +
   stat_summary(fun.y = mean, geom = "point", size = 2, position = position_dodge(0.5), aes(shape = group)) +
   stat_summary(fun.y = mean, geom = "line", position = position_dodge(0.5), aes(linetype = group)) +
   stat_summary(fun.data = mean_cl_normal, geom = "errorbar", width = 0.4, position = position_dodge(0.5)) +
   scale_shape_manual(values = c(16, 17, 15, 1)) +
   scale_linetype_manual(values = c("solid", "dashed", "dotted", "twodash")) +
-  scale_y_continuous(breaks = seq(from = 4000, to = 16000, by = 2000)) +
+  scale_y_continuous(breaks = seq(from = 4000, to = 18000, by = 2000)) +
   theme_classic() +
   theme(plot.title = element_text(face = "bold")) +
   guides(col = guide_legend(nrow = 2, byrow = TRUE)) +
@@ -160,7 +188,27 @@ pVLR_plot <- ggplot(data = vertical_LR, aes(x = speed, y = pVLR, group = group))
     title = "D)",
     x = quote("Speed"~(km%.%h^1)),
     y = quote("pVLR"~(N%.%s^1))
-  )
+  ) +
+  annotate("segment", x = 1.7, xend = 2.3, y = 6300, yend = 6300) +
+  annotate("segment", x = 1.7, xend = 1.7, y = 6050, yend = 6550) +
+  annotate("segment", x = 2.3, xend = 2.3, y = 6050, yend = 6550) +
+  annotate("text", x = 2, y = 7100, label = expression(paste(italic("p"), "< 0.01"))) +
+  annotate("segment", x = 2.7, xend = 3.3, y = 8300, yend = 8300) +
+  annotate("segment", x = 2.7, xend = 2.7, y = 8050, yend = 8550) +
+  annotate("segment", x = 3.3, xend = 3.3, y = 8050, yend = 8550) +
+  annotate("text", x = 3, y = 9100, label = expression(paste(italic("p"), "= 0.30"))) +
+  annotate("segment", x = 3.7, xend = 4.3, y = 10800, yend = 10800) +
+  annotate("segment", x = 3.7, xend = 3.7, y = 10550, yend = 11050) +
+  annotate("segment", x = 4.3, xend = 4.3, y = 10550, yend = 11050) +
+  annotate("text", x = 4, y = 11600, label = expression(paste(italic("p"), "= 0.57"))) +
+  annotate("segment", x = 4.7, xend = 5.3, y = 13000, yend = 13000) +
+  annotate("segment", x = 4.7, xend = 4.7, y = 12750, yend = 13250) +
+  annotate("segment", x = 5.3, xend = 5.3, y = 12750, yend = 13250) +
+  annotate("text", x = 5, y = 13800, label = expression(paste(italic("p"), "= 0.78"))) +
+  annotate("segment", x = 5.7, xend = 6.3, y = 17000, yend = 17000) +
+  annotate("segment", x = 5.7, xend = 5.7, y = 16750, yend = 17250) +
+  annotate("segment", x = 6.3, xend = 6.3, y = 16750, yend = 17250) +
+  annotate("text", x = 6, y = 17800, label = expression(paste(italic("p"), "= 0.23")))
 
 # Plot grid ---------------------------------------------------------------
 
