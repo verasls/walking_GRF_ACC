@@ -267,7 +267,7 @@ BA_plot_grid_1 <- plot_grid(
   back_vert_LR_BA_plot + theme(legend.position = "none"),
   hip_res_LR_BA_plot   + theme(legend.position = "none"),
   hip_vert_LR_BA_plot  + theme(legend.position = "none"),
-  labels = c("A", "B", "", "", "B", "D", "", ""),
+  labels = c("A", "B", "", "", "C", "D", "", ""),
   align  = "h", vjust = 1, label_size = 16,
   ncol   = 2, nrow = 4
 )
