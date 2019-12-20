@@ -68,7 +68,7 @@ pRGRF_plot <- ggplot(data = resultant_GRF, aes(x = speed, y = pRGRF, group = gro
   guides(col = guide_legend(nrow = 2, byrow = TRUE)) +
   labs(
     title = "A)",
-    x = quote("Speed"~(km%.%h^1)),
+    x = quote("Speed"~(km%.%h^-1)),
     y = "pRGRF (N)"
   ) +
   annotate("segment", x = 1.7, xend = 2.3, y = 1060, yend = 1060) +
@@ -106,7 +106,7 @@ pVGRF_plot <- ggplot(data = vertical_GRF, aes(x = speed, y = pVGRF, group = grou
   theme(plot.title = element_text(face = "bold")) +
   labs(
     title = "B)",
-    x = quote("Speed"~(km%.%h^1)),
+    x = quote("Speed"~(km%.%h^-1)),
     y = "pVGRF (N)"
   ) +
   annotate("segment", x = 1.7, xend = 2.3, y = 1050, yend = 1050) +
@@ -148,8 +148,8 @@ pRLR_plot <- ggplot(data = resultant_LR, aes(x = speed, y = pRLR, group = group)
   guides(col = guide_legend(nrow = 2, byrow = TRUE)) +
   labs(
     title = "C)",
-    x = quote("Speed"~(km%.%h^1)),
-    y = quote("pRLR"~(N%.%s^1))
+    x = quote("Speed"~(km%.%h^-1)),
+    y = quote("pRLR"~(N%.%s^-1))
   ) +
   annotate("segment", x = 1.7, xend = 2.3, y = 6300, yend = 6300) +
   annotate("segment", x = 1.7, xend = 1.7, y = 6050, yend = 6550) +
@@ -186,8 +186,8 @@ pVLR_plot <- ggplot(data = vertical_LR, aes(x = speed, y = pVLR, group = group))
   guides(col = guide_legend(nrow = 2, byrow = TRUE)) +
   labs(
     title = "D)",
-    x = quote("Speed"~(km%.%h^1)),
-    y = quote("pVLR"~(N%.%s^1))
+    x = quote("Speed"~(km%.%h^-1)),
+    y = quote("pVLR"~(N%.%s^-1))
   ) +
   annotate("segment", x = 1.7, xend = 2.3, y = 6300, yend = 6300) +
   annotate("segment", x = 1.7, xend = 1.7, y = 6050, yend = 6550) +
