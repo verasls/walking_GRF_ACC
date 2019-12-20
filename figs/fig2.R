@@ -159,8 +159,8 @@ back_res_LR_BA_plot <- ggplot(data = LOOCV_back_res_LR) +
   ) +
   labs(
     title = "Lower Back",
-    x = quote("Mean of Actual and Predicted pRLR"~(N%.%s^1)),
-    y = quote("Difference of Actual and Predicted pRLR"~(N%.%s^1))
+    x = quote("Mean of Actual and Predicted pRLR"~(N%.%s^-1)),
+    y = quote("Difference of Actual and Predicted pRLR"~(N%.%s^-1))
   )
 
 # Hip resultant LR --------------------------------------------------------
@@ -190,8 +190,8 @@ hip_res_LR_BA_plot <- ggplot(data = LOOCV_hip_res_LR) +
   ) +
   labs(
     title = "Hip",
-    x = quote("Mean of Actual and Predicted pRLR"~(N%.%s^1)),
-    y = quote("Difference of Actual and Predicted pRLR"~(N%.%s^1))
+    x = quote("Mean of Actual and Predicted pRLR"~(N%.%s^-1)),
+    y = quote("Difference of Actual and Predicted pRLR"~(N%.%s^-1))
   )
 
 # Lower back vertical LR --------------------------------------------------
@@ -221,8 +221,8 @@ back_vert_LR_BA_plot <- ggplot(data = LOOCV_back_vert_LR) +
   ) +
   labs(
     title = "Lower Back",
-    x = quote("Mean of Actual and Predicted pVLR"~(N%.%s^1)),
-    y = quote("Difference of Actual and Predicted pVLR"~(N%.%s^1))
+    x = quote("Mean of Actual and Predicted pVLR"~(N%.%s^-1)),
+    y = quote("Difference of Actual and Predicted pVLR"~(N%.%s^-1))
   )
 
 # Hip vertical LR ---------------------------------------------------------
@@ -252,8 +252,8 @@ hip_vert_LR_BA_plot <- ggplot(data = LOOCV_hip_vert_LR) +
   ) +
   labs(
     title = "Hip",
-    x = quote("Mean of Actual and Predicted pVLR"~(N%.%s^1)),
-    y = quote("Difference of Actual and Predicted pVLR"~(N%.%s^1))
+    x = quote("Mean of Actual and Predicted pVLR"~(N%.%s^-1)),
+    y = quote("Difference of Actual and Predicted pVLR"~(N%.%s^-1))
   )
 
 # Plot grid ---------------------------------------------------------------
