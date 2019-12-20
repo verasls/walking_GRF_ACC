@@ -50,24 +50,24 @@ sex <- table(samp_desc$sex)
 # Back
 back_2nd_law <- back %>% 
   mutate(
-    pVACC_ms2 = pVACC_g * 9.81,
-    pVGRF_N_predicted = body_mass * pVACC_ms2
+    pRACC_ms2 = pRACC_g * 9.81,
+    pRGRF_N_predicted = body_mass * pRACC_ms2
   )
 
 # Hip
 hip_2nd_law <- hip %>% 
   mutate(
-    pVACC_ms2 = pVACC_g * 9.81,
-    pVGRF_N_predicted = body_mass * pVACC_ms2
+    pRACC_ms2 = pRACC_g * 9.81,
+    pRGRF_N_predicted = body_mass * pRACC_ms2
   )
 
 # 3.2. Indices of accuracy ------------------------------------------------
 
 # Back
-back_2nd_law_accuracy <- accuracy_indices(back_2nd_law, "pVGRF_N", "pVGRF_N_predicted")
+back_2nd_law_accuracy <- accuracy_indices(back_2nd_law, "pRGRF_N", "pRGRF_N_predicted")
 
 # Hip
-Hip_2nd_law_accuracy <- accuracy_indices(hip_2nd_law, "pVGRF_N", "pVGRF_N_predicted")
+Hip_2nd_law_accuracy <- accuracy_indices(hip_2nd_law, "pRGRF_N", "pRGRF_N_predicted")
 
 # 4. Linear mixed models --------------------------------------------------
 
