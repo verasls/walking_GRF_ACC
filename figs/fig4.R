@@ -64,8 +64,8 @@ non_obese_our_BA_plot <- ggplot(data = non_obese_df) +
   theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
   labs(
     title = "Normal weight and overweight",
-    x = "Mean of Actual and Predicted pRGRF (N)",
-    y = "Difference of Actual and Predicted pRGRF (N)"
+    x = "Mean of Actual and Predicted pVGRF (N)",
+    y = "Difference of Actual and Predicted pVGRF (N)"
   )
 
 # Neugebauer's equation
@@ -94,8 +94,8 @@ non_obese_Neug_BA_plot <- ggplot(data = non_obese_df) +
   theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
   labs(
     title = "Normal weight and overweight",
-    x = "Mean of Actual and Predicted pRGRF (N)",
-    y = "Difference of Actual and Predicted pRGRF (N)"
+    x = "Mean of Actual and Predicted pVGRF (N)",
+    y = "Difference of Actual and Predicted pVGRF (N)"
   )
 
 # Obese sample ------------------------------------------------------------
@@ -126,8 +126,8 @@ obese_our_BA_plot <- ggplot(data = obese_df) +
   theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
   labs(
     title = "Class I to III obesity",
-    x = "Mean of Actual and Predicted pRGRF (N)",
-    y = "Difference of Actual and Predicted pRGRF (N)"
+    x = "Mean of Actual and Predicted pVGRF (N)",
+    y = "Difference of Actual and Predicted pVGRF (N)"
   )
 
 # Neugebauer's equation
@@ -156,8 +156,8 @@ obese_Neug_BA_plot <- ggplot(data = obese_df) +
   theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
   labs(
     title = "Class I to III obesity",
-    x = "Mean of Actual and Predicted pRGRF (N)",
-    y = "Difference of Actual and Predicted pRGRF (N)"
+    x = "Mean of Actual and Predicted pVGRF (N)",
+    y = "Difference of Actual and Predicted pVGRF (N)"
   )
 
 # Whole sample ------------------------------------------------------------
@@ -188,8 +188,8 @@ whole_sample_our_BA_plot <- ggplot(data = whole_sample_df) +
   theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
   labs(
     title = "Whole sample",
-    x = "Mean of Actual and Predicted pRGRF (N)",
-    y = "Difference of Actual and Predicted pRGRF (N)"
+    x = "Mean of Actual and Predicted pVGRF (N)",
+    y = "Difference of Actual and Predicted pVGRF (N)"
   )
 
 # Neugebauer's equation
@@ -212,8 +212,8 @@ whole_sample_Neug_BA_plot <- ggplot(data = whole_sample_df) +
   theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
   labs(
     title = "Whole sample",
-    x = "Mean of Actual and Predicted pRGRF (N)",
-    y = "Difference of Actual and Predicted pRGRF (N)"
+    x = "Mean of Actual and Predicted pVGRF (N)",
+    y = "Difference of Actual and Predicted pVGRF (N)"
   )
 
 # Plot grid ---------------------------------------------------------------
