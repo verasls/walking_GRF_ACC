@@ -133,8 +133,8 @@ back_pRLR_pRATR_plot <- ggplot(data = LOOCV_back_res_LR) +
   ) +
   labs(
     title = "Lower Back",
-    x = quote("pRATR"~(g%.%s^1)),
-    y = quote("pRLR"~(N%.%s^1))
+    x = quote("pRATR"~(g%.%s^-1)),
+    y = quote("pRLR"~(N%.%s^-1))
   )
 
 # Hip
@@ -160,8 +160,8 @@ hip_pRLR_pRATR_plot <- ggplot(data = LOOCV_hip_res_LR) +
   ) +
   labs(
     title = "Hip",
-    x = quote("pRATR"~(g%.%s^1)),
-    y = quote("pRLR"~(N%.%s^1))
+    x = quote("pRATR"~(g%.%s^-1)),
+    y = quote("pRLR"~(N%.%s^-1))
   )
 
 # Actual pVLR vs pVATR ----------------------------------------------------
@@ -189,8 +189,8 @@ back_pVLR_pVATR_plot <- ggplot(data = LOOCV_back_vert_LR) +
   ) +
   labs(
     title = "Lower Back",
-    x = quote("pVATR"~(g%.%s^1)),
-    y = quote("pVLR"~(N%.%s^1))
+    x = quote("pVATR"~(g%.%s^-1)),
+    y = quote("pVLR"~(N%.%s^-1))
   )
 
 # Hip
@@ -216,8 +216,8 @@ hip_pVLR_pVATR_plot <- ggplot(data = LOOCV_hip_vert_LR) +
   ) +
   labs(
     title = "Hip",
-    x = quote("pVATR"~(g%.%s^1)),
-    y = quote("pVLR"~(N%.%s^1))
+    x = quote("pVATR"~(g%.%s^-1)),
+    y = quote("pVLR"~(N%.%s^-1))
   )
 
 # Plot grid ---------------------------------------------------------------
