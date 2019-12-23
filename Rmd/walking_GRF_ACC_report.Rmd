@@ -71,9 +71,11 @@ GRF_ACC_plot_grid
 
 Code to generate these plots can be seen [here](https://github.com/verasls/walking_GRF_ACC/blob/master/figs/fig1.R).
 
-# Linear mixed models
+# Ground reaction force prediction
 
-Linear mixed models (LMM) were used to estimate peak resultant ground reaction force (pRGRF) and peak vertical ground reaction force (pVGRF). Distinct LMMs were developed with data from lowee back and hip accelerometer placement (`back` and `hip` data frames) using the `lme()` function of the **nlme** [package](https://cran.r-project.org/web/packages/nlme/nlme.pdf). Covariance structure used was an autoregressive process of order 1 (`correlation = corAR1`) and maximum likelihood method was used for estimating parameters (`method = "ML"`). Predictors tested on pRGRF models were body mass and peak resultant acceleration (pRACC), while on pVGRF were body mass and vertical acceleration (pVACC). All of them were tested as fixed effects and have shown to be significant predictors (*e.g.:* `fixed = pRGRF_N ~ pRACC_g + I(pRACC_g^2) + body_mass`). Both random intercept and slopes were tested, but only the random intercept inclusion has showed models improvement (`random = ~ 1 | ID`). Linear, quadratic and cubic polynomial simulations were also tested, whereas the last one did not contribute significantly to the models. Final models were chosen according to -2 log-likelihood statistics. Traditional coefficient of determination (R^2^) was represented by conditional R^2^ [[@naka13]](#refs) computed with `rsquared()` function of the **piecewiseSEM** [package](http://jslefche.github.io/piecewiseSEM/articles/piecewiseSEM.html), that estimates the variance explained by the whole model [[@r216]](#refs).
+## Linear mixed models
+
+Linear mixed models (LMM) were developed to predict peak resultant GRF (pRGRF) and peak vertical GRF (pVGRF). Distinct LMMs were developed with data from lowee back and hip accelerometer placement (`back` and `hip` data frames) using the `lme()` function of the **nlme** [package](https://cran.r-project.org/web/packages/nlme/nlme.pdf). Covariance structure used was an autoregressive process of order 1 (`correlation = corAR1`) and maximum likelihood method was used for estimating parameters (`method = "ML"`). Predictors tested on pRGRF models were body mass and peak resultant acceleration (pRACC), while on pVGRF were body mass and vertical acceleration (pVACC). All of them were tested as fixed effects and have shown to be significant predictors (*e.g.:* `fixed = pRGRF_N ~ pRACC_g + I(pRACC_g^2) + body_mass`). Both random intercept and slopes were tested, but only the random intercept inclusion has showed models improvement (`random = ~ 1 | ID`). Linear, quadratic and cubic polynomial simulations were also tested, whereas the last one did not contribute significantly to the models. Final models were chosen according to -2 log-likelihood statistics. Traditional coefficient of determination (R^2^) was represented by conditional R^2^ [[@naka13]](#refs) computed with `rsquared()` function of the **piecewiseSEM** [package](http://jslefche.github.io/piecewiseSEM/articles/piecewiseSEM.html), that estimates the variance explained by the whole model [[@r216]](#refs).
 
 Code to build the LMMs, as well as their summary and R^2^, can be found below.
 
@@ -137,7 +139,7 @@ maxR2 <- myround(max(c(r2_back_res_LMM[[6]], r2_hip_res_LMM[[6]], r2_back_vert_L
 
 In all models, conditional R^2^ values ranged from `r minR2` to `r maxR2`.
 
-# Validation analysis
+## Validation analysis
 
 Model validation was assessed by the leave-one-out cross-validation (LOOCV) method. This approach is recommended when a different sample is not available for cross-validation and it provides an insight on the model potential to predict outcomes in a new independent sample [[@staud12]](#refs). For LOOCV each participant’s data was separated into a testing dataset (one at a time) with the remaining data being in the training dataset. New LMM, with the same outcomes and predictors as determined for the entire sample, were developed using the training dataset and then used to predict pGRF for the only participant in the testing dataset. This process was repeated for all participants (64 times). Data from testing dataset were used in the remaining statistical analysis.
 
@@ -161,7 +163,7 @@ LOOCV_back_vert_LMM <- do.call(rbind, (lapply(unique(back$ID), cross_validate_mi
 LOOCV_hip_vert_LMM <- do.call(rbind, (lapply(unique(hip$ID), cross_validate_mixed_model, df = hip)))
 ```
 
-## Bland-Altman plots
+### Bland-Altman plots
 
 Bland-Altman plots were used to examine the agreement between pGRF measured with force plates and those predicted through the regression equations. The difference of the actual and predicted pGRF was plotted against their mean. Bias was expressed as the mean of these differences and the limits of agreement were obtained using ±1.96 standard deviation of the mean between actual and predicted pGRF [[@ba86]](#refs).
 
@@ -203,7 +205,7 @@ t.test(LOOCV_hip_vert_LMM$diff, mu = 0)
 
 Also, linear regressions were applied to identify if there was any proportional bias, that is, if bias was related with the magnitude of the mean between measured and predicted pGRF [[@giav15]](#refs). Linear regressions were run using the `lm()` function of the base R.
 
-For lower back and hip placements, results showed a significant proportional bias (*p* < 0.05), however, with a low magnitude (highest R^2^ = 0.032). These results suggest that despite there is a trend for underestimation at increasingly higher pGRF values, the magnitude of this effect is neglectable.
+Results showed a significant proportional bias (*p* < 0.05), however, with a low magnitude (highest R^2^ = 0.032). These results suggest that despite there is a trend for underestimation at increasingly higher pGRF values, the magnitude of this effect is neglectable.
 
 ```{r BA_LR, fig.height=15, fig.width=13, dev='svg'}
 # For resultant peak ground reaction force
@@ -223,7 +225,7 @@ hip_vert_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_hip_vert_LMM)
 summary(hip_vert_BA_plot_LR)
 ```
 
-## Indices of accuracy
+### Indices of accuracy
 
 To evaluate models prediction accuracy, mean absolute error (MAE), mean absolute percent error (MAPE) and root mean square error (RMSE) were computed These indices were computed with the `accuracy_indices()` [function](https://github.com/verasls/walking_GRF_ACC/blob/master/R/accuracy_indices.R).
 
@@ -265,7 +267,7 @@ kable(accuracy, col.names = c("Accelerometer Placement", "GRF", "MAE", "MAPE", "
 
 All conditions showed a MAE from near 65 N to near 81 N, MAPE from near 6% to near 7% and RMSE from near 84 N to 84 N.
 
-## ANOVA
+### ANOVA
 
 A series of repeated measures analysis of variance (ANOVA) were run to assess whether pGRF predicted from the regression equations were significantly different from those measured with FP. Walking speeds, accelerometer placements (lower back and hip), and the interaction effect (speed X accelerometer placements) were considered for analysis. These procedures were taken separately for resultant and its vertical component. If assumptions of sphericity were violated (*p* < 0.05), the conservative Greenhouse–Geisser correction factor would be applied to adjust the degrees of freedom. Post-hoc analyses would be conducted using pairwise comparisons with Holm's correction if a significant difference were observed among actual and predicted pGRF.
 
@@ -547,13 +549,13 @@ No significant differences (*p* > 0.05) between actual and predicted pGRF in eac
 
 These results can be seen in figure below.
 
-```{r ANOVA_plot, fig.height=10, fig.width=10, dev='svg'}
+```{r ANOVA_GRF_plot, fig.height=5, fig.width=10, dev='svg'}
 source(here("figs", "fig3.R"))
 
-plot_grid
+GRF_plot_grid
 ```
 
-# Regressions comparison
+## Regressions comparison
 
 Our equation was compared with a previously published reference equation [[@Neugebauer_2014]](#refs), in which Neugebauer et al. used a similar approach for the prediction of pGRF. Comparison was performed using the equation to predict pVGRF from hip-worn accelerometers, as it was the only suitable with our data. The analysis was performed in three ways using: i) a subsample of participants with normal weight or overweight (BMI ≥ 18.5 and < 30 kg.m-2); ii) a subsample of obese participants (BMI ≥ 30 kg.m-2); iii) the whole sample. 
 
