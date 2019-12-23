@@ -9,7 +9,7 @@ output:
     toc: true
     number_sections: true
     toc_float: 
-      collapsed: false
+      collapsed: true
     code_folding: "show"
     highlight: tango
 editor_options: 
@@ -36,12 +36,13 @@ library(here)
 library(nlme)
 library(piecewiseSEM)
 library(ez)
+source(here("R", "BMI_categories.R"))
 source(here("R", "cross_validate_mixed_model.R"))
 source(here("R", "accuracy_indices.R"))
 source(here("R", "get_BA_plot.R"))
 ```
 
-Initially, 2 files needed to be loaded, each containing data from one of the accelerometer placements utilized in the study: lower back and hip.
+Initially, 4 files needed to be loaded, containing data from each of the accelerometer placements utilized in the study (lower back and hip), and for each of the mechanical loading variables (GRF and LR).
 
 ```{r load_data}
 back <- read_csv(here("data", "back_sec.csv")) %>% 
@@ -51,12 +52,33 @@ back <- read_csv(here("data", "back_sec.csv")) %>%
 hip <- read_csv(here("data", "hip_sec.csv")) %>% 
   select(ID, speed, body_mass, height, BMI, sex, age, pVGRF_N, pVACC_g, pRGRF_N, pRACC_g) %>% 
   filter(speed <= 6)
+
+anthopometric <- read_csv(here("data", "back_sec.csv")) %>% 
+  select(ID, speed, height, BMI, sex, age)
+
+back_LR <- read_csv(here("data", "max_rates_back_IMU.csv")) %>% 
+  left_join(anthopometric, by = c("ID", "speed")) %>% 
+  BMI_categories() %>% 
+  select(
+    ID, speed, body_mass, height, BMI, BMI_cat, sex, age, pVLR_Ns, pVATR_gs, pRLR_Ns, pRATR_gs
+  )
+
+hip_LR <- read_csv(here("data", "max_rates_hip_IMU.csv")) %>% 
+  left_join(anthopometric, by = c("ID", "speed")) %>% 
+  BMI_categories() %>% 
+  select(
+    ID, speed, body_mass, height, BMI, BMI_cat, sex, age, pVLR_Ns, pVATR_gs, pRLR_Ns, pRATR_gs
+  )
 ```
 
 A piece of a data frame used in all subsequent analysis can be seen below.
 
 ```{r data_example}
+# For GRF
 back
+
+# For LR
+back_LR
 ```
 
 # Mechanical loading X acceleration relationships
@@ -72,6 +94,41 @@ GRF_ACC_plot_grid
 Code to generate these plots can be seen [here](https://github.com/verasls/walking_GRF_ACC/blob/master/figs/fig1.R).
 
 # Ground reaction force prediction
+
+## Newton's second law of motion
+
+In a first attempt to predict the pGRF using accelerometry data, Newton’s second law of motion (force = mass · acceleration) was applied to predict peak resultant GRF (pRGRF) from peak resultant ACC (pRACC) derived from each accelerometer placement. As both accelerometers were located at waistline, both were close to the body center of mass, and therefore, their recorded ACC values could represent the ACC of the body center of mass.
+
+The code usede to make these predictions can be seen below.
+
+```{r Newton}
+# Back
+back_2nd_law <- back %>% 
+  mutate(
+    pRACC_ms2 = pRACC_g * 9.81,
+    pRGRF_N_predicted = body_mass * pRACC_ms2
+  )
+
+# Hip
+hip_2nd_law <- hip %>% 
+  mutate(
+    pRACC_ms2 = pRACC_g * 9.81,
+    pRGRF_N_predicted = body_mass * pRACC_ms2
+  )
+```
+
+To evaluate these predictions, some accuracy indices were computed. These indices were the mean absolute error (MAE), mean absolute percent error (MAPE) and root mean square error (RMSE), and they were computed with the `accuracy_indices()` [function](https://github.com/verasls/walking_GRF_ACC/blob/master/R/accuracy_indices.R).
+
+```{r Newton_accuracy}
+# Back
+back_2nd_law_accuracy <- accuracy_indices(back_2nd_law, "pRGRF_N", "pRGRF_N_predicted")
+back_2nd_law_accuracy
+
+# Hip
+hip_2nd_law_accuracy <- accuracy_indices(hip_2nd_law, "pRGRF_N", "pRGRF_N_predicted")
+hip_2nd_law_accuracy
+```
+
 
 ## Linear mixed models
 
@@ -227,7 +284,7 @@ summary(hip_vert_BA_plot_LR)
 
 ### Indices of accuracy
 
-To evaluate models prediction accuracy, mean absolute error (MAE), mean absolute percent error (MAPE) and root mean square error (RMSE) were computed These indices were computed with the `accuracy_indices()` [function](https://github.com/verasls/walking_GRF_ACC/blob/master/R/accuracy_indices.R).
+To evaluate models prediction accuracy, MAE, MAPE and RMSE were computed. These indices were computed with the `accuracy_indices()` [function](https://github.com/verasls/walking_GRF_ACC/blob/master/R/accuracy_indices.R).
 
 ```{r accuracy_indices}
 # For resultant peak ground reaction force
@@ -245,7 +302,7 @@ hip_vert_accuracy <- accuracy_indices(LOOCV_hip_vert_LMM, "pVGRF_N", "pVGRF_N_pr
 
 Table below shows these indices for each accelerometer placement in both pRGRF and pVGRF.
 
-```{r accuracy_table}
+```{r accuracy_table_LR}
 accuracy <- data.frame(
   acc_placement = c(rep("Back", 2), rep("Hip", 2)),
   condition     = rep(c("pRGRF", "pVGRF"), 2),
@@ -621,6 +678,350 @@ whole_sample_Neug_accuracy <- accuracy_indices(whole_sample_df, "pVGRF_N", "pVGR
 
 
 The accuracy indices from our equation were all substantially lower compared to the reference equation indices, with an overall MAPE approximately 3 times smaller for our equation. For both equations, the MAPE was lower in the obese subsample than in the non-obese subsample
+
+# Loading rate prediction
+
+## Linear mixed models
+
+For the LR prediction, the same steps were followed as the GRF prediction. The code to generate the models can be seen bellow.
+
+
+```{r LMM_LR}
+# For resultant peak loading rate
+back_res_LR_LMM <- lme(
+  fixed = pRLR_Ns ~ pRATR_gs + I(pRATR_gs^2) + body_mass + pRATR_gs:body_mass,
+  random = ~ 1 | ID,
+  method = "ML",
+  correlation = corAR1(),
+  data = back_LR,
+  na.action = na.omit
+)
+r2_back_res_LR_LMM <- rsquared(back_res_LR_LMM)
+
+summary(back_res_LR_LMM)
+rsquared(back_res_LR_LMM)
+
+hip_res_LR_LMM <- lme(
+  fixed = pRLR_Ns ~ pRATR_gs + I(pRATR_gs^2) + body_mass + pRATR_gs:body_mass,
+  random = ~ 1 | ID,
+  method = "ML",
+  correlation = corAR1(),
+  data = hip_LR,
+  na.action = na.omit
+)
+r2_hip_res_LR_LMM <- rsquared(hip_res_LR_LMM)
+
+summary(hip_res_LR_LMM)
+rsquared(hip_res_LR_LMM)
+
+# For vertical peak loading rate
+back_vert_LR_LMM <- lme(
+  fixed = pVLR_Ns ~ pVATR_gs + I(pVATR_gs^2) + body_mass + pVATR_gs:body_mass,
+  random = ~ 1 | ID,
+  method = "ML",
+  correlation = corAR1(),
+  data = back_LR,
+  na.action = na.omit
+)
+r2_back_vert_LR_LMM <- rsquared(back_vert_LR_LMM)
+
+summary(back_vert_LR_LMM)
+rsquared(back_vert_LR_LMM)
+
+hip_vert_LR_LMM <- lme(
+  fixed = pVLR_Ns ~ pVATR_gs + I(pVATR_gs^2) + body_mass + pVATR_gs:body_mass,
+  random = ~ 1 | ID,
+  method = "ML",
+  correlation = corAR1(),
+  data = hip_LR,
+  na.action = na.omit
+)
+r2_hip_vert_LR_LMM <- rsquared(hip_vert_LR_LMM)
+
+summary(hip_vert_LR_LMM)
+rsquared(hip_vert_LR_LMM)
+```
+
+```{r LR_R2_range, echo=FALSE}
+minR2_LR <- myround(min(c(r2_back_res_LR_LMM[[6]], r2_hip_res_LR_LMM[[6]], r2_back_vert_LR_LMM[[6]], r2_hip_vert_LR_LMM[[6]])), digits = 2)
+maxR2_LR <- myround(max(c(r2_back_res_LR_LMM[[6]], r2_hip_res_LR_LMM[[6]], r2_back_vert_LR_LMM[[6]], r2_hip_vert_LR_LMM[[6]])), digits = 2)
+```
+
+In all models, conditional R^2^ values ranged from `r minR2_LR` to `r maxR2_LR`.
+
+## Validation analysis
+
+Similar to the GRF prediction models, LR model validation was assessed by the LOOCV method with the `cross_validate_mixed_model()` [function](https://github.com/verasls/walking_GRF_ACC/blob/master/R/cross_validate_mixed_model.R) and is shown below.
+
+```{r LOOCV_LR}
+# For resultant peak loading rate
+fix_eff    <- pRLR_Ns ~ pRATR_gs + I(pRATR_gs^2) + body_mass + pRATR_gs:body_mass
+rand_eff   <- ~ 1 | ID
+# Back
+LOOCV_back_res_LR_LMM <- do.call(rbind, (lapply(unique(back_LR$ID), cross_validate_mixed_model, df = back_LR)))
+# Hip
+LOOCV_hip_res_LR_LMM <- do.call(rbind, (lapply(unique(hip_LR$ID), cross_validate_mixed_model, df = hip_LR)))
+
+# For vertical peak loading rate
+fix_eff    <- pVLR_Ns ~ pVATR_gs + I(pVATR_gs^2) + body_mass + pVATR_gs:body_mass
+rand_eff   <- ~ 1 | ID
+# Back
+LOOCV_back_vert_LR_LMM <- do.call(rbind, (lapply(unique(back_LR$ID), cross_validate_mixed_model, df = back_LR)))
+# Hip
+LOOCV_hip_vert_LR_LMM <- do.call(rbind, (lapply(unique(hip_LR$ID), cross_validate_mixed_model, df = hip_LR)))
+```
+
+### Bland-Altman plots
+
+Bland-Altman plots were also used to examine the agreement between actual and predicted pLR for both resultant and its vertical component.
+
+Bland-Altman plots can be seen below. Panel **A** shows plots of pRLR and panel **B** shows plots of pVLR.
+
+```{r BA_plots_LR, fig.height=20, fig.width=15, dev='svg'}
+source(here("figs", "fig2.R"))
+
+BA_plot_grid
+```
+
+Code to generate these plots can be seen [here](https://github.com/verasls/walking_GRF_ACC/blob/master/figs/fig2.R).
+
+<br>
+
+One-sample t-tests were run to check whether bias from each accelerometer placement, in both pRGRF and pVGRF, was significantly different than 0. These tests were run using the `t.test()` function of the base R with the argument `mu = 0`. No significant differences were found.
+
+```{r t_test_LR, echo=FALSE}
+# For resultant peak loading rate
+# Back
+LOOCV_back_res_LR_LMM$diff <- LOOCV_back_res_LR_LMM$pRLR_Ns - LOOCV_back_res_LR_LMM$pRLR_Ns_predicted
+LOOCV_back_res_LR_LMM$mean <- (LOOCV_back_res_LR_LMM$pRLR_Ns + LOOCV_back_res_LR_LMM$pRLR_Ns_predicted) / 2
+t.test(LOOCV_back_res_LR_LMM$diff, mu = 0)
+# Hip
+LOOCV_hip_res_LR_LMM$diff <- LOOCV_hip_res_LR_LMM$pRLR_Ns - LOOCV_hip_res_LR_LMM$pRLR_Ns_predicted
+LOOCV_hip_res_LR_LMM$mean <- (LOOCV_hip_res_LR_LMM$pRLR_Ns + LOOCV_hip_res_LR_LMM$pRLR_Ns_predicted) / 2
+t.test(LOOCV_hip_res_LR_LMM$diff, mu = 0)
+
+# For vertical peak loading rate
+# Back
+LOOCV_back_vert_LR_LMM$diff <- LOOCV_back_vert_LR_LMM$pVLR_Ns - LOOCV_back_vert_LR_LMM$pVLR_Ns_predicted
+LOOCV_back_vert_LR_LMM$mean <- (LOOCV_back_vert_LR_LMM$pVLR_Ns + LOOCV_back_vert_LR_LMM$pVLR_Ns_predicted) / 2
+t.test(LOOCV_back_vert_LR_LMM$diff, mu = 0)
+# Hip
+LOOCV_hip_vert_LR_LMM$diff <- LOOCV_hip_vert_LR_LMM$pVLR_Ns - LOOCV_hip_vert_LR_LMM$pVLR_Ns_predicted
+LOOCV_hip_vert_LR_LMM$mean <- (LOOCV_hip_vert_LR_LMM$pVLR_Ns + LOOCV_hip_vert_LR_LMM$pVLR_Ns_predicted) / 2
+t.test(LOOCV_hip_vert_LR_LMM$diff, mu = 0)
+```
+
+Also, linear regressions were applied to identify if there was any proportional bias, that is, if bias was related with the magnitude of the mean between measured and predicted pGRF [[@giav15]](#refs). Linear regressions were run using the `lm()` function of the base R.
+
+Results showed a significant proportional bias (*p* < 0.05), however, with a low magnitude. These results suggest that despite there is a trend for underestimation at increasingly higher pLR values, the magnitude of this effect is neglectable.
+
+```{r BA_LR_LR, fig.height=15, fig.width=13, dev='svg'}
+# For resultant peak loading rate
+# Back
+back_res_LR_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_back_res_LR_LMM)
+# Hip
+hip_res_LR_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_hip_res_LR_LMM)
+
+# For vertical peak loading rate
+# Back
+back_vert_LR_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_back_vert_LR_LMM)
+# Hip
+hip_vert_LR_BA_plot_LR <- lm(diff ~ mean, data = LOOCV_hip_vert_LR_LMM)
+```
+
+### Indices of accuracy
+
+To evaluate models prediction accuracy, MAE, MAPE and RMSE were computed. These indices were computed with the `accuracy_indices()` [function](https://github.com/verasls/walking_GRF_ACC/blob/master/R/accuracy_indices.R).
+
+```{r accuracy_indices_LR}
+# For resultant peak loading rate
+# Back
+back_res_LR_accuracy <- accuracy_indices(LOOCV_back_res_LR_LMM, "pRLR_Ns", "pRLR_Ns_predicted")
+# Hip
+hip_res_LR_accuracy <- accuracy_indices(LOOCV_hip_res_LR_LMM, "pRLR_Ns", "pRLR_Ns_predicted")
+
+# For vertical peak loading rate
+# Back
+back_vert_LR_accuracy <- accuracy_indices(LOOCV_back_vert_LR_LMM, "pVLR_Ns", "pVLR_Ns_predicted")
+# Back
+hip_vert_LR_accuracy <- accuracy_indices(LOOCV_hip_vert_LR_LMM, "pVLR_Ns", "pVLR_Ns_predicted")
+```
+
+Table below shows these indices for each accelerometer placement in both pRLR and pVLR.
+
+```{r accuracy_table}
+accuracy <- data.frame(
+  acc_placement = c(rep("Back", 2), rep("Hip", 2)),
+  condition     = rep(c("pRLR", "pVLR"), 2),
+  MAE           = c(
+    round(back_res_LR_accuracy[[5]], 1), round(back_vert_LR_accuracy[[5]], 1), 
+    round(hip_res_LR_accuracy[[5]], 1), round(hip_vert_LR_accuracy[[5]], 1)
+    ),
+  MAPE          = c(
+    paste(round(back_res_LR_accuracy[[12]], 1), "%", sep = ""), paste(round(back_vert_LR_accuracy[[12]], 1), "%", sep = ""), 
+    paste(round(hip_res_LR_accuracy[[12]], 1), "%", sep = ""), paste(round(hip_vert_LR_accuracy[[12]], 1), "%", sep = "")
+    ),
+  RMSE          = c(
+    round(back_res_LR_accuracy[[7]], 1), round(back_vert_LR_accuracy[[7]], 1), 
+    round(hip_res_LR_accuracy[[7]], 1), round(hip_vert_LR_accuracy[[7]], 1)
+    )
+)
+kable(accuracy, col.names = c("Accelerometer Placement", "LR", "MAE", "MAPE", "RMSE"), align = c("l", "l", "r", "r", "r"))
+```
+
+### ANOVA
+
+Also, to assess if pLR predicted values significantly differed from the actual values measured by the FP, repeated measures ANOVA were run. As with the ANOVA for the pGRF, here walking speeds, accelerometer placements (lower back and hip), and the interaction effect (speed X accelerometer placements) were considered for analysis.
+
+Code to tidy the data is shown below.
+
+```{r build_pRLR_df}
+## Predicted pRLR
+back_res_LR_pred <- LOOCV_back_res_LR %>% 
+  select(ID, speed, pRLR_Ns_predicted) %>% 
+  spread(key = speed, value = pRLR_Ns_predicted) %>% 
+  na.omit() %>% 
+  gather(
+    `2`, `3`, `4`, `5`, `6`,
+    key = speed,
+    value = back
+  )
+
+hip_res_LR_pred <- LOOCV_hip_res_LR %>%
+  select(ID, speed, pRLR_Ns_predicted) %>% 
+  spread(key = speed, value = pRLR_Ns_predicted) %>%
+  na.omit() %>%
+  gather(
+    `2`, `3`, `4`, `5`, `6`,
+    key = speed,
+    value = hip
+  )
+
+res_pred_LR_df <- back_res_LR_pred %>% 
+  full_join(hip_res_LR_pred, by = c("ID", "speed")) %>% 
+  na.omit()
+
+## Actual pRLR
+back_res_actual_LR <- LOOCV_back_res_LR %>% 
+  select(ID, speed, pRLR_Ns) %>% 
+  spread(key = speed, value = pRLR_Ns) %>% 
+  na.omit() %>% 
+  gather(
+    `2`, `3`, `4`, `5`, `6`,
+    key = speed,
+    value = actual_back
+  )
+
+hip_res_actual_LR <- LOOCV_hip_res_LR %>% 
+  select(ID, speed, pRLR_Ns) %>% 
+  spread(key = speed, value = pRLR_Ns) %>% 
+  na.omit() %>% 
+  gather(
+    `2`, `3`, `4`, `5`, `6`,
+    key = speed,
+    value = actual_hip
+  )
+
+res_actual_LR_df <- back_res_actual_LR %>% 
+  full_join(hip_res_actual_LR, by = c("ID", "speed")) %>% 
+  na.omit()
+
+res_actual_LR_df <- res_actual_LR_df %>% 
+  mutate(actual = (actual_back + actual_hip) / 2) %>% 
+  select(ID, speed, actual) 
+
+## Merge predicted and actual data frames
+res_ANOVA_LR_df <- res_pred_LR_df %>% 
+  full_join(res_actual_LR_df, by = c("ID", "speed")) %>% 
+  gather(
+    back, hip, actual,
+    key = "group",
+    value = "pRLR"
+  )
+res_ANOVA_LR_df$ID    <- as.factor(res_ANOVA_LR_df$ID)
+res_ANOVA_LR_df$speed <- as.factor(res_ANOVA_LR_df$speed)
+res_ANOVA_LR_df$group <- as.factor(res_ANOVA_LR_df$group)
+```
+
+Repeated measures ANOVAs were performed using the `ezANOVA()` function of the **ez** [package](https://cran.r-project.org/web/packages/ez/ez.pdf). Code to run the analysis is shown below.
+
+```{r ANOVA_LR, echo=FALSE}
+res_ANOVA_LR <- ezANOVA(
+  data     = res_ANOVA_LR_df,
+  dv       = pRLR,
+  wid      = ID,
+  within   = .(speed, group),
+  detailed = TRUE,
+  type     = 3
+)
+
+# Post hoc (Holm)
+res_ANOVA_LR_df$speed_group <- interaction(res_ANOVA_LR_df$speed, res_ANOVA_LR_df$group)
+
+res_posthoc_LR <- pairwise.t.test(res_ANOVA_LR_df$pRLR, res_ANOVA_LR_df$speed_group, paired = TRUE, p.adjust.method = "holm")
+
+# By speed
+# 2 km/h
+res_ANOVA_LR_s2 <- ezANOVA(
+  data     = res_ANOVA_LR_df %>% filter(speed == 2),
+  dv       = pRLR,
+  wid      = ID,
+  within   = group,
+  detailed = TRUE,
+  type     = 3
+)
+s2_res <- res_ANOVA_LR_df %>% filter(speed == 2)
+pairwise.t.test(s2_res$pRLR, s2_res$group, paired = TRUE, p.adjust.method = "holm")
+
+# 3 km/h
+res_ANOVA_LR_s3 <- ezANOVA(
+  data     = res_ANOVA_LR_df %>% filter(speed == 3),
+  dv       = pRLR,
+  wid      = ID,
+  within   = group,
+  detailed = TRUE,
+  type     = 3
+)
+
+# 4 km/h
+res_ANOVA_LR_s4 <- ezANOVA(
+  data     = res_ANOVA_LR_df %>% filter(speed == 4),
+  dv       = pRLR,
+  wid      = ID,
+  within   = group,
+  detailed = TRUE,
+  type     = 3
+)
+
+# 5 km/h
+res_ANOVA_LR_s5 <- ezANOVA(
+  data     = res_ANOVA_LR_df %>% filter(speed == 5),
+  dv       = pRLR,
+  wid      = ID,
+  within   = group,
+  detailed = TRUE,
+  type     = 3
+)
+
+# 6 km/h
+res_ANOVA_LR_s6 <- ezANOVA(
+  data     = res_ANOVA_LR_df %>% filter(speed == 6),
+  dv       = pRLR,
+  wid      = ID,
+  within   = group,
+  detailed = TRUE,
+  type     = 3
+)
+```
+
+These results can be seen in figure below.
+
+```{r ANOVA_LR_plot, fig.height=5, fig.width=10, dev='svg'}
+source(here("figs", "fig3.R"))
+
+LR_plot_grid
+```
+
 
 # R session info
 
