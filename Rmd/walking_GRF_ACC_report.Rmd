@@ -226,8 +226,22 @@ Bland-Altman plots were used to examine the agreement between pGRF measured with
 
 Bland-Altman plots can be seen below for all accelerometer placements. Panel **A** shows plots of pRGRF and panel **B** shows plots of pVGRF.
 
-```{r BA_plots, fig.height=20, fig.width=15, dev='svg'}
+```{r BA_plots, fig.height=10, fig.width=15, dev='svg'}
 source(here("figs", "fig2.R"))
+
+BA_plot_grid_1 <- plot_grid(
+  back_res_BA_plot     + theme(legend.position = "none"),
+  back_vert_BA_plot    + theme(legend.position = "none"),
+  hip_res_BA_plot      + theme(legend.position = "none"),
+  hip_vert_BA_plot     + theme(legend.position = "none"),
+  labels = c("A", "B", "", ""),
+  align  = "h", vjust = 1, label_size = 16,
+  ncol   = 2, nrow = 2
+)
+
+legend <- get_legend(back_res_BA_plot)
+
+BA_plot_grid <- plot_grid(BA_plot_grid_1, legend, ncol = 1, rel_heights = c(1, 0.1))
 
 BA_plot_grid
 ```
@@ -775,10 +789,24 @@ LOOCV_hip_vert_LR_LMM <- do.call(rbind, (lapply(unique(hip_LR$ID), cross_validat
 
 Bland-Altman plots were also used to examine the agreement between actual and predicted pLR for both resultant and its vertical component.
 
-Bland-Altman plots can be seen below. Panel **A** shows plots of pRLR and panel **B** shows plots of pVLR.
+Bland-Altman plots can be seen below. Panel **C** shows plots of pRLR and panel **D** shows plots of pVLR.
 
-```{r BA_plots_LR, fig.height=20, fig.width=15, dev='svg'}
+```{r BA_plots_LR, fig.height=10, fig.width=15, dev='svg'}
 source(here("figs", "fig2.R"))
+
+BA_plot_grid_1 <- plot_grid(
+  back_res_LR_BA_plot  + theme(legend.position = "none"),
+  back_vert_LR_BA_plot + theme(legend.position = "none"),
+  hip_res_LR_BA_plot   + theme(legend.position = "none"),
+  hip_vert_LR_BA_plot  + theme(legend.position = "none"),
+  labels = c("C", "D", "", ""),
+  align  = "h", vjust = 1, label_size = 16,
+  ncol   = 2, nrow = 2
+)
+
+legend <- get_legend(back_res_LR_BA_plot)
+
+BA_plot_grid <- plot_grid(BA_plot_grid_1, legend, ncol = 1, rel_heights = c(1, 0.1))
 
 BA_plot_grid
 ```
