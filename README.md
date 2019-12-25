@@ -13,7 +13,7 @@ Lucas Veras, Florêncio Diniz-Sousa, Giorjines Boppre, Vítor Devezas, Hugo Sant
 
 ---
 
-In the main directory is the [data analysis R script](analysis.R).
+In the main directory is the data analysis R script for the [ground reaction force prediction](analysis_GRF.R) and for the [loading rate prediction](analysis_LR.R).
 
 You can find the data analysis report [here](https://verasls.github.io/reports/walking_GRF_ACC_report.html).
 
