@@ -40,18 +40,22 @@ back_res_BA_plot <- ggplot(data = LOOCV_back_res) +
   ) +
   scale_colour_manual(values = c("#E69F00", "#009E73", "#CC79A7", "#0072B2", "#D55E00")) +
   scale_y_continuous(limits = c(-500, 520), expand = c(0, 0)) +
-  scale_x_continuous(limits = c(0, 2525), expand = c(0, 0)) +
+  scale_x_continuous(limits = c(0, 2600), expand = c(0, 0)) +
   theme_classic() +
   theme(
-    plot.title = element_text(face = "bold", hjust = 0.5),
+    plot.title = element_text(size = 20, face = "bold", hjust = 0.5),
     legend.title = element_blank(),
-    legend.text = element_text(size = 14),
-    legend.position = "bottom"
+    legend.text = element_text(size = 20),
+    legend.position = "bottom",
+    axis.title.y = element_text(size = 17),
+    axis.title.x = element_text(size = 17),
+    axis.text.y = element_text(size = 16),
+    axis.text.x = element_text(size = 16)
   ) +
   labs(
     title = "Lower Back",
     x = "Mean of Actual and Predicted pRGRF (N)",
-    y = "Difference of Actual and Predicted pRGRF (N)"
+    y = "Actual - Predicted pRGRF (N)"
   )
 
 # Hip resultant GRF -------------------------------------------------------
@@ -71,13 +75,19 @@ hip_res_BA_plot <- ggplot(data = LOOCV_hip_res) +
   ) +
   scale_colour_manual(values = c("#E69F00", "#009E73", "#CC79A7", "#0072B2", "#D55E00")) +
   scale_y_continuous(limits = c(-500, 520), expand = c(0, 0)) +
-  scale_x_continuous(limits = c(0, 2525), expand = c(0, 0)) +
+  scale_x_continuous(limits = c(0, 2600), expand = c(0, 0)) +
   theme_classic() +
-  theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
+  theme(
+    plot.title = element_text(size = 20, face = "bold", hjust = 0.5),
+    axis.title.y = element_text(size = 17),
+    axis.title.x = element_text(size = 17),
+    axis.text.y = element_text(size = 16),
+    axis.text.x = element_text(size = 16)
+  ) +
   labs(
     title = "Hip",
     x = "Mean of Actual and Predicted pRGRF (N)",
-    y = "Difference of Actual and Predicted pRGRF (N)"
+    y = "Actual - Predicted pRGRF (N)"
   )
 
 # Lower back vertical GRF -------------------------------------------------
@@ -97,13 +107,19 @@ back_vert_BA_plot <- ggplot(data = LOOCV_back_vert) +
   ) +
   scale_colour_manual(values = c("#E69F00", "#009E73", "#CC79A7", "#0072B2", "#D55E00")) +
   scale_y_continuous(limits = c(-500, 520), expand = c(0, 0)) +
-  scale_x_continuous(limits = c(0, 2525), expand = c(0, 0)) +
+  scale_x_continuous(limits = c(0, 2600), expand = c(0, 0)) +
   theme_classic() +
-  theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
+  theme(
+    plot.title = element_text(size = 20, face = "bold", hjust = 0.5),
+    axis.title.y = element_text(size = 17),
+    axis.title.x = element_text(size = 17),
+    axis.text.y = element_text(size = 16),
+    axis.text.x = element_text(size = 16)
+  ) +
   labs(
     title = "Lower Back",
     x = "Mean of Actual and Predicted pVGRF (N)",
-    y = "Difference of Actual and Predicted pVGRF (N)"
+    y = "Actual - Predicted pRGRF (N)"
   )
 
 # Hip vertical GRF --------------------------------------------------------
@@ -123,13 +139,19 @@ hip_vert_BA_plot <- ggplot(data = LOOCV_hip_vert) +
   ) +
   scale_colour_manual(values = c("#E69F00", "#009E73", "#CC79A7", "#0072B2", "#D55E00")) +
   scale_y_continuous(limits = c(-500, 520), expand = c(0, 0)) +
-  scale_x_continuous(limits = c(0, 2525), expand = c(0, 0)) +
+  scale_x_continuous(limits = c(0, 2600), expand = c(0, 0)) +
   theme_classic() +
-  theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
+  theme(
+    plot.title = element_text(size = 20, face = "bold", hjust = 0.5),
+    axis.title.y = element_text(size = 17),
+    axis.title.x = element_text(size = 17),
+    axis.text.y = element_text(size = 16),
+    axis.text.x = element_text(size = 16)
+  ) +
   labs(
     title = "Hip",
     x = "Mean of Actual and Predicted pVGRF (N)",
-    y = "Difference of Actual and Predicted pVGRF (N)"
+    y = "Actual - Predicted pRGRF (N)"
   )
 
 # Lower back resultant LR -------------------------------------------------
@@ -149,18 +171,22 @@ back_res_LR_BA_plot <- ggplot(data = LOOCV_back_res_LR) +
   ) +
   scale_colour_manual(values = c("#E69F00", "#009E73", "#CC79A7", "#0072B2", "#D55E00")) +
   scale_y_continuous(limits = c(-12000, 12000), expand = c(0, 0)) +
-  scale_x_continuous(limits = c(0, 30000), expand = c(0, 0)) +
+  scale_x_continuous(limits = c(0, 31000), expand = c(0, 0)) +
   theme_classic() +
   theme(
-    plot.title = element_text(face = "bold", hjust = 0.5),
+    plot.title = element_text(size = 20, face = "bold", hjust = 0.5),
     legend.title = element_blank(),
-    legend.text = element_text(size = 14),
-    legend.position = "bottom"
+    legend.text = element_text(size = 18),
+    legend.position = "bottom",
+    axis.title.y = element_text(size = 17),
+    axis.title.x = element_text(size = 17),
+    axis.text.y = element_text(size = 16),
+    axis.text.x = element_text(size = 16)
   ) +
   labs(
     title = "Lower Back",
     x = quote("Mean of Actual and Predicted pRLR"~(N%.%s^-1)),
-    y = quote("Difference of Actual and Predicted pRLR"~(N%.%s^-1))
+    y = quote("Actual - Predicted pRLR"~(N%.%s^-1))
   )
 
 # Hip resultant LR --------------------------------------------------------
@@ -180,18 +206,19 @@ hip_res_LR_BA_plot <- ggplot(data = LOOCV_hip_res_LR) +
   ) +
   scale_colour_manual(values = c("#E69F00", "#009E73", "#CC79A7", "#0072B2", "#D55E00")) +
   scale_y_continuous(limits = c(-12000, 12000), expand = c(0, 0)) +
-  scale_x_continuous(limits = c(0, 30000), expand = c(0, 0)) +
+  scale_x_continuous(limits = c(0, 31000), expand = c(0, 0)) +
   theme_classic() +
   theme(
-    plot.title = element_text(face = "bold", hjust = 0.5),
-    legend.title = element_blank(),
-    legend.text = element_text(size = 14),
-    legend.position = "bottom"
+    plot.title = element_text(size = 20, face = "bold", hjust = 0.5),
+    axis.title.y = element_text(size = 17),
+    axis.title.x = element_text(size = 17),
+    axis.text.y = element_text(size = 16),
+    axis.text.x = element_text(size = 16)
   ) +
   labs(
     title = "Hip",
     x = quote("Mean of Actual and Predicted pRLR"~(N%.%s^-1)),
-    y = quote("Difference of Actual and Predicted pRLR"~(N%.%s^-1))
+    y = quote("Actual - Predicted pRLR"~(N%.%s^-1))
   )
 
 # Lower back vertical LR --------------------------------------------------
@@ -211,18 +238,19 @@ back_vert_LR_BA_plot <- ggplot(data = LOOCV_back_vert_LR) +
   ) +
   scale_colour_manual(values = c("#E69F00", "#009E73", "#CC79A7", "#0072B2", "#D55E00")) +
   scale_y_continuous(limits = c(-12000, 12000), expand = c(0, 0)) +
-  scale_x_continuous(limits = c(0, 30000), expand = c(0, 0)) +
+  scale_x_continuous(limits = c(0, 31000), expand = c(0, 0)) +
   theme_classic() +
   theme(
-    plot.title = element_text(face = "bold", hjust = 0.5),
-    legend.title = element_blank(),
-    legend.text = element_text(size = 14),
-    legend.position = "bottom"
+    plot.title = element_text(size = 20, face = "bold", hjust = 0.5),
+    axis.title.y = element_text(size = 17),
+    axis.title.x = element_text(size = 17),
+    axis.text.y = element_text(size = 16),
+    axis.text.x = element_text(size = 16)
   ) +
   labs(
     title = "Lower Back",
     x = quote("Mean of Actual and Predicted pVLR"~(N%.%s^-1)),
-    y = quote("Difference of Actual and Predicted pVLR"~(N%.%s^-1))
+    y = quote("Actual - Predicted pRLR"~(N%.%s^-1))
   )
 
 # Hip vertical LR ---------------------------------------------------------
@@ -242,18 +270,19 @@ hip_vert_LR_BA_plot <- ggplot(data = LOOCV_hip_vert_LR) +
   ) +
   scale_colour_manual(values = c("#E69F00", "#009E73", "#CC79A7", "#0072B2", "#D55E00")) +
   scale_y_continuous(limits = c(-12000, 12000), expand = c(0, 0)) +
-  scale_x_continuous(limits = c(0, 30000), expand = c(0, 0)) +
+  scale_x_continuous(limits = c(0, 31000), expand = c(0, 0)) +
   theme_classic() +
   theme(
-    plot.title = element_text(face = "bold", hjust = 0.5),
-    legend.title = element_blank(),
-    legend.text = element_text(size = 14),
-    legend.position = "bottom"
+    plot.title = element_text(size = 20, face = "bold", hjust = 0.5),
+    axis.title.y = element_text(size = 17),
+    axis.title.x = element_text(size = 17),
+    axis.text.y = element_text(size = 16),
+    axis.text.x = element_text(size = 16)
   ) +
   labs(
     title = "Hip",
     x = quote("Mean of Actual and Predicted pVLR"~(N%.%s^-1)),
-    y = quote("Difference of Actual and Predicted pVLR"~(N%.%s^-1))
+    y = quote("Actual - Predicted pRLR"~(N%.%s^-1))
   )
 
 # Plot grid ---------------------------------------------------------------
@@ -267,8 +296,8 @@ BA_plot_grid_1 <- plot_grid(
   back_vert_LR_BA_plot + theme(legend.position = "none"),
   hip_res_LR_BA_plot   + theme(legend.position = "none"),
   hip_vert_LR_BA_plot  + theme(legend.position = "none"),
-  labels = c("A", "B", "", "", "C", "D", "", ""),
-  align  = "h", vjust = 1, label_size = 16,
+  labels = c("a", "b", "", "", "c", "d", "", ""),
+  align  = "h", vjust = 1, label_size = 30,
   ncol   = 2, nrow = 4
 )
 
@@ -280,5 +309,5 @@ BA_plot_grid <- plot_grid(BA_plot_grid_1, legend, ncol = 1, rel_heights = c(1, 0
 # Uncomment lines below to save plot
 # ggsave(
 #   filename = "figs/fig2.tiff",
-#   plot = BA_plot_grid, width = 50, height = 50, dpi = 600, units = "cm"
+#   plot = BA_plot_grid, width = 50, height = 50, dpi = 300, units = "cm"
 # )
