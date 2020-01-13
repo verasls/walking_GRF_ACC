@@ -61,13 +61,18 @@ pRGRF_plot <- ggplot(data = resultant_GRF, aes(x = speed, y = pRGRF, group = gro
   expand_limits(y = c(800, 1400)) +
   theme_classic() +
   theme(
-    plot.title = element_text(face = "bold"),
+    plot.title = element_text(size = 20, face = "bold"),
     legend.title = element_blank(),
-    legend.position = "bottom"
+    legend.text = element_text(size = 15),
+    legend.position = "bottom",
+    axis.title.y = element_text(size = 14),
+    axis.title.x = element_text(size = 14),
+    axis.text.y = element_text(size = 12),
+    axis.text.x = element_text(size = 12)
   ) +
   guides(col = guide_legend(nrow = 2, byrow = TRUE)) +
   labs(
-    title = "A)",
+    title = "a",
     x = quote("Speed"~(km%.%h^-1)),
     y = "pRGRF (N)"
   ) +
@@ -103,9 +108,18 @@ pVGRF_plot <- ggplot(data = vertical_GRF, aes(x = speed, y = pVGRF, group = grou
   scale_y_continuous(breaks = seq(from = 800, to = 1400, by = 100)) +
   expand_limits(y = c(800, 1400)) +
   theme_classic() +
-  theme(plot.title = element_text(face = "bold")) +
+  theme(
+    plot.title = element_text(size = 20, face = "bold"),
+    legend.title = element_blank(),
+    legend.text = element_text(size = 15),
+    legend.position = "bottom",
+    axis.title.y = element_text(size = 14),
+    axis.title.x = element_text(size = 14),
+    axis.text.y = element_text(size = 12),
+    axis.text.x = element_text(size = 12)
+  ) +
   labs(
-    title = "B)",
+    title = "b",
     x = quote("Speed"~(km%.%h^-1)),
     y = "pVGRF (N)"
   ) +
@@ -141,13 +155,18 @@ pRLR_plot <- ggplot(data = resultant_LR, aes(x = speed, y = pRLR, group = group)
   scale_y_continuous(breaks = seq(from = 4000, to = 18000, by = 2000)) +
   theme_classic() +
   theme(
-    plot.title = element_text(face = "bold"),
+    plot.title = element_text(size = 20, face = "bold"),
     legend.title = element_blank(),
-    legend.position = "bottom"
+    legend.text = element_text(size = 15),
+    legend.position = "bottom",
+    axis.title.y = element_text(size = 14),
+    axis.title.x = element_text(size = 14),
+    axis.text.y = element_text(size = 12),
+    axis.text.x = element_text(size = 12)
   ) +
   guides(col = guide_legend(nrow = 2, byrow = TRUE)) +
   labs(
-    title = "C)",
+    title = "c",
     x = quote("Speed"~(km%.%h^-1)),
     y = quote("pRLR"~(N%.%s^-1))
   ) +
@@ -182,10 +201,19 @@ pVLR_plot <- ggplot(data = vertical_LR, aes(x = speed, y = pVLR, group = group))
   scale_linetype_manual(values = c("solid", "dashed", "dotted", "twodash")) +
   scale_y_continuous(breaks = seq(from = 4000, to = 18000, by = 2000)) +
   theme_classic() +
-  theme(plot.title = element_text(face = "bold")) +
+  theme(
+    plot.title = element_text(size = 20, face = "bold"),
+    legend.title = element_blank(),
+    legend.text = element_text(size = 15),
+    legend.position = "bottom",
+    axis.title.y = element_text(size = 14),
+    axis.title.x = element_text(size = 14),
+    axis.text.y = element_text(size = 12),
+    axis.text.x = element_text(size = 12)
+  ) +
   guides(col = guide_legend(nrow = 2, byrow = TRUE)) +
   labs(
-    title = "D)",
+    title = "d",
     x = quote("Speed"~(km%.%h^-1)),
     y = quote("pVLR"~(N%.%s^-1))
   ) +
@@ -243,5 +271,5 @@ plot_grid <- plot_grid(
 # Uncomment lines below to save plot
 # ggsave(
 #   filename = "figs/fig3.tiff",
-#   plot = plot_grid, width = 30, height = 30, dpi = 600, units = "cm"
+#   plot = plot_grid, width = 30, height = 30, dpi = 300, units = "cm"
 # )
