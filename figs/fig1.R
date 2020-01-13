@@ -35,13 +35,17 @@ back_pRGRF_pRACC_plot <- ggplot(data = LOOCV_back_res) +
   ) +
   scale_colour_manual(values = c("#E69F00", "#009E73", "#CC79A7", "#0072B2", "#D55E00")) +
   scale_y_continuous(limits = c(0, 2500), expand = c(0, 0)) +
-  scale_x_continuous(limits = c(1, 2.5), expand = c(0, 0)) +
+  scale_x_continuous(limits = c(1, 2.6), expand = c(0, 0)) +
   theme_classic() +
   theme(
-    plot.title = element_text(face = "bold", hjust = 0.5),
+    plot.title = element_text(size = 20, face = "bold", hjust = 0.5),
     legend.title = element_blank(),
-    legend.text = element_text(size = 14),
-    legend.position = "bottom"
+    legend.text = element_text(size = 20),
+    legend.position = "bottom",
+    axis.title.y = element_text(size = 18),
+    axis.title.x = element_text(size = 18),
+    axis.text.y = element_text(size = 16),
+    axis.text.x = element_text(size = 16)
   ) +
   labs(
     title = "Lower Back",
@@ -59,9 +63,15 @@ hip_pRGRF_pRACC_plot <- ggplot(data = LOOCV_hip_res) +
   ) +
   scale_colour_manual(values = c("#E69F00", "#009E73", "#CC79A7", "#0072B2", "#D55E00")) +
   scale_y_continuous(limits = c(0, 2500), expand = c(0, 0)) +
-  scale_x_continuous(limits = c(1, 3), expand = c(0, 0)) +
+  scale_x_continuous(limits = c(1, 3.1), expand = c(0, 0)) +
   theme_classic() +
-  theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
+  theme(
+    plot.title = element_text(size = 20, face = "bold", hjust = 0.5),
+    axis.title.y = element_text(size = 18),
+    axis.title.x = element_text(size = 18),
+    axis.text.y = element_text(size = 16),
+    axis.text.x = element_text(size = 16)
+  ) +
   labs(
     title = "Hip",
     x = "pRACC (g)",
@@ -80,9 +90,15 @@ back_pVGRF_pVACC_plot <- ggplot(data = LOOCV_back_vert) +
   ) +
   scale_colour_manual(values = c("#E69F00", "#009E73", "#CC79A7", "#0072B2", "#D55E00")) +
   scale_y_continuous(limits = c(0, 2500), expand = c(0, 0)) +
-  scale_x_continuous(limits = c(1, 2.5), expand = c(0, 0)) +
+  scale_x_continuous(limits = c(1, 2.6), expand = c(0, 0)) +
   theme_classic() +
-  theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
+  theme(
+    plot.title = element_text(size = 20, face = "bold", hjust = 0.5),
+    axis.title.y = element_text(size = 18),
+    axis.title.x = element_text(size = 18),
+    axis.text.y = element_text(size = 16),
+    axis.text.x = element_text(size = 16)
+  ) +
   labs(
     title = "Lower Back",
     x = "pVACC (g)",
@@ -99,9 +115,15 @@ hip_pVGRF_pVACC_plot <- ggplot(data = LOOCV_hip_vert) +
   ) +
   scale_colour_manual(values = c("#E69F00", "#009E73", "#CC79A7", "#0072B2", "#D55E00")) +
   scale_y_continuous(limits = c(0, 2500), expand = c(0, 0)) +
-  scale_x_continuous(limits = c(1, 3), expand = c(0, 0)) +
+  scale_x_continuous(limits = c(1, 3.1), expand = c(0, 0)) +
   theme_classic() +
-  theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
+  theme(
+    plot.title = element_text(size = 20, face = "bold", hjust = 0.5),
+    axis.title.y = element_text(size = 18),
+    axis.title.x = element_text(size = 18),
+    axis.text.y = element_text(size = 16),
+    axis.text.x = element_text(size = 16)
+  ) +
   labs(
     title = "Hip",
     x = "pVACC (g)",
@@ -123,13 +145,14 @@ back_pRLR_pRATR_plot <- ggplot(data = LOOCV_back_res_LR) +
     limits = c(0, 30000), expand = c(0, 0),
     breaks = seq(0, 30000, 5000)
   ) +
-  scale_x_continuous(limits = c(0, 50), expand = c(0, 0)) +
+  scale_x_continuous(limits = c(0, 52), expand = c(0, 0)) +
   theme_classic() +
   theme(
-    plot.title = element_text(face = "bold", hjust = 0.5),
-    legend.title = element_blank(),
-    legend.text = element_text(size = 14),
-    legend.position = "bottom"
+    plot.title = element_text(size = 20, face = "bold", hjust = 0.5),
+    axis.title.y = element_text(size = 18),
+    axis.title.x = element_text(size = 18),
+    axis.text.y = element_text(size = 16),
+    axis.text.x = element_text(size = 16)
   ) +
   labs(
     title = "Lower Back",
@@ -150,13 +173,14 @@ hip_pRLR_pRATR_plot <- ggplot(data = LOOCV_hip_res_LR) +
     limits = c(0, 30000), expand = c(0, 0),
     breaks = seq(0, 30000, 5000)
   ) +
-  scale_x_continuous(limits = c(0, 50), expand = c(0, 0)) +
+  scale_x_continuous(limits = c(0, 52), expand = c(0, 0)) +
   theme_classic() +
   theme(
-    plot.title = element_text(face = "bold", hjust = 0.5),
-    legend.title = element_blank(),
-    legend.text = element_text(size = 14),
-    legend.position = "bottom"
+    plot.title = element_text(size = 20, face = "bold", hjust = 0.5),
+    axis.title.y = element_text(size = 18),
+    axis.title.x = element_text(size = 18),
+    axis.text.y = element_text(size = 16),
+    axis.text.x = element_text(size = 16)
   ) +
   labs(
     title = "Hip",
@@ -179,13 +203,14 @@ back_pVLR_pVATR_plot <- ggplot(data = LOOCV_back_vert_LR) +
     limits = c(0, 30000), expand = c(0, 0),
     breaks = seq(0, 30000, 5000)
   ) +
-  scale_x_continuous(limits = c(0, 50), expand = c(0, 0)) +
+  scale_x_continuous(limits = c(0, 52), expand = c(0, 0)) +
   theme_classic() +
   theme(
-    plot.title = element_text(face = "bold", hjust = 0.5),
-    legend.title = element_blank(),
-    legend.text = element_text(size = 14),
-    legend.position = "bottom"
+    plot.title = element_text(size = 20, face = "bold", hjust = 0.5),
+    axis.title.y = element_text(size = 18),
+    axis.title.x = element_text(size = 18),
+    axis.text.y = element_text(size = 16),
+    axis.text.x = element_text(size = 16)
   ) +
   labs(
     title = "Lower Back",
@@ -206,13 +231,14 @@ hip_pVLR_pVATR_plot <- ggplot(data = LOOCV_hip_vert_LR) +
     limits = c(0, 30000), expand = c(0, 0),
     breaks = seq(0, 30000, 5000)
   ) +
-  scale_x_continuous(limits = c(0, 50), expand = c(0, 0)) +
+  scale_x_continuous(limits = c(0, 52), expand = c(0, 0)) +
   theme_classic() +
   theme(
-    plot.title = element_text(face = "bold", hjust = 0.5),
-    legend.title = element_blank(),
-    legend.text = element_text(size = 14),
-    legend.position = "bottom"
+    plot.title = element_text(size = 20, face = "bold", hjust = 0.5),
+    axis.title.y = element_text(size = 18),
+    axis.title.x = element_text(size = 18),
+    axis.text.y = element_text(size = 16),
+    axis.text.x = element_text(size = 16)
   ) +
   labs(
     title = "Hip",
@@ -231,8 +257,8 @@ GRF_ACC_plot_grid_1 <- plot_grid(
   back_pVLR_pVATR_plot + theme(legend.position = "none"),
   hip_pRLR_pRATR_plot + theme(legend.position = "none"),
   hip_pVLR_pVATR_plot + theme(legend.position = "none"),
-  labels = c("A", "B", "", "", "C", "D", "", ""),
-  align = "h", vjust = 1, label_size = 16,
+  labels = c("a", "b", "", "", "c", "d", "", ""),
+  align = "h", vjust = 1, label_size = 30,
   ncol = 2, nrow = 4
 )
 
@@ -243,5 +269,5 @@ GRF_ACC_plot_grid <- plot_grid(GRF_ACC_plot_grid_1, legend, ncol = 1, rel_height
 # Uncomment lines below to save plot
 # ggsave(
 #   filename = "figs/fig1.tiff",
-#   plot = GRF_ACC_plot_grid, width = 50, height = 50, dpi = 600, units = "cm"
+#   plot = GRF_ACC_plot_grid, width = 50, height = 50, dpi = 300, units = "cm"
 # )
