@@ -57,15 +57,24 @@ non_obese_our_BA_plot <- ggplot(data = non_obese_df) +
     breaks = seq(-500, 500, 250)
     ) +
   scale_x_continuous(
-    limits = c(0, 3020), expand = c(0, 0),
+    limits = c(0, 3100), expand = c(0, 0),
     breaks = seq(0, 3000, 500)
     ) +
   theme_classic() +
-  theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
+  theme(
+    plot.title = element_text(size = 20, face = "bold", hjust = 0.5),
+    legend.title = element_blank(),
+    legend.text = element_text(size = 20),
+    legend.position = "bottom",
+    axis.title.y = element_text(size = 17),
+    axis.title.x = element_text(size = 17),
+    axis.text.y = element_text(size = 16),
+    axis.text.x = element_text(size = 16)
+  ) +
   labs(
     title = "Normal weight and overweight",
     x = "Mean of Actual and Predicted pVGRF (N)",
-    y = "Difference of Actual and Predicted pVGRF (N)"
+    y = "Actual - Predicted pVGRF (N)"
   )
 
 # Neugebauer's equation
@@ -87,15 +96,24 @@ non_obese_Neug_BA_plot <- ggplot(data = non_obese_df) +
     breaks = seq(-500, 500, 250)
   ) +
   scale_x_continuous(
-    limits = c(0, 3020), expand = c(0, 0),
+    limits = c(0, 3100), expand = c(0, 0),
     breaks = seq(0, 3000, 500)
   ) +
   theme_classic() +
-  theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
+  theme(
+    plot.title = element_text(size = 20, face = "bold", hjust = 0.5),
+    legend.title = element_blank(),
+    legend.text = element_text(size = 20),
+    legend.position = "bottom",
+    axis.title.y = element_text(size = 17),
+    axis.title.x = element_text(size = 17),
+    axis.text.y = element_text(size = 16),
+    axis.text.x = element_text(size = 16)
+  ) +
   labs(
     title = "Normal weight and overweight",
     x = "Mean of Actual and Predicted pVGRF (N)",
-    y = "Difference of Actual and Predicted pVGRF (N)"
+    y = "Actual - Predicted pVGRF (N)"
   )
 
 # Obese sample ------------------------------------------------------------
@@ -119,15 +137,24 @@ obese_our_BA_plot <- ggplot(data = obese_df) +
     breaks = seq(-500, 500, 250)
   ) +
   scale_x_continuous(
-    limits = c(0, 3020), expand = c(0, 0),
+    limits = c(0, 3100), expand = c(0, 0),
     breaks = seq(0, 3000, 500)
   ) +
   theme_classic() +
-  theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
+  theme(
+    plot.title = element_text(size = 20, face = "bold", hjust = 0.5),
+    legend.title = element_blank(),
+    legend.text = element_text(size = 20),
+    legend.position = "bottom",
+    axis.title.y = element_text(size = 17),
+    axis.title.x = element_text(size = 17),
+    axis.text.y = element_text(size = 16),
+    axis.text.x = element_text(size = 16)
+  ) +
   labs(
     title = "Class I to III obesity",
     x = "Mean of Actual and Predicted pVGRF (N)",
-    y = "Difference of Actual and Predicted pVGRF (N)"
+    y = "Actual - Predicted pVGRF (N)"
   )
 
 # Neugebauer's equation
@@ -149,15 +176,24 @@ obese_Neug_BA_plot <- ggplot(data = obese_df) +
     breaks = seq(-500, 500, 250)
   ) +
   scale_x_continuous(
-    limits = c(0, 3020), expand = c(0, 0),
+    limits = c(0, 3100), expand = c(0, 0),
     breaks = seq(0, 3000, 500)
   ) +
   theme_classic() +
-  theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
+  theme(
+    plot.title = element_text(size = 20, face = "bold", hjust = 0.5),
+    legend.title = element_blank(),
+    legend.text = element_text(size = 20),
+    legend.position = "bottom",
+    axis.title.y = element_text(size = 17),
+    axis.title.x = element_text(size = 17),
+    axis.text.y = element_text(size = 16),
+    axis.text.x = element_text(size = 16)
+  ) +
   labs(
     title = "Class I to III obesity",
     x = "Mean of Actual and Predicted pVGRF (N)",
-    y = "Difference of Actual and Predicted pVGRF (N)"
+    y = "Actual - Predicted pVGRF (N)"
   )
 
 # Whole sample ------------------------------------------------------------
@@ -181,15 +217,24 @@ whole_sample_our_BA_plot <- ggplot(data = whole_sample_df) +
     breaks = seq(-500, 500, 250)
   ) +
   scale_x_continuous(
-    limits = c(0, 3020), expand = c(0, 0),
+    limits = c(0, 3100), expand = c(0, 0),
     breaks = seq(0, 3000, 500)
   ) +
   theme_classic() +
-  theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
+  theme(
+    plot.title = element_text(size = 20, face = "bold", hjust = 0.5),
+    legend.title = element_blank(),
+    legend.text = element_text(size = 20),
+    legend.position = "bottom",
+    axis.title.y = element_text(size = 17),
+    axis.title.x = element_text(size = 17),
+    axis.text.y = element_text(size = 16),
+    axis.text.x = element_text(size = 16)
+  ) +
   labs(
     title = "Whole sample",
     x = "Mean of Actual and Predicted pVGRF (N)",
-    y = "Difference of Actual and Predicted pVGRF (N)"
+    y = "Actual - Predicted pVGRF (N)"
   )
 
 # Neugebauer's equation
@@ -207,13 +252,22 @@ whole_sample_Neug_BA_plot <- ggplot(data = whole_sample_df) +
     linetype = "dotted"
   ) +
   scale_y_continuous(limits = c(-500, 500), expand = c(0, 0)) +
-  scale_x_continuous(limits = c(0, 3000), expand = c(0, 0)) +
+  scale_x_continuous(limits = c(0, 3100), expand = c(0, 0)) +
   theme_classic() +
-  theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
+  theme(
+    plot.title = element_text(size = 20, face = "bold", hjust = 0.5),
+    legend.title = element_blank(),
+    legend.text = element_text(size = 20),
+    legend.position = "bottom",
+    axis.title.y = element_text(size = 17),
+    axis.title.x = element_text(size = 17),
+    axis.text.y = element_text(size = 16),
+    axis.text.x = element_text(size = 16)
+  ) +
   labs(
     title = "Whole sample",
     x = "Mean of Actual and Predicted pVGRF (N)",
-    y = "Difference of Actual and Predicted pVGRF (N)"
+    y = "Actual - Predicted pVGRF (N)"
   )
 
 # Plot grid ---------------------------------------------------------------
@@ -222,13 +276,13 @@ BA_plot_grid <- plot_grid(
   non_obese_our_BA_plot, non_obese_Neug_BA_plot,
   obese_our_BA_plot, obese_Neug_BA_plot,
   whole_sample_our_BA_plot, whole_sample_Neug_BA_plot,
-  labels = c("A", "B", "", "", "", ""),
-  align  = "h", vjust = 1, label_size = 16,
+  labels = c("a", "b", "", "", "", ""),
+  align  = "h", vjust = 1, label_size = 30,
   ncol   = 2, nrow = 3
 )
 
 # Uncomment lines below to save plot
 # ggsave(
 #   filename = "figs/fig4.tiff",
-#   plot = BA_plot_grid, width = 50, height = 35, dpi = 600, units = "cm"
+#   plot = BA_plot_grid, width = 50, height = 35, dpi = 300, units = "cm"
 # )
